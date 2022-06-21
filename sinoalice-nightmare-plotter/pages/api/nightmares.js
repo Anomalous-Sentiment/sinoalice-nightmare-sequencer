@@ -8,7 +8,6 @@ export default async(req, res) => {
       const browser = await puppeteer.launch();
       const page = await browser.newPage();
       await page.goto("https://sinoalice.game-db.tw/nightmares");
-      const htmlString = await page.content();
       await page.screenshot({ path: 'example.png' });
 
       //Use puppeteer to display desired fields in table by clicking field button
@@ -56,12 +55,14 @@ export default async(req, res) => {
         submitButton[0].click()
 
         
-      }, query)
+      }, query);
+      
       await page.screenshot({ path: 'example.png' });
 
+      const htmlString = await page.content();
+      const $ = cheerio.load(htmlString)
 
       await browser.close();
-      const $ = cheerio.load(htmlString)
 
       console.timeEnd()
 
@@ -70,16 +71,10 @@ export default async(req, res) => {
       const keys = [
         "Icon",
         "Name",
-        "Total80",
-        "PATK",
-        "MATK",
-        "Total120",
-        "St.Skill",
         "Colo.Skill",
-        "Effect"
+        "Colo.Prep",
+        "Colo.Dur."
       ]
-
-      /*
 
       //Iterate through all rows of table of nightmares and their fields
       $("tbody tr").each((parentIndex, parentElem) => {
@@ -95,12 +90,25 @@ export default async(req, res) => {
         
         $(parentElem)
         .children("td")
-        .each((childId, childElem) => 
+        .each((childIdx, childElem) => 
         {
-          const value = $(childElem).text();
-
-          console.log("-------------------------------------------------")
-          console.log($(childElem).html())
+          let value;
+          console.log(childIdx)
+          if (childIdx == 0)
+          {
+            // Find the img element
+            const img = $(childElem).find("img")
+            console.log($(img).html())
+            // Get the src attribute (relative url), and append to base url
+            const iconURL = "https://sinoalice.game-db.tw" + $(img).attr("src")
+            console.log(iconURL);
+            value = iconURL
+          }
+          else
+          {
+            // Get the text value of the element
+            value = $(childElem).text();
+          }
 
           nightmareDetails[keys[keyIndex]] = value;
 
@@ -109,9 +117,8 @@ export default async(req, res) => {
         
 
         nightmareArray.push(nightmareDetails);
-        //console.log($(parentElem).children().data)
       })
-      */
+      
 
       return res.status(200).json({nightmares: nightmareArray});
     }
