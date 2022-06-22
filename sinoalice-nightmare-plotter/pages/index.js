@@ -2,15 +2,19 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useState } from 'react';
 import styles from '../styles/Home.module.css'
+import NightmareImageList from './nightmare-image-list'
 
 export default function Home() {
-  const [nightmares, updateNightmares] = useState("Empty")
+  const [nightmares, updateNightmares] = useState(null)
 
   function getNightmares()
   {
     fetch("http://localhost:3000/api/nightmares")
-    .then(response => response.text())
-    .then(text => updateNightmares(text));
+    .then(response => response.json())
+    .then((json) => {
+      console.log(json["nightmares"])
+      updateNightmares(json["nightmares"])
+    });
   }
 
 
@@ -23,7 +27,7 @@ export default function Home() {
         <link rel="icon" href="/alice.ico" />
       </Head>
       <button type="button" onClick={getNightmares}>Fetch Nightmares</button> 
-      <p>{nightmares}</p>
+      <NightmareImageList list={nightmares}/>
     </div>
 
   )
