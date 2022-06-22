@@ -54,9 +54,6 @@ export default function NightmareImageList(props) {
       }
     })
 
-    console.log(reload) 
-    console.log(props.list)
-
     if (props.list != null && reload == true)
     {
       
@@ -69,7 +66,6 @@ export default function NightmareImageList(props) {
             )
           }
 
-          console.log(nightmare)
             return(
               <OverlayTrigger overlay={renderTooltip}>
                 <ImageListItem key={index} sx={{ width: 90, height: 90 }}>
@@ -81,7 +77,6 @@ export default function NightmareImageList(props) {
                   />
                   <ImageListItemBar
                     title={nightmare.Name}
-                    subtitle={<span>by: </span>}
                     position="below"
                   />
                 </ImageListItem> 
