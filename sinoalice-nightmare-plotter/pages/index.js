@@ -5,6 +5,9 @@ import styles from '../styles/Home.module.css'
 import NightmareImageList from './nightmare-image-list'
 import { Chart } from "react-google-charts";
 import { DateTime } from "luxon";
+import Tabs from 'react-bootstrap/Tabs'
+import Tab from 'react-bootstrap/Tab'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 export default function Home() {
@@ -64,7 +67,25 @@ export default function Home() {
         <link rel="icon" href="/alice.ico" />
       </Head>
       <Chart chartType="Timeline" data={data} width="100%" height="400px" options={options}/>
-      <NightmareImageList list={nightmares}/>
+      <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
+      <Tab eventKey="all" title="All Nightmares">
+        <NightmareImageList list={nightmares}/>
+      </Tab>
+      <Tab eventKey="buffs" title="Buff Nightmares">
+      </Tab>
+      <Tab eventKey="fire" title="Fire Nightmares">
+      </Tab>
+      <Tab eventKey="water" title="Water Nightmares">
+      </Tab>
+      <Tab eventKey="wind" title="Wind Nightmares">
+      </Tab>
+      <Tab eventKey="elemental" title="Elemental Nightmares">
+      </Tab>
+      <Tab eventKey="other" title="Other" disabled>
+      </Tab>
+      <Tab eventKey="selected" title="Selected Nightmares">
+      </Tab>
+      </Tabs>
     </div>
 
   )
