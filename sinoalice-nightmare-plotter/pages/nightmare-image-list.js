@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Image from 'next/image';
 import { useState, useEffect, useLayoutEffect } from 'react';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
@@ -11,11 +12,9 @@ export default function NightmareImageList(props) {
     const [columns, setColumns] = useState(2)
     const [imageList, updateImages] = useState(
         <ImageListItem key='0'>
-        <img
+        <Image
           src={`https://sinoalice.game-db.tw/images/img404.png?w=248&fit=crop&auto=format`}
-          srcSet={`$https://sinoalice.game-db.tw/images/img404.png?w=248&fit=crop&auto=format&dpr=2 2x`}
-          alt={`Nightmare Name`}
-          loading="lazy"
+          alt={`Not Found`}
         />
         <ImageListItemBar
           title={`Nightmare Name`}
@@ -67,13 +66,11 @@ export default function NightmareImageList(props) {
           }
 
             return(
-              <OverlayTrigger overlay={renderTooltip}>
+              <OverlayTrigger key={index} overlay={renderTooltip}>
                 <ImageListItem key={index} sx={{ width: 90, height: 90 }}>
-                  <img
+                  <Image
                     src={`${nightmare.Icon}?w=80&fit=crop&auto=format`}
-                    srcSet={`${nightmare.Icon}?w=80&fit=crop&auto=format&dpr=2 2x`}
                     alt={nightmare.Name}
-                    loading="lazy"
                   />
                   <ImageListItemBar
                     title={nightmare.Name}

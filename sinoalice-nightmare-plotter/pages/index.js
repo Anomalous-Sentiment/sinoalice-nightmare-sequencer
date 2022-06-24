@@ -52,7 +52,8 @@ export default function Home() {
 
   if (nightmares == null)
   {
-    fetch("http://localhost:3000/api/nightmares")
+    //Use the backend address here
+    fetch("http://localhost:3001/")
     .then(response => response.json())
     .then((json) => {
       updateNightmares(json["nightmares"])
