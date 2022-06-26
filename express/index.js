@@ -11,7 +11,8 @@ app.use(cors())
 
 app.get('/', async(req, res) => {
   try {
-    const $ = await initialiseWebPage()
+    // Loads web page html and loads into cheerio. Accessed via $ element
+    const $ = await initialiseWebPage(null, null)
     
     const nightmareArray = [];
 
@@ -83,7 +84,7 @@ app.get('/', async(req, res) => {
 
 // Function to initialise loaded fields in browser (Preparation for web scraping)
 // Need to select the fields to display and get the html loaded in cheerio
-async function initialiseWebPage()
+async function initialiseWebPage(elementalType, noSpCost)
 {
   console.time()
   const browser = await puppeteer.launch();
@@ -95,7 +96,7 @@ async function initialiseWebPage()
   const query = "Field";
 
   //Run this  function in the console of the loaded page in puppeteer
-  page.evaluate(query => {
+  page.evaluate((query, elementalType, noSpCost) => {
     //Query to select all div elements that are descendants of the class "ctrlbtns"
     const elements = [...document.querySelectorAll(".ctrlbtns div")];
 
@@ -132,9 +133,52 @@ async function initialiseWebPage()
 
     // Click the submit button to confirm selected fields. The class name is "dialogOK2"
     const submitButton = [...document.querySelectorAll(".dialogOK2")];
-
     submitButton[0].click()
 
+    // If element and sp cost specified, filter by specified element and sp cost
+    if (elementalType == null && noSpCost == null)
+    {
+      // Filter by the selected element
+      const filterButton = [...document.querySelectorAll(".filterBtn")][0];
+      filterButton.click()
+
+      // Get all element headers to find the div with rarity buttons
+      const contentBoxElements = [...document.querySelectorAll(".dialogWindow.filterWindowNM .dialogBody .dialogTitle2")];
+
+      let rarityElement = null;
+
+      // Look for div that contains rarity filter buttons
+      contentBoxElements.forEach((element, index, array) => {
+        // Check if title contains "Origin of Rare"
+        if (element.textContent == "Origin of Rare")
+        {
+          //If true, select the parent div element
+          rarityElement = element.closest('.dialogGroup')
+        }
+
+      })
+
+      //Get a list of disable rarity buttons
+      const enabledRarityButtons = [...rarityElement.querySelectorAll(".dialogContent .sortBtn.enabled")];
+
+      //Enable all buttons
+      enabledRarityButtons.forEach((element, index, array) => {
+        element.click();
+      })
+
+      const filterSubmitButton = [...document.querySelectorAll(".dialogOK2")];
+      filterSubmitButton[0].click()
+
+      // Filter by the sp cost type
+      if (noSpCost == true)
+      {
+        // Filter by 0 sp cost nightmares
+      }
+      else
+      {
+        // Filter by 200 sp cost nightmares
+      }
+    }
     
   }, query);
   
