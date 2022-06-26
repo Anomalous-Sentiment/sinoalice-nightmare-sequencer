@@ -13,8 +13,10 @@ export default function NightmareImageList(props) {
     const [imageList, updateImages] = useState(
         <ImageListItem key='0'>
         <Image
-          src={`https://sinoalice.game-db.tw/images/img404.png?w=248&fit=crop&auto=format`}
+          src={`https://sinoalice.game-db.tw/images/img404.png`}
           alt={`Not Found`}
+          width='90'
+          height='90'
         />
         <ImageListItemBar
           title={`Nightmare Name`}
@@ -71,6 +73,8 @@ export default function NightmareImageList(props) {
                   <Image
                     src={`${nightmare.Icon}?w=80&fit=crop&auto=format`}
                     alt={nightmare.Name}
+                    width='90'
+                    height='90'
                   />
                   <ImageListItemBar
                     title={nightmare.Name}
