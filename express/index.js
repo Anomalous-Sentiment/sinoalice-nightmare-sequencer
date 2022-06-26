@@ -48,7 +48,7 @@ app.get('/', async(req, res) => {
       // Get all deselected elements
       const disabledElements = [...document.querySelectorAll(".dialogContent .sortBtn.large.en")];
 
-      // Then select only your desired fields
+      // Then select only your desired fields (icon, colo skill, colo prepr time, colo duration time)
       const selectedElements = disabledElements.filter(e => e.innerText.includes("Icon") || e.innerText.includes("Colo.Skill") || e.innerText.includes("Colo.Prep") || e.innerText.includes("Colo.Dur."))
 
       // Iterate through list and click desired field
@@ -77,52 +77,56 @@ app.get('/', async(req, res) => {
 
     const keys = [
       "Icon",
+      "jp_name",
       "Name",
+      "colo_skill_name",
       "Colo.Skill",
       "Colo.Prep",
       "Colo.Dur."
     ]
 
     //Iterate through all rows of table of nightmares and their fields
+    // Each iteration is a row
     $("tbody tr").each((parentIndex, parentElem) => {
       console.log("Entered each function")
-      let keyIndex = 0;
+      let element = "";
       const nightmareDetails = {};
 
       console.log("Parent html------------------------------------")
       console.log($(parentElem).html())
       console.log("End Parent html------------------------------------")
 
-      // Iterate over each child of tr
+
+      // Find the img lement and get it's url (class='colIcon')
+      element = $(parentElem).find('.colIcon img')
+      const iconURL = "https://sinoalice.game-db.tw" + $(element).attr("src")
+      nightmareDetails[keys[0]] = iconURL;
+
+      // Find the name element and get the JP name (class='rawname')
+      element = $(parentElem).find('.rawname')
+      nightmareDetails[keys[1]] = element.text();
+
+      // Find the name element andd get the EN name (class='link enname')
+      element = $(parentElem).find('.link.enname')
+      nightmareDetails[keys[2]] = element.text();
+
+      // Find the skill name element and get the skill name (class='gvgTitle')
+      element = $(parentElem).find('.gvgTitle')
+      nightmareDetails[keys[3]] = element.text();
+
+      // Find the skill name element and get the skill description (class='tableDetail en')
+      element = $(parentElem).find('.tableDetail.en')
+      nightmareDetails[keys[4]] = element.text();
+
+
+      // Find the skill prep duration and get the time (class='colGvgSkillLead')
+      element = $(parentElem).find('.colGvgSkillLead')
+      nightmareDetails[keys[5]] = element.text();
+
+      // Find the skill active duration and get the time (class='colGvgSkillDur')
+      element = $(parentElem).find('.colGvgSkillDur')
+      nightmareDetails[keys[6]] = element.text();
       
-      $(parentElem)
-      .children("td")
-      .each((childIdx, childElem) => 
-      {
-        let value;
-        console.log(childIdx)
-        if (childIdx == 0)
-        {
-          // Find the img element
-          const img = $(childElem).find("img")
-          console.log($(img).html())
-          // Get the src attribute (relative url), and append to base url
-          const iconURL = "https://sinoalice.game-db.tw" + $(img).attr("src")
-          console.log(iconURL);
-          value = iconURL
-        }
-        else
-        {
-          // Get the text value of the element
-          value = $(childElem).text();
-        }
-
-        nightmareDetails[keys[keyIndex]] = value;
-
-        keyIndex++;
-      });
-      
-
       nightmareArray.push(nightmareDetails);
     })
     
