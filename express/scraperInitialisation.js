@@ -118,34 +118,7 @@ async function initialiseWebPage(elementalType, spCost)
       filterButton = [...document.querySelectorAll(".filterBtn")][0];
       filterButton.click()
       contentBoxElements = [...document.querySelectorAll(".dialogWindow.filterWindowNM .dialogBody .dialogTitle2")];
-
-
-      /*
-      // Get all headers to find the div with rarity buttons
-      const contentBoxElements = [...document.querySelectorAll(".dialogWindow.filterWindowNM .dialogBody .dialogTitle2")];
-
-      let rarityElement = null;
-
-      // Look for div that contains rarity filter buttons
-      contentBoxElements.forEach((element, index, array) => {
-        // Check if title contains "Origin of Rare"
-        if (element.textContent == "Origin of Rare")
-        {
-          //If true, select the parent div element
-          rarityElement = element.closest('.dialogGroup')
-        }
-
-      })
-
-      //Get a list of disable rarity buttons
-      const enabledRarityButtons = [...rarityElement.querySelectorAll(".dialogContent .sortBtn.enabled")];
-
-      //Enable all buttons
-      enabledRarityButtons.forEach((element, index, array) => {
-        element.click();
-      })
-      */
-
+      
       nightmaresFilterBy(contentBoxElements, "Element", [type])
       filterButton = [...document.querySelectorAll(".filterBtn")][0];
       filterButton.click()

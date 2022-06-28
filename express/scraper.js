@@ -1,3 +1,5 @@
+const scraperInit = require('./scraperInitialisation.js')
+
 function scrapeWebPage($)
 {
     const nightmareArray = [];
@@ -15,14 +17,8 @@ function scrapeWebPage($)
     //Iterate through all rows of table of nightmares and their fields
     // Each iteration is a row
     $("tbody tr").each((parentIndex, parentElem) => {
-      //console.log("Entered each function")
       let element = "";
       const nightmareDetails = {};
-
-      //console.log("Parent html------------------------------------")
-      //console.log($(parentElem).html())
-      //console.log("End Parent html------------------------------------")
-
 
       // Find the img lement and get it's url (class='colIcon')
       element = $(parentElem).find('.colIcon img')
@@ -62,7 +58,40 @@ function scrapeWebPage($)
 
 }
 
+async function fullScrape()
+{
+      // Loads web page html and loads into cheerio. Accessed via $ element
+      let $ = await scraperInit.initialiseWebPage("Fire", "0SP")
+
+      let nightmareArray = scrapeWebPage($);
+  
+      // Repeat for every element and sp cost
+      $ = await scraperInit.initialiseWebPage("Fire", "200SP")
+  
+      nightmareArray = nightmareArray.concat(scrapeWebPage($));
+  
+      $ = await scraperInit.initialiseWebPage("Water", "0SP")
+  
+      nightmareArray = nightmareArray.concat(scrapeWebPage($));
+  
+      $ = await scraperInit.initialiseWebPage("Water", "200SP")
+  
+      nightmareArray = nightmareArray.concat(scrapeWebPage($));
+  
+      $ = await scraperInit.initialiseWebPage("Wind", "0SP")
+  
+      nightmareArray = nightmareArray.concat(scrapeWebPage($));
+  
+      $ = await scraperInit.initialiseWebPage("Wind", "200SP")
+  
+      nightmareArray = nightmareArray.concat(scrapeWebPage($));
+
+      return nightmareArray;
+  
+}
+
 module.exports = 
 {
-    scrapeWebPage
+    scrapeWebPage,
+    fullScrape
 }
