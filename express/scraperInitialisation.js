@@ -1,11 +1,10 @@
-const cheerio = require('cheerio')
+const cheerio = require('cheerio');
 const puppeteer = require('puppeteer')
 
 // Function to initialise loaded fields in browser (Preparation for web scraping)
 // Need to select the fields to display and get the html loaded in cheerio
-async function initialiseWebPage(elementalType, spCost)
+async function initialiseWebPage(elementalType, spCost, upgraded)
 {
-  console.time()
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto("https://sinoalice.game-db.tw/nightmares");
@@ -13,17 +12,63 @@ async function initialiseWebPage(elementalType, spCost)
   //Use puppeteer to display desired fields in table by clicking field button
   const query = "Field";
 
+
   page.on('console', msg => {
     console.log(msg.text())
   });
 
+  /*
+  page.evaluate(() => {
+    const settingBtn = [...document.querySelectorAll(".ctrlbtns .settingBtn.tip")][0];
+    settingBtn.click()
+
+    //Get the radio buttons and click the 'Global' button
+    const radioBtns = [...document.querySelectorAll(".radioBtn")];
+
+    radioBtns.forEach((value, index, array) => {
+      //Click the Global button
+      if(value.textContent == 'Global')
+      {
+        console.log("foud")
+        value.click()
+      }
+    })
+
+    //Confirm selection
+    let submitButton = [...document.querySelectorAll(".dialogOK2")][0];
+    submitButton.click()
+    console.log("End")
+  })
+
+  page.waitForNavigation();
+*/
+  await page.screenshot({ path: 'examplebefore.png' });
+
+  await page.click('#root > div > div.mainLayer > div > div.ctrlbtns > div.settingBtn.tip')
+
+  await page.click('#root > div > div.mainLayer > div > div.dialogMask > div.dialogWindow.settingWindowNM > div.dialogBody > div > div.dialogContent > div:nth-child(2)')
+
+  await page.click('#root > div > div.mainLayer > div > div.dialogMask > div.dialogWindow.settingWindowNM > div.dialogOK2.c')
+
+  //Wait for the Field button to appear before continuing
+  await page.waitForSelector('#root > div > div.mainLayer > div > div.ctrlbtns > div:nth-child(3)')
+  
+  // If the upgraded flag is false, view nightmares in their base rarity instead of their upgraded rarity
+  if (upgraded != undefined && upgraded != null && upgraded == false)
+  {
+    await page.click('#root > div > div.mainLayer > div > div.ctrlbtns > div.filterBtn')
+    await page.click('#root > div > div.mainLayer > div > div.dialogMask > div.dialogWindow.filterWindowNM > div.dialogBody > div:nth-child(5) > div.dialogContent > div:nth-child(1)')
+
+    await page.click('#root > div > div.mainLayer > div > div.dialogMask > div.dialogWindow.filterWindowNM > div.dialogOK2')
+  
+  }
+
   //Run this  function in the console of the loaded page in puppeteer
   page.evaluate((query, type, spCost) => {
-    
     //Query to select all div elements that are descendants of the class "ctrlbtns"
     const elements = [...document.querySelectorAll(".ctrlbtns div")];
 
-    // Either use .find or .filter, comment one of these
+    console.log(elements.toString())
     // find element with find
     const targetElement = elements.find(e => e.innerText.includes(query));
 
@@ -52,15 +97,18 @@ async function initialiseWebPage(elementalType, spCost)
     selectedElements.forEach((element, index, array) => {
       element.click();
     })
+    console.log("Test")
 
     // Click the submit button to confirm selected fields. The class name is "dialogOK2"
     const submitButton = [...document.querySelectorAll(".dialogOK2")][0];
     submitButton.click()
 
+    console.log("Test2")
+
+
     //Define a filter function
     function nightmaresFilterBy(contentBoxElements, categoryTitle, filterList)
     {
-        console.log("entered")
       const filterSubmitButton = [...document.querySelectorAll(".dialogOK2")][0];
 
       let parentDiv = null;
@@ -76,7 +124,6 @@ async function initialiseWebPage(elementalType, spCost)
 
       })
 
-      console.log("entered2")
 
       //Get a list of elements with 'sortBtn' class
       const enabledElementButtons = [...parentDiv.querySelectorAll(".sortBtn.enabled")];
@@ -99,26 +146,21 @@ async function initialiseWebPage(elementalType, spCost)
       //Confirm filters
       filterSubmitButton.click()
 
-      console.log("Finished")
     }
+    let filterButton = [...document.querySelectorAll(".filterBtn")][0];
+    filterButton.click()
+
+    let contentBoxElements = [...document.querySelectorAll(".dialogWindow.filterWindowNM .dialogBody .dialogTitle2")];
+
+    nightmaresFilterBy(contentBoxElements, "Origin of Rare", ["A", "S", "SS", "L"])
 
     // If element and sp cost specified, filter by specified element and sp cost
     if (type != null && type != undefined)
     {
-        let filterButton = [...document.querySelectorAll(".filterBtn")][0];
-        filterButton.click()
-
-        let contentBoxElements = [...document.querySelectorAll(".dialogWindow.filterWindowNM .dialogBody .dialogTitle2")];
-
-        filterButton.click()
-
-        console.log(contentBoxElements.toString())
-      nightmaresFilterBy(contentBoxElements, "Origin of Rare", ["A", "S", "SS", "L"])
-
       filterButton = [...document.querySelectorAll(".filterBtn")][0];
       filterButton.click()
       contentBoxElements = [...document.querySelectorAll(".dialogWindow.filterWindowNM .dialogBody .dialogTitle2")];
-      
+
       nightmaresFilterBy(contentBoxElements, "Element", [type])
       filterButton = [...document.querySelectorAll(".filterBtn")][0];
       filterButton.click()
@@ -142,14 +184,11 @@ async function initialiseWebPage(elementalType, spCost)
     
   }, query, elementalType, spCost);
   
-  await page.screenshot({ path: 'example.png' });
 
   const htmlString = await page.content();
   const $ = cheerio.load(htmlString)
 
   await browser.close();
-
-  console.timeEnd()
 
   return $;
 }

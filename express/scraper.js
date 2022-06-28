@@ -90,8 +90,48 @@ async function fullScrape()
   
 }
 
+async function scrapeSkills()
+{
+  let $ = await scraperInit.initialiseWebPage(null, null, false)
+  let skillList = findSkills($)
+
+  $ = await scraperInit.initialiseWebPage(null, null, true)
+  let skillList2 = findSkills($)
+
+  let combinedSkillList = Object.assign(skillList, skillList2)
+
+  console.log(combinedSkillList)
+  return combinedSkillList;
+}
+
+function findSkills($)
+{
+  const skillList = {}
+
+  $("tbody tr").each((parentIndex, parentElem) => {
+    let element = null;
+    let elementDetails = null;
+
+    // Find the skill name element and get the skill name (class='gvgTitle')
+    element = $(parentElem).find('.gvgTitle')
+    element = element.text().trim()
+
+    // Find the skill name element and get the skill description (class='tableDetail en')
+    elementDetails = $(parentElem).find('.tableDetail.en')
+    elementDetails = elementDetails.text().trim();
+
+    //Add to list if not duplicate
+    if (!(element in skillList))
+    {
+      skillList[element] = elementDetails;
+    }
+  })
+  return skillList;
+}
+
 module.exports = 
 {
     scrapeWebPage,
-    fullScrape
+    fullScrape,
+    scrapeSkills
 }
