@@ -82,7 +82,7 @@ async function getNightmares()
       const attributeSubstitutes = {1: 'Fire', 2: 'Water', 3: 'Wind'}
       const raritySubstitutes = {3: 'A', 4: 'S', 5: 'SR', 6: 'L'}
   
-      const keys = ['Name', 'NameEN', 'GvgSkill' , 'GvgSkillEN', 'Icon', 'Attribute', 'Rarity', 'GvgSkillSP', 'GvgSkillDur', 'GvgSkillLead', 'GvgSkillDetail', 'Global']
+      const keys = ['Name', 'NameEN', 'GvgSkill' , 'GvgSkillEN', 'Icon', 'IconEN','Attribute', 'Rarity', 'GvgSkillSP', 'GvgSkillDur', 'GvgSkillLead', 'GvgSkillDetail', 'Global']
       const leanNightmares = nightmares.map(element => {
         let newJson = {}
   
@@ -95,20 +95,12 @@ async function getNightmares()
             //Hence, the padding here
             paddedString = element[value].padStart(4, '0')
   
-            //Check if nightmare is in global
-            if (element['Global'] == '1')
-            {
-              //Insert the padded string to find the image url
-              newJson[value] = `https://sinoalice.game-db.tw/images/card_global/CardS${paddedString}.png`
-            }
-            else
-            {
+            //This is the JP icon url
+            newJson[value] = `https://sinoalice.game-db.tw/images/card/CardS${paddedString}.png`
 
-              //If JP only nm:
-              newJson[value] = `https://sinoalice.game-db.tw/images/card/CardS${paddedString}.png`
-            }
-
-  
+            //This is the EN icon url
+            //Note: This URL may or may not exist yet, but it is likely that when the nightmare is added to global, the icon will be at this url in the db
+            newJson['IconEN'] = `https://sinoalice.game-db.tw/images/card_global/CardS${paddedString}.png`
           }
           else if (value == 'Attribute')
           {
