@@ -61,8 +61,10 @@ export default function NightmareImageList(props) {
         let newList = props.list.map((nightmare, index, arr) => {
           const renderTooltip = (props) => {
             return(
-              <Tooltip id={nightmare + index.toString()} {...props}>
-              {nightmare["Colo.Skill"]}
+              <Tooltip id={nightmare.Name} {...props}>
+              <b>{nightmare["GvgSkillEN"]}</b>
+              <br/>
+              {nightmare["GvgSkillDetailEN"]}
             </Tooltip>
             )
           }
@@ -72,12 +74,12 @@ export default function NightmareImageList(props) {
                 <ImageListItem key={index} sx={{ width: 90, height: 90 }}>
                   <Image
                     src={`${nightmare.Icon}?w=80&fit=crop&auto=format`}
-                    alt={nightmare.Name}
+                    alt={nightmare.NameEN}
                     width='90'
                     height='90'
                   />
                   <ImageListItemBar
-                    title={nightmare.Name}
+                    title={nightmare.NameEN}
                     position="below"
                   />
                 </ImageListItem> 

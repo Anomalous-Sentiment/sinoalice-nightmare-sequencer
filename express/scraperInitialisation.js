@@ -17,33 +17,9 @@ async function initialiseWebPage(elementalType, spCost, upgraded)
     console.log(msg.text())
   });
 
-  /*
-  page.evaluate(() => {
-    const settingBtn = [...document.querySelectorAll(".ctrlbtns .settingBtn.tip")][0];
-    settingBtn.click()
-
-    //Get the radio buttons and click the 'Global' button
-    const radioBtns = [...document.querySelectorAll(".radioBtn")];
-
-    radioBtns.forEach((value, index, array) => {
-      //Click the Global button
-      if(value.textContent == 'Global')
-      {
-        console.log("foud")
-        value.click()
-      }
-    })
-
-    //Confirm selection
-    let submitButton = [...document.querySelectorAll(".dialogOK2")][0];
-    submitButton.click()
-    console.log("End")
-  })
-
-  page.waitForNavigation();
-*/
   await page.screenshot({ path: 'examplebefore.png' });
 
+  //Switch to gloabl sinoalice db
   await page.click('#root > div > div.mainLayer > div > div.ctrlbtns > div.settingBtn.tip')
 
   await page.click('#root > div > div.mainLayer > div > div.dialogMask > div.dialogWindow.settingWindowNM > div.dialogBody > div > div.dialogContent > div:nth-child(2)')

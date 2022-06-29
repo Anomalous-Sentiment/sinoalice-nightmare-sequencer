@@ -21,7 +21,7 @@ app.get('/', async(req, res) => {
       nightmare['GvgSkillDetailEN'] = skills[nightmare['GvgSkillEN']]
       return nightmare;
     })
-    console.log(finalNightmareArray)
+    //console.log(finalNightmareArray)
     console.timeEnd()
 
 
@@ -113,6 +113,11 @@ async function getNightmares()
             newJson[value] = element[value]
           }
         })
+
+        if (newJson['NameEN'] == 'Sea Serpent')
+        {
+          console.log(newJson['Icon'])
+        }
   
         return newJson;
       })
