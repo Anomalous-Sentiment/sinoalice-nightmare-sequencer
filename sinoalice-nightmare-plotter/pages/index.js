@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styles from '../styles/Home.module.css'
 import NightmareImageList from './nightmare-image-list'
 import { Chart } from "react-google-charts";
@@ -20,8 +20,8 @@ export default function Home() {
   const [displayNameKey, setDisplayNameKey] = useState('NameEN')
   const [toolTipSkillNameKey, setToolTipSkillNameKey] = useState('GvgSkillEN')
   const [toolTipDescriptionKey, setToolTipDescriptionKey] = useState('GvgSkillDetailEN')
-  const [reload, setReload] = useState(true)
-
+  const timelineStateRef = useRef();
+  const selectedNightmaresStateRef = useRef();
   const [selectedNightmares, setSelected] = useState([])
 
   const columns = [
@@ -32,6 +32,11 @@ export default function Home() {
   ]
   // Get the current time
   const now = DateTime.now().startOf('hour');
+  const [timelineRows, setTimelineRows] = useState([['', '', now.toJSDate(), now.plus({seconds: 1}).toJSDate()]])
+  
+  //These will need to be accessed by callbacks
+  selectedNightmaresStateRef.current = selectedNightmares;
+  timelineStateRef.current = timelineRows;
 
   const placeholderRows = [
     ["Fear", "Prep", now.toJSDate(), now.plus({ seconds: 40 }).toJSDate()],
@@ -59,7 +64,7 @@ export default function Home() {
     }
   };
 
-  const data = [columns, ...placeholderRows];
+  const [data, setData] = useState([columns, ...timelineRows]);
 
   if (serverNightmares == null)
   {
@@ -70,6 +75,108 @@ export default function Home() {
       filterByServer(json["nightmares"]);
       updateServerNightmares(globalNightmares)
     });
+  }
+
+  //Function called when a nightmare clicke/selected
+  function onSelection(selectedNightmare)
+  {
+    console.log("Entered")
+    let prepRow = null;
+    let durRow = null;
+    let prepTime = parseInt(selectedNightmare['GvgSkillLead']);
+    let durTime = parseInt(selectedNightmare['GvgSkillDur']);
+    let previousNightmareEndTime = null;
+    if (selectedNightmaresStateRef.current.length == 0)
+    {
+      previousNightmareEndTime = now;
+      console.log('length = 0')
+
+    }
+    else
+    {
+      console.log(timelineStateRef.current[timelineRows.length - 1][3])
+      previousNightmareEndTime = DateTime.fromJSDate(timelineStateRef.current[timelineStateRef.current.length - 1][3]);
+      console.log('length > 0')
+    }
+    let currentNightmarePrepEndTime = previousNightmareEndTime.plus({seconds: prepTime});
+    let currentNightmareEndTime = currentNightmarePrepEndTime.plus({seconds: durTime});
+    let newRows = null;
+    let selectedNightmaresCopy = [...selectedNightmaresStateRef.current]
+    console.log(selectedNightmaresStateRef.current)
+    console.log(timelineStateRef.current)
+
+    
+    //Add to selected list with appropriate prep time and duration
+    prepRow = [selectedNightmare[displayNameKey], "Prep", previousNightmareEndTime.toJSDate(), currentNightmarePrepEndTime.toJSDate()]
+
+    newRows = [...timelineStateRef.current, prepRow]
+    
+    //Check if there is an effective duration
+    if(selectedNightmare['GvgSkillDur'] != '0')
+    {
+      //Add active duration row on after end of prep time
+      durRow = [selectedNightmare[displayNameKey], "Active", currentNightmarePrepEndTime.toJSDate(), currentNightmareEndTime.toJSDate()]
+      newRows = [...newRows, durRow]
+    }
+
+
+    //Add nightmare to selected nightmares list
+    selectedNightmaresCopy.push(selectedNightmare)
+
+    setSelected(selectedNightmaresCopy)
+
+    setTimelineRows(newRows)
+    setData([columns, ...newRows])
+
+
+
+  }
+
+  useEffect(() => {
+    console.log(selectedNightmares)
+    console.log(timelineRows)
+  })
+
+  //Function called when nightmare deselected/removed
+  function onRemove(deselectedNightmare)
+  {
+    let prepTime = parseInt(deselectedNightmare['GvgSkillLead']);
+    let durTime = parseInt(deselectedNightmare['GvgSkillDur']);
+
+    // Remove from selected list 
+    setSelected(selectedNightmares.filter(nightmare => nightmare[displayNameKey] != deselectedNightmare[displayNameKey]))
+
+    // Clear the timeline rows
+    setTimelineRows([]);
+
+    // Recalculate timeline times according to modified selected nightmares list
+    selectedNightmares.forEach((nightmare, index, array) => {
+      //Calculate new times for each nightmare in list in order
+      let prepRow = null;
+      let durRow = null;
+
+      if (index == 0)
+      {
+        //First nightmare in list, start at time 0
+        prepRow = [nightmare[displayNameKey], "Prep", now.toJSDate(), now.plus({ seconds: prepTime }).toJSDate()]        
+      }
+      else
+      {
+        //Not the first nightmare. calculate time using previous row
+        prepRow = [nightmare[displayNameKey], "Prep", timelineRows[timelineRows.length - 1][3], now.plus({ seconds: prepTime }).toJSDate()]
+      }
+
+      setTimelineRows(timelineRows.push(prepRow))
+
+      if (nightmare['GvgSkillDur'] != '0')
+      {
+        //Add dur row if there is a active duration
+        durRow = [nightmare[displayNameKey], "Active", timelineRows[timelineRows.length - 1][3], now.plus({ seconds: durTime }).toJSDate()]
+        setTimelineRows(timelineRows.push(durRow))
+      }
+
+    })
+
   }
 
   function filterByServer(unfilteredNightmares)
@@ -101,9 +208,6 @@ export default function Home() {
       setToolTipSkillNameKey('GvgSkill')
       setToolTipDescriptionKey('GvgSkillDetail')
     }
-
-    //Tell component to reload image list
-    setReload(true)
   }
 
   return (
@@ -124,9 +228,9 @@ export default function Home() {
           </ToggleButton>
       </ToggleButtonGroup>
 
-      <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
+      <Tabs defaultActiveKey="all" id="uncontrolled-tab-example" className="mb-3">
       <Tab eventKey="all" title="All Nightmares">
-        <NightmareImageList list={serverNightmares} reload={reload} setReload={setReload} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
+        <NightmareImageList list={serverNightmares} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
       </Tab>
       <Tab eventKey="buff" title="Buff">
       </Tab>

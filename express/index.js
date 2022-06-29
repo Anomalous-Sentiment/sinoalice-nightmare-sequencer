@@ -11,7 +11,6 @@ app.use(cors())
 app.get('/', async(req, res) => {
   try {
     // Scrape sinoalice db for nightmare list
-    //let nightmareArray = scraper.fullScrape();
     console.time()
     let nightmareArray = await getNightmares()
     let skills = await scraper.scrapeSkills()
@@ -27,7 +26,7 @@ app.get('/', async(req, res) => {
 
 
 
-    return res.status(200).json({nightmares: nightmareArray});
+    return res.status(200).json({nightmares: finalNightmareArray});
   }
   catch(err)
   {
@@ -130,21 +129,9 @@ async function getNightmares()
             newJson[value] = element[value]
           }
         })
-
-        if (newJson['NameEN'] == 'Elza, the Ancient Priestess')
-        {
-          console.log(newJson)
-        }
-
-        if (newJson['NameEN'] == 'Sea Serpent')
-        {
-          console.log(newJson)
-        }
   
         return newJson;
       })
-      //console.log(leanNightmares)
-      //console.log(nightmares)
       return leanNightmares;
   
     })

@@ -7,7 +7,7 @@ async function initialiseWebPage(elementalType, spCost, upgraded)
 {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.goto("https://sinoalice.game-db.tw/nightmares");
+  await page.goto("https://sinoalice.game-db.tw/nightmares", {timeout: 0});
 
   //Use puppeteer to display desired fields in table by clicking field button
   const query = "Field";
@@ -44,7 +44,6 @@ async function initialiseWebPage(elementalType, spCost, upgraded)
     //Query to select all div elements that are descendants of the class "ctrlbtns"
     const elements = [...document.querySelectorAll(".ctrlbtns div")];
 
-    console.log(elements.toString())
     // find element with find
     const targetElement = elements.find(e => e.innerText.includes(query));
 
@@ -73,14 +72,10 @@ async function initialiseWebPage(elementalType, spCost, upgraded)
     selectedElements.forEach((element, index, array) => {
       element.click();
     })
-    console.log("Test")
 
     // Click the submit button to confirm selected fields. The class name is "dialogOK2"
     const submitButton = [...document.querySelectorAll(".dialogOK2")][0];
     submitButton.click()
-
-    console.log("Test2")
-
 
     //Define a filter function
     function nightmaresFilterBy(contentBoxElements, categoryTitle, filterList)

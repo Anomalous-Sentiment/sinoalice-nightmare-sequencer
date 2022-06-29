@@ -60,7 +60,7 @@ export default function NightmareImageList(props) {
         let newList = props.list.map((nightmare, index, arr) => {
           const renderTooltip = (props) => {
             return(
-              <Tooltip id={nightmare[props.displayName]} {...props}>
+              <Tooltip id={nightmare[props.displayName]}>
               <b>{nightmare[props.toolTipSkillName]}</b>
               <br/>
               {nightmare[props.toolTipDescription]}
@@ -70,7 +70,7 @@ export default function NightmareImageList(props) {
   
           return(
             <OverlayTrigger key={index} overlay={renderTooltip(props)}>
-              <ImageListItem key={index} sx={{ width: 90, height: 90 }}>
+              <ImageListItem onClick={() => props.onClick(nightmare)} key={index} sx={{ width: 90, height: 90 }}>
                 <Image
                   src={nightmare[props.iconKey]}
                   alt={nightmare[props.displayName]}
@@ -91,15 +91,6 @@ export default function NightmareImageList(props) {
       }
 
     }, [props.list])
-    /*
-    if (props.list != null && props.reload == true)
-    {
-      
-        
-          //props.setReload(false)
-
-    }
-    */
 
   return (
     <ImageList cols={columns}>
