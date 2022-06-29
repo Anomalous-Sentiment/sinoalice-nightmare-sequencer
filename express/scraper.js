@@ -100,7 +100,7 @@ async function scrapeSkills()
 
   let combinedSkillList = Object.assign(skillList, skillList2)
 
-  console.log(combinedSkillList)
+  //console.log(combinedSkillList)
   return combinedSkillList;
 }
 

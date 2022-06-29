@@ -69,6 +69,8 @@ async function getNightmares()
         columns.forEach((value, index, array) => {
           return jsonObj[fields[index]] = value;
         })
+
+        console.log(jsonObj)
   
         return jsonObj;
       });
@@ -80,7 +82,7 @@ async function getNightmares()
       const attributeSubstitutes = {1: 'Fire', 2: 'Water', 3: 'Wind'}
       const raritySubstitutes = {3: 'A', 4: 'S', 5: 'SR', 6: 'L'}
   
-      const keys = ['Name', 'NameEN', 'GvgSkill' , 'GvgSkillEN', 'Icon', 'Attribute', 'Rarity', 'GvgSkillSP', 'GvgSkillDur', 'GvgSkillLead', 'GvgSkillDetail']
+      const keys = ['Name', 'NameEN', 'GvgSkill' , 'GvgSkillEN', 'Icon', 'Attribute', 'Rarity', 'GvgSkillSP', 'GvgSkillDur', 'GvgSkillLead', 'GvgSkillDetail', 'Global']
       const leanNightmares = nightmares.map(element => {
         let newJson = {}
   
@@ -93,8 +95,19 @@ async function getNightmares()
             //Hence, the padding here
             paddedString = element[value].padStart(4, '0')
   
-            //Insert the padded string to find the image url
-            newJson[value] = `https://sinoalice.game-db.tw/images/card_global/CardS${paddedString}.png`
+            //Check if nightmare is in global
+            if (element['Global'] == '1')
+            {
+              //Insert the padded string to find the image url
+              newJson[value] = `https://sinoalice.game-db.tw/images/card_global/CardS${paddedString}.png`
+            }
+            else
+            {
+
+              //If JP only nm:
+              newJson[value] = `https://sinoalice.game-db.tw/images/card/CardS${paddedString}.png`
+            }
+
   
           }
           else if (value == 'Attribute')
@@ -108,15 +121,32 @@ async function getNightmares()
             newJson[value] = raritySubstitutes[element[value]]
   
           }
+          else if (value == 'Global')
+          {
+            //Check if nightmare is in global
+            if (element['Global'] == '1')
+            {
+              newJson[value] = true;
+            }
+            else
+            {
+              newJson[value] = false;
+            }
+          }
           else
           {
             newJson[value] = element[value]
           }
         })
 
+        if (newJson['NameEN'] == 'Elza, the Ancient Priestess')
+        {
+          console.log(newJson)
+        }
+
         if (newJson['NameEN'] == 'Sea Serpent')
         {
-          console.log(newJson['Icon'])
+          console.log(newJson)
         }
   
         return newJson;
