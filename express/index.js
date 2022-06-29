@@ -82,7 +82,7 @@ async function getNightmares()
       const attributeSubstitutes = {1: 'Fire', 2: 'Water', 3: 'Wind'}
       const raritySubstitutes = {3: 'A', 4: 'S', 5: 'SR', 6: 'L'}
   
-      const keys = ['Name', 'NameEN', 'GvgSkill' , 'GvgSkillEN', 'Icon', 'IconEN','Attribute', 'Rarity', 'GvgSkillSP', 'GvgSkillDur', 'GvgSkillLead', 'GvgSkillDetail', 'Global']
+      const keys = ['Name', 'NameEN', 'GvgSkill' , 'GvgSkillEN', 'Icon', 'Attribute', 'Rarity', 'GvgSkillSP', 'GvgSkillDur', 'GvgSkillLead', 'GvgSkillDetail', 'Global']
       const leanNightmares = nightmares.map(element => {
         let newJson = {}
   
@@ -93,7 +93,7 @@ async function getNightmares()
           {
             //Icon is the id of the nightmare. This id is also used as the png name, but the id in the image name is padded to a length of 4
             //Hence, the padding here
-            paddedString = element[value].padStart(4, '0')
+            const paddedString = element[value].padStart(4, '0')
   
             //This is the JP icon url
             newJson[value] = `https://sinoalice.game-db.tw/images/card/CardS${paddedString}.png`

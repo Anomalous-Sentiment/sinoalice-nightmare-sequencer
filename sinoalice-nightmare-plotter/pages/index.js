@@ -8,11 +8,22 @@ import { DateTime } from "luxon";
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
+import ToggleButton from 'react-bootstrap/ToggleButton'
 
 
 export default function Home() {
-  const [nightmares, updateNightmares] = useState(null)
+  const [serverNightmares, updateServerNightmares] = useState(null)
+  const [globalNightmares, updateGlobalNightmares] = useState(null)
+  const [jpnightmares, updateJpNightmares] = useState(null)
+  const [iconKey, setIconKey] = useState('IconEN') 
+  const [displayNameKey, setDisplayNameKey] = useState('NameEN')
+  const [toolTipSkillNameKey, setToolTipSkillNameKey] = useState('GvgSkillEN')
+  const [toolTipDescriptionKey, setToolTipDescriptionKey] = useState('GvgSkillDetailEN')
+  const [reload, setReload] = useState(true)
+
   const [selectedNightmares, setSelected] = useState([])
+
   const columns = [
     { type: "string", id: "nightmare"},
     { type: "string", id: "state"},
@@ -50,14 +61,49 @@ export default function Home() {
 
   const data = [columns, ...placeholderRows];
 
-  if (nightmares == null)
+  if (serverNightmares == null)
   {
     //Use the backend address here
     fetch("http://localhost:3001/")
     .then(response => response.json())
     .then((json) => {
-      updateNightmares(json["nightmares"])
+      filterByServer(json["nightmares"]);
+      updateServerNightmares(globalNightmares)
     });
+  }
+
+  function filterByServer(unfilteredNightmares)
+  {
+    //filter by global nightmares
+    updateGlobalNightmares(unfilteredNightmares.filter(nightmare => nightmare['Global'] == true))
+
+    //filter by jp nightmares
+    updateJpNightmares(unfilteredNightmares.filter(nightmare => nightmare['Global'] == false))
+  }
+
+  function onServerchange(newServer)
+  {
+    console.log(newServer == 'Global')
+    //change the filter to filter by new server
+    if (newServer == 'Global')
+    {
+      updateServerNightmares(globalNightmares)
+      setIconKey('IconEN')
+      setDisplayNameKey('NameEN')
+      setToolTipSkillNameKey('GvgSkillEN')
+      setToolTipDescriptionKey('GvgSkillDetailEN')
+    }
+    else
+    {
+      updateServerNightmares(jpnightmares)
+      setIconKey('Icon')
+      setDisplayNameKey('Name')
+      setToolTipSkillNameKey('GvgSkill')
+      setToolTipDescriptionKey('GvgSkillDetail')
+    }
+
+    //Tell component to reload image list
+    setReload(true)
   }
 
   return (
@@ -68,9 +114,19 @@ export default function Home() {
         <link rel="icon" href="/alice.ico" />
       </Head>
       <Chart chartType="Timeline" data={data} width="100%" height="400px" options={options}/>
+
+      <ToggleButtonGroup name="servers" size="lg" className="mb-2" type="radio" defaultValue="Global" onChange={onServerchange}>
+          <ToggleButton id="global" value="Global">
+            Global
+          </ToggleButton>
+          <ToggleButton id="japan" value="Japan">
+            Japan
+          </ToggleButton>
+      </ToggleButtonGroup>
+
       <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
       <Tab eventKey="all" title="All Nightmares">
-        <NightmareImageList list={nightmares}/>
+        <NightmareImageList list={serverNightmares} reload={reload} setReload={setReload} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
       </Tab>
       <Tab eventKey="buff" title="Buff">
       </Tab>

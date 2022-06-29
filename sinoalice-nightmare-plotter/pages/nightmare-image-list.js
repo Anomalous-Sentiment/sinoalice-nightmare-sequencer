@@ -8,7 +8,6 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function NightmareImageList(props) {
-    const [reload, setReload] = useState(true)
     const [columns, setColumns] = useState(2)
     const [imageList, updateImages] = useState(
         <ImageListItem key='0'>
@@ -55,43 +54,52 @@ export default function NightmareImageList(props) {
       }
     })
 
-    if (props.list != null && reload == true)
-    {
-      
+    useEffect(() => {
+      if (props.list != null)
+      {
         let newList = props.list.map((nightmare, index, arr) => {
           const renderTooltip = (props) => {
             return(
-              <Tooltip id={nightmare.Name} {...props}>
-              <b>{nightmare["GvgSkillEN"]}</b>
+              <Tooltip id={nightmare[props.displayName]} {...props}>
+              <b>{nightmare[props.toolTipSkillName]}</b>
               <br/>
-              {nightmare["GvgSkillDetailEN"]}
+              {nightmare[props.toolTipDescription]}
             </Tooltip>
             )
           }
+  
+          return(
+            <OverlayTrigger key={index} overlay={renderTooltip(props)}>
+              <ImageListItem key={index} sx={{ width: 90, height: 90 }}>
+                <Image
+                  src={nightmare[props.iconKey]}
+                  alt={nightmare[props.displayName]}
+                  width='90'
+                  height='90'
+                />
+                <ImageListItemBar
+                  title={nightmare[props.displayName]}
+                  position="below"
+                />
+              </ImageListItem> 
+            </OverlayTrigger>
 
-            return(
-              <OverlayTrigger key={index} overlay={renderTooltip}>
-                <ImageListItem key={index} sx={{ width: 90, height: 90 }}>
-                  <Image
-                    src={`${nightmare.Icon}`}
-                    alt={nightmare.NameEN}
-                    width='90'
-                    height='90'
-                  />
-                  <ImageListItemBar
-                    title={nightmare.NameEN}
-                    position="below"
-                  />
-                </ImageListItem> 
-              </OverlayTrigger>
- 
-            )
+          )
         })
+  
+        updateImages(newList)
+      }
 
-          updateImages(newList)
-          setReload(false)
+    }, [props.list])
+    /*
+    if (props.list != null && props.reload == true)
+    {
+      
+        
+          //props.setReload(false)
 
     }
+    */
 
   return (
     <ImageList cols={columns}>
