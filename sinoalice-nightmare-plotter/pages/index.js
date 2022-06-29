@@ -72,15 +72,15 @@ export default function Home() {
       <Tab eventKey="all" title="All Nightmares">
         <NightmareImageList list={nightmares}/>
       </Tab>
-      <Tab eventKey="buffs" title="Buff Nightmares">
+      <Tab eventKey="buff" title="Buff">
       </Tab>
-      <Tab eventKey="fire" title="Fire Nightmares">
-      </Tab>
-      <Tab eventKey="water" title="Water Nightmares">
-      </Tab>
-      <Tab eventKey="wind" title="Wind Nightmares">
+      <Tab eventKey="debuff" title="Debuff">
       </Tab>
       <Tab eventKey="elemental" title="Elemental Nightmares">
+      </Tab>
+      <Tab eventKey="bells" title="Bells">
+      </Tab>
+      <Tab eventKey="reset" title="Gear Reset">
       </Tab>
       <Tab eventKey="other" title="Other" disabled>
       </Tab>

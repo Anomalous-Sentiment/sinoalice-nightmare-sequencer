@@ -73,7 +73,7 @@ export default function NightmareImageList(props) {
               <OverlayTrigger key={index} overlay={renderTooltip}>
                 <ImageListItem key={index} sx={{ width: 90, height: 90 }}>
                   <Image
-                    src={`${nightmare.Icon}?w=80&fit=crop&auto=format`}
+                    src={`${nightmare.Icon}`}
                     alt={nightmare.NameEN}
                     width='90'
                     height='90'
