@@ -3,8 +3,32 @@ const cors = require('cors')
 const app = express()
 const fetch = require('node-fetch')
 const port = parseInt(process.env.PORT, 10) || 3001
-
 const scraper = require('./scraper.js')
+require('dotenv').config()
+
+// Import the functions you need from the SDKs you need
+const firebase = require("firebase/app");
+//const firebaseAnalytics = require("firebase/analytics");
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.APP_ID,
+  measurementId: process.env.MEASUREMENT_ID
+};
+
+// Initialize Firebase
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+//const analytics = firebaseAnalytics.getAnalytics(firebaseApp);
+
 let completeNightmareArray = null;
 
 app.use(cors())
@@ -19,6 +43,7 @@ app.get('/', async(req, res) => {
 
 app.listen(port, async() => {
   console.log(`App listening on port ${port}`)
+  console.log(process.env)
   try {
     // Scrape sinoalice db for nightmare list
     console.time()
@@ -30,7 +55,6 @@ app.listen(port, async() => {
       nightmare['GvgSkillDetailEN'] = skills[nightmare['GvgSkillEN']]
       return nightmare;
     })
-    //console.log(finalNightmareArray)
     console.timeEnd()
     completeNightmareArray = finalNightmareArray;
   }
@@ -53,7 +77,6 @@ async function getNightmares()
       return res.json()
     })
     .then((json) => {
-      //console.log(json)
       //Get list of columns
       const fields = json['Cols'].split('|')
   
@@ -66,13 +89,10 @@ async function getNightmares()
         columns.forEach((value, index, array) => {
           return jsonObj[fields[index]] = value;
         })
-
-        console.log(jsonObj)
   
         return jsonObj;
       });
   
-      //console.log(nightmares)
       // Rarities: 6 = L , 5 = SS, 4 = S, 3 = A
       // Attributes: 3 = green, 2 = water, 1 = fire
   
@@ -133,5 +153,6 @@ async function getNightmares()
       return leanNightmares;
   
     })
+    
   
 }
