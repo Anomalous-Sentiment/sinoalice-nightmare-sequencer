@@ -5,10 +5,20 @@ const fetch = require('node-fetch')
 const port = parseInt(process.env.PORT, 10) || 3001
 
 const scraper = require('./scraper.js')
+let completeNightmareArray = null;
 
 app.use(cors())
 
 app.get('/', async(req, res) => {
+
+  return res.status(200).json({nightmares: completeNightmareArray});
+})
+
+
+
+
+app.listen(port, async() => {
+  console.log(`App listening on port ${port}`)
   try {
     // Scrape sinoalice db for nightmare list
     console.time()
@@ -22,25 +32,13 @@ app.get('/', async(req, res) => {
     })
     //console.log(finalNightmareArray)
     console.timeEnd()
-
-
-
-
-    return res.status(200).json({nightmares: finalNightmareArray});
+    completeNightmareArray = finalNightmareArray;
   }
   catch(err)
   {
     console.log(err)
-    return res.status(404);
-
+    completeNightmareArray = {err}
   }
-})
-
-
-
-
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`)
 
 })
 

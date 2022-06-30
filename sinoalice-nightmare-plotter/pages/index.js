@@ -32,7 +32,13 @@ export default function Home() {
   ]
   // Get the current time
   const now = DateTime.now().startOf('hour');
-  const [timelineRows, setTimelineRows] = useState([['', '', now.toJSDate(), now.plus({seconds: 1}).toJSDate()]])
+
+  //Define demon/shinma appearance times
+  const shinmaTimes = [
+    ['Demon/Shinma', 'Demon 1', now.plus({minutes: 2}).toJSDate(), now.plus({minutes: 5}).toJSDate()],
+    ['Demon/Shinma', 'Demon 2', now.plus({minutes: 12}).toJSDate(), now.plus({minutes: 15}).toJSDate()]
+  ]
+  const [timelineRows, setTimelineRows] = useState(shinmaTimes)
   
   //These will need to be accessed by callbacks
   selectedNightmaresStateRef.current = selectedNightmares;
@@ -60,10 +66,12 @@ export default function Home() {
     hAxis: {
       format: 'mm:ss',
       maxValue: now.plus({minutes: 20}).toJSDate(),
-      minValue: now.toJSDate()
-    }
+      minValue: now.toJSDate(),
+      direction: '-1'
+    },
   };
 
+  console.log('Rows:', timelineRows)
   const [data, setData] = useState([columns, ...timelineRows]);
 
   if (serverNightmares == null)
@@ -86,14 +94,17 @@ export default function Home() {
     let prepTime = parseInt(selectedNightmare['GvgSkillLead']);
     let durTime = parseInt(selectedNightmare['GvgSkillDur']);
     let previousNightmareEndTime = null;
+    //Check if this is the first nightmare in the timeline
     if (selectedNightmaresStateRef.current.length == 0)
     {
+      //If first, the prep time starts from 0:00
       previousNightmareEndTime = now;
       console.log('length = 0')
 
     }
     else
     {
+      //If not first, prep time starts from end of last nightmare
       console.log(timelineStateRef.current[timelineRows.length - 1][3])
       previousNightmareEndTime = DateTime.fromJSDate(timelineStateRef.current[timelineStateRef.current.length - 1][3]);
       console.log('length > 0')
@@ -142,15 +153,14 @@ export default function Home() {
   {
     let prepTime = parseInt(deselectedNightmare['GvgSkillLead']);
     let durTime = parseInt(deselectedNightmare['GvgSkillDur']);
+    let newRows = [...shinmaTimes];
+    let filteredNightmares = null;
 
     // Remove from selected list 
-    setSelected(selectedNightmares.filter(nightmare => nightmare[displayNameKey] != deselectedNightmare[displayNameKey]))
-
-    // Clear the timeline rows
-    setTimelineRows([]);
+    filteredNightmares = selectedNightmaresStateRef.current.filter(nightmare => nightmare[displayNameKey] != deselectedNightmare[displayNameKey])
 
     // Recalculate timeline times according to modified selected nightmares list
-    selectedNightmares.forEach((nightmare, index, array) => {
+    filteredNightmares.forEach((nightmare, index, array) => {
       //Calculate new times for each nightmare in list in order
       let prepRow = null;
       let durRow = null;
@@ -163,19 +173,25 @@ export default function Home() {
       else
       {
         //Not the first nightmare. calculate time using previous row
-        prepRow = [nightmare[displayNameKey], "Prep", timelineRows[timelineRows.length - 1][3], now.plus({ seconds: prepTime }).toJSDate()]
+        prepRow = [nightmare[displayNameKey], "Prep", newRows[newRows.length - 1][3], DateTime.fromJSDate(newRows[newRows.length - 1][3]).plus({ seconds: prepTime }).toJSDate()]
       }
 
-      setTimelineRows(timelineRows.push(prepRow))
+      //Add prep row to newrows array
+      newRows.push(prepRow);
 
       if (nightmare['GvgSkillDur'] != '0')
       {
         //Add dur row if there is a active duration
-        durRow = [nightmare[displayNameKey], "Active", timelineRows[timelineRows.length - 1][3], now.plus({ seconds: durTime }).toJSDate()]
-        setTimelineRows(timelineRows.push(durRow))
+        durRow = [nightmare[displayNameKey], "Active", prepRow[3], DateTime.fromJSDate(prepRow[3]).plus({ seconds: durTime }).toJSDate()]
+        newRows.push(durRow)
       }
-
     })
+    
+    //Update timeline rows
+    setTimelineRows(newRows)
+
+    //Update the timeline graph
+    setData([columns, ...newRows])
 
   }
 
@@ -185,7 +201,7 @@ export default function Home() {
     updateGlobalNightmares(unfilteredNightmares.filter(nightmare => nightmare['Global'] == true))
 
     //filter by jp nightmares
-    updateJpNightmares(unfilteredNightmares.filter(nightmare => nightmare['Global'] == false))
+    updateJpNightmares(unfilteredNightmares)
   }
 
   function onServerchange(newServer)
@@ -245,8 +261,10 @@ export default function Home() {
       <Tab eventKey="other" title="Other" disabled>
       </Tab>
       <Tab eventKey="selected" title="Selected Nightmares">
+      <NightmareImageList list={selectedNightmares} onClick={onRemove} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
       </Tab>
       </Tabs>
+
     </div>
 
   )
