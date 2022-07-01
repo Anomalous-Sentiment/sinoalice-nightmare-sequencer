@@ -43,7 +43,6 @@ app.get('/', async(req, res) => {
 
 app.listen(port, async() => {
   console.log(`App listening on port ${port}`)
-  console.log(process.env)
   try {
     // Scrape sinoalice db for nightmare list
     console.time()
@@ -55,8 +54,21 @@ app.listen(port, async() => {
       nightmare['GvgSkillDetailEN'] = skills[nightmare['GvgSkillEN']]
       return nightmare;
     })
+    console.log(finalNightmareArray)
+
     console.timeEnd()
     completeNightmareArray = finalNightmareArray;
+
+    completeSkillList = getCombinedSkillList(completeNightmareArray, skills)
+    console.log(completeSkillList)
+
+    let completeRankList = getRankList()
+
+    //Upsert ranks into database
+
+    //Upsert colo skills into database
+
+    //Upsert nightmares into database
   }
   catch(err)
   {
@@ -153,6 +165,58 @@ async function getNightmares()
       return leanNightmares;
   
     })
-    
+}
+
+function getCombinedSkillList(nightmareList, enSkillList)
+{
+  let jp_en_skill_list = {}
+
+  //Iterate through all nightmares and map every jp skill to their en equivalent
+  //  and return as json
+  nightmareList.forEach((value, index, array) => {
+    //If not in skill list, add along with en name and description
+    if(!(value['GvgSkill'] in jp_en_skill_list))
+    {
+      //jp name and description will always exist, but en equivalents may not
+      let jp_name = value['GvgSkill'].trim();
+      let en_name = '';
+      let jp_details = value['GvgSkillDetail'].trim()
+      let en_details = '';
+
+      if (value['GvgSkillEN'] != undefined && value['GvgSkillEN'] != null && value['GvgSkillEN'] != '')
+      {
+        en_name = value['GvgSkillEN'];
+      }
+
+      if (value['GvgSkillDetailEN'] != undefined && value['GvgSkillDetailEN'] != null && value['GvgSkillDetailEN'] != '')
+      {
+        en_details = enSkillList[value['GvgSkillDetailEN']];
+      }
+
+      let jp_rank = null;
+      let en_rank = null;
+      let startIndex = null;
+      let endIndex = null;
+
+      //Parse string to find jp and en ranks
+      let normalisedJpString = value['GvgSkill'].normalize('NFC')
+      startIndex = normalisedJpString.lastIndexOf('(')
+      endIndex = normalisedJpString.lastIndexOf(')')
+      jp_rank = normalisedJpString.substring(startIndex + 1, endIndex)
+
+      let normalisedString = value['GvgSkillEN'].normalize('NFC')
+      startIndex = normalisedString.lastIndexOf('(')
+      endIndex = normalisedString.lastIndexOf(')')
+      en_rank = normalisedString.substring(startIndex + 1, endIndex)
+
+      jp_en_skill_list[jp_name] = [en_name, jp_details, en_details, value['GvgSkillLead'], value['GvgSkillDur'], jp_rank, en_rank]
+    }
+  })
+
+  return jp_en_skill_list;
+}
+
+function getRankList(skillList)
+{
   
 }
