@@ -62,8 +62,8 @@ app.listen(port, async() => {
     completeSkillList = getCombinedSkillList(completeNightmareArray, skills)
     console.log(completeSkillList)
 
-    let completeRankList = getRankList()
-
+    let completeRankList = getRankList(completeSkillList)
+    console.log(completeRankList)
     //Upsert ranks into database
 
     //Upsert colo skills into database
@@ -218,5 +218,22 @@ function getCombinedSkillList(nightmareList, enSkillList)
 
 function getRankList(skillList)
 {
-  
+  let rankList = {}
+
+
+  // Iterate through all skills
+  for (var key of Object.keys(skillList)) 
+  {
+    //console.log(key + " -> " + skillList[key])
+
+    //Check if jp rank exists
+    if (!(skillList[key][5] in rankList))
+    {
+      console.log()
+      //Add jp rank as key, and en rank as value
+      rankList[skillList[key][5]] = skillList[key][6]
+    }
+  }
+
+  return rankList;
 }
