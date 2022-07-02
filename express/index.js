@@ -68,20 +68,20 @@ app.listen(port, async() => {
     let completeRankList = getRankList(completeSkillList)
 
     //Upsert ranks into database. Ignore duplicates and do not return inserted rows
-    await supabase.from('Ranks')
+    await supabase.from('ranks')
     .upsert(completeRankList, { returning: 'minimal', ignoreDuplicates: true})
 
     //Upsert colo skills into database
     //Convert skill list into suitable format first
     formattedSkills = convertKeyMapToList(completeSkillList)
 
-    await supabase.from('Colosseum Skills')
+    await supabase.from('colosseum_skills')
     .upsert(formattedSkills, { returning: 'minimal', ignoreDuplicates: true})
   
     //Upsert nightmares into database
     //Convert nightmares into suitable format
     let formattedNightmares = convertNightmaresToList(completeNightmareArray)
-    const {data, error} = await supabase.from('Nightmares')
+    const {data, error} = await supabase.from('nightmares')
     .upsert(formattedNightmares, { returning: 'minimal', ignoreDuplicates: true})
     console.log(error)
   

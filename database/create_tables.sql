@@ -1,3 +1,5 @@
+SET TIMEZONE ='Etc/GMT+8';  
+
 DROP TABLE IF EXISTS element_attributes;
 CREATE TABLE element_attributes
 (
@@ -19,7 +21,7 @@ CREATE TABLE ranks
 (
     jp_rank VARCHAR,
     en_rank VARCHAR,
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() AT TIME ZONE 'Etc/GMT+8'),
     PRIMARY KEY (jp_rank)
 );
 
@@ -41,7 +43,7 @@ CREATE TABLE colosseum_skills
     jp_rank VARCHAR,
     en_colo_skill_name VARCHAR,
     en_colo_skill_desc TEXT,
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() AT TIME ZONE 'Etc/GMT+8'),
     CONSTRAINT fk_skill_rank
         FOREIGN KEY (jp_rank) REFERENCES ranks (jp_rank),
     PRIMARY KEY (jp_colo_skill_name)
@@ -60,7 +62,7 @@ CREATE TABLE nightmares
     rarity_id SMALLINT,
     colo_sp SMALLINT,
     global BOOLEAN,
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() AT TIME ZONE 'Etc/GMT+8'),
     CONSTRAINT fk_nightmare_skill
         FOREIGN KEY (jp_colo_skill_name) REFERENCES colosseum_skills (jp_colo_skill_name),
     CONSTRAINT fk_nightmare_attribute
