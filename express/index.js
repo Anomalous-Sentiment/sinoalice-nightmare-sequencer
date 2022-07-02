@@ -5,6 +5,11 @@ const fetch = require('node-fetch')
 const port = parseInt(process.env.PORT, 10) || 3001
 const scraper = require('./scraper.js')
 require('dotenv').config()
+const supabaseJs = require('@supabase/supabase-js')
+
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_KEY
+const supabase = supabaseJs.createClient(supabaseUrl, supabaseKey)
 
 // Import the functions you need from the SDKs you need
 const firebase = require("firebase/app");
@@ -54,21 +59,32 @@ app.listen(port, async() => {
       nightmare['GvgSkillDetailEN'] = skills[nightmare['GvgSkillEN']]
       return nightmare;
     })
-    console.log(finalNightmareArray)
 
     console.timeEnd()
     completeNightmareArray = finalNightmareArray;
 
     completeSkillList = getCombinedSkillList(completeNightmareArray, skills)
-    console.log(completeSkillList)
 
     let completeRankList = getRankList(completeSkillList)
-    console.log(completeRankList)
-    //Upsert ranks into database
+
+    //Upsert ranks into database. Ignore duplicates and do not return inserted rows
+    await supabase.from('Ranks')
+    .upsert(completeRankList, { returning: 'minimal', ignoreDuplicates: true})
 
     //Upsert colo skills into database
+    //Convert skill list into suitable format first
+    formattedSkills = convertKeyMapToList(completeSkillList)
 
+    await supabase.from('Colosseum Skills')
+    .upsert(formattedSkills, { returning: 'minimal', ignoreDuplicates: true})
+  
     //Upsert nightmares into database
+    //Convert nightmares into suitable format
+    let formattedNightmares = convertNightmaresToList(completeNightmareArray)
+    const {data, error} = await supabase.from('Nightmares')
+    .upsert(formattedNightmares, { returning: 'minimal', ignoreDuplicates: true})
+    console.log(error)
+  
   }
   catch(err)
   {
@@ -134,13 +150,16 @@ async function getNightmares()
           else if (value == 'Attribute')
           {
             //Replace number with actual element
-            newJson[value] = attributeSubstitutes[element[value]]
+            //newJson[value] = attributeSubstitutes[element[value]]
+            newJson[value] = parseInt(element[value])
+
           }
           else if (value == 'Rarity')
           {
             //Replace numberr with actual rarity
-            newJson[value] = raritySubstitutes[element[value]]
-  
+            //newJson[value] = raritySubstitutes[element[value]]
+
+            newJson[value] = parseInt(element[value])
           }
           else if (value == 'Global')
           {
@@ -190,7 +209,7 @@ function getCombinedSkillList(nightmareList, enSkillList)
 
       if (value['GvgSkillDetailEN'] != undefined && value['GvgSkillDetailEN'] != null && value['GvgSkillDetailEN'] != '')
       {
-        en_details = enSkillList[value['GvgSkillDetailEN']];
+        en_details = value['GvgSkillDetailEN'];
       }
 
       let jp_rank = null;
@@ -199,15 +218,15 @@ function getCombinedSkillList(nightmareList, enSkillList)
       let endIndex = null;
 
       //Parse string to find jp and en ranks
-      let normalisedJpString = value['GvgSkill'].normalize('NFC')
-      startIndex = normalisedJpString.lastIndexOf('(')
-      endIndex = normalisedJpString.lastIndexOf(')')
-      jp_rank = normalisedJpString.substring(startIndex + 1, endIndex)
+      let jpSkillString = value['GvgSkill']
+      startIndex = jpSkillString.lastIndexOf('(')
+      endIndex = jpSkillString.lastIndexOf(')')
+      jp_rank = jpSkillString.substring(startIndex + 1, endIndex)
 
-      let normalisedString = value['GvgSkillEN'].normalize('NFC')
-      startIndex = normalisedString.lastIndexOf('(')
-      endIndex = normalisedString.lastIndexOf(')')
-      en_rank = normalisedString.substring(startIndex + 1, endIndex)
+      let enSKillString = value['GvgSkillEN']
+      startIndex = enSKillString.lastIndexOf('(')
+      endIndex = enSKillString.lastIndexOf(')')
+      en_rank = enSKillString.substring(startIndex + 1, endIndex)
 
       jp_en_skill_list[jp_name] = [en_name, jp_details, en_details, value['GvgSkillLead'], value['GvgSkillDur'], jp_rank, en_rank]
     }
@@ -218,22 +237,72 @@ function getCombinedSkillList(nightmareList, enSkillList)
 
 function getRankList(skillList)
 {
-  let rankList = {}
+  let rankList = []
 
 
   // Iterate through all skills
   for (var key of Object.keys(skillList)) 
   {
-    //console.log(key + " -> " + skillList[key])
+    let rankRow = {}
 
-    //Check if jp rank exists
-    if (!(skillList[key][5] in rankList))
+    //Check if jp rank exists in list
+    let exists = rankList.every(rank => rank['jp_rank'] != skillList[key][5])
+    if (exists)
     {
-      console.log()
       //Add jp rank as key, and en rank as value
-      rankList[skillList[key][5]] = skillList[key][6]
+      rankRow['jp_rank'] = skillList[key][5]
+      rankRow['en_rank'] = skillList[key][6]
+
+      rankList.push(rankRow)
     }
   }
 
   return rankList;
+}
+
+function convertKeyMapToList(skillList)
+{
+  let skillRows = []
+
+  // Iterate through all skills
+  for (var key of Object.keys(skillList)) 
+  {
+    let currRow = {}
+
+    currRow['jp_colo_skill_name'] = key;
+    currRow['en_colo_skill_name'] = skillList[key][0]
+    currRow['jp_colo_skill_desc'] = skillList[key][1]
+    currRow['en_colo_skill_desc'] = skillList[key][2]
+    currRow['prep_time'] = parseInt(skillList[key][3])
+    currRow['effective_time'] = parseInt(skillList[key][4])
+    currRow['jp_rank'] = skillList[key][5]
+
+    skillRows.push(currRow)
+  }
+
+  return skillRows;
+}
+
+function convertNightmaresToList(nightmareList)
+{
+  let nightmareRows = []
+
+  // Iterate through all skills
+  nightmareList.forEach((nightmare) => {
+    let currRow = {}
+
+    currRow['jp_name'] = nightmare['Name'];
+    currRow['en_name'] = nightmare['NameEN']
+    currRow['jp_icon_url'] = nightmare['Icon']
+    currRow['en_icon_url'] = nightmare['IconEN']
+    currRow['jp_colo_skill_name'] = nightmare['GvgSkill']
+    currRow['colo_sp'] = nightmare['GvgSkillSP']
+    currRow['global'] = nightmare['Global']
+    currRow['attribute_id'] = nightmare['Attribute']
+    currRow['rarity_id'] = nightmare['Rarity']
+
+    nightmareRows.push(currRow)
+  })
+  
+  return nightmareRows;
 }
