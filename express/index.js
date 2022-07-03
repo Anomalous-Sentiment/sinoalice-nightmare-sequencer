@@ -65,17 +65,36 @@ app.listen(port, async() => {
     nightmareArray = processRanks(nightmareArray);
 
 
-    //Using nightmare name as key, overwrite the en skill of nightmares returned in the api with the scraped en skill name + desc
+    //Using jp nightmare name as key, overwrite the en skill of nightmares returned in the api with the scraped en skill name + desc
     nightmareArray = amendApiNightmareList(nightmareArray, scrapedNightmares)
 
     let jpEnSkillList = getjpEnSkillList(nightmareArray)
 
     console.log(jpEnSkillList)
 
-    const {data, error} = await supabase.from('pure_colo_skill_names')
+    await supabase.from('pure_colo_skill_names')
     .upsert(jpEnSkillList, { returning: 'minimal', ignoreDuplicates: true})  
 
-    console.log(error)
+    //Get a list of unique skill ranks
+    let uniqueRanks = getRankList(nightmareArray);
+
+    //Insert ranks into database
+    await supabase.from('ranks')
+    .upsert(uniqueRanks, { returning: 'minimal', ignoreDuplicates: true})  
+
+    //Get a list of colo skills (unique pure skills + rank combination)
+    let coloSkillList = getColoSkillList(nightmareArray);
+
+    console.log(coloSkillList)
+
+    const {data, error} = await supabase.from('colosseum_skills')
+    .upsert(coloSkillList, { returning: 'minimal', ignoreDuplicates: true})  
+
+    console.log(error);
+
+    //Finally, format nihgtmare list and insert into database
+
+
 
 
 
@@ -210,6 +229,10 @@ async function getNightmares()
               newJson[value] = false;
             }
           }
+          else if (value == 'GvgSkillSP' || value == 'GvgSkillLead' || value == 'GvgSkillDur')
+          {
+            newJson[value] = parseInt(element[value])
+          }
           else
           {
             newJson[value] = element[value]
@@ -272,27 +295,23 @@ function getCombinedSkillList(nightmareList, enSkillList)
   return jp_en_skill_list;
 }
 
-function getRankList(skillList)
+function getRankList(nightmareList)
 {
   let rankList = []
 
-
-  // Iterate through all skills
-  for (var key of Object.keys(skillList)) 
-  {
-    let rankRow = {}
-
-    //Check if jp rank exists in list
-    let exists = rankList.every(rank => rank['jp_rank'] != skillList[key][5])
-    if (exists)
+  // Look through each nightmare in list to find unique ranks
+  nightmareList.forEach((nightmare) => {
+    //Check if rank does not exist in rankList
+    if (rankList.every(rank => (rank['jp_rank'] != nightmare['Rank'])))
     {
-      //Add jp rank as key, and en rank as value
-      rankRow['jp_rank'] = skillList[key][5]
-      rankRow['en_rank'] = skillList[key][6]
+      const newRank = {};
+      newRank['jp_rank'] = nightmare['Rank'];
+      newRank['en_rank'] = nightmare['RankEN'];
 
-      rankList.push(rankRow)
+      // Add to the list
+      rankList.push(newRank);
     }
-  }
+  })
 
   return rankList;
 }
@@ -449,6 +468,15 @@ function amendApiNightmareList(apiNightmares, scrapedNightmares)
       //Set to empty string
       apiNightmare['GvgSkillEN'] = '';
     }
+  });
+
+  //If en skill description does not exist, set to empty
+  apiNightmares.forEach((apiNightmare) => {
+    if (!apiNightmare['GvgSkillDetailEN'])
+    {
+      //Set to empty string
+      apiNightmare['GvgSkillDetailEN'] = '';
+    }
   })
 
 
@@ -507,4 +535,29 @@ function getjpEnSkillList(apiNightmares)
   })
 
   return jpEnSkillList;
+}
+
+function getColoSkillList(nightmares)
+{
+  let skillList = [];
+
+  // Look through each nightmare to find unique skill+rank combinations
+  nightmares.forEach((nightmare) => {
+    //Check if unique skill (combination of pure skill and rank are unique)
+    if (skillList.every(skill => (skill['jp_colo_skill_name'] != nightmare['GvgSkill']) || (skill['jp_rank'] != nightmare['Rank'])))
+    {
+      const newSkill = {};
+      newSkill['jp_colo_skill_name'] = nightmare['GvgSkill'];
+      newSkill['en_colo_skill_desc'] = nightmare['GvgSkillDetailEN'];
+      newSkill['jp_colo_skill_desc'] = nightmare['GvgSkillDetail'];
+      newSkill['prep_time'] = nightmare['GvgSkillLead'];
+      newSkill['effective_time'] = nightmare['GvgSkillDur'];
+      newSkill['jp_rank'] = nightmare['Rank'];
+
+      // Add to the list
+      skillList.push(newSkill);
+    }
+  })
+
+  return skillList;
 }
