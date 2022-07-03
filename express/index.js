@@ -87,12 +87,16 @@ app.listen(port, async() => {
 
     console.log(coloSkillList)
 
-    const {data, error} = await supabase.from('colosseum_skills')
+    await supabase.from('colosseum_skills')
     .upsert(coloSkillList, { returning: 'minimal', ignoreDuplicates: true})  
 
+    //Finally, format nihgtmare list and insert into database
+    let convertedNightmareList = convertNightmaresToList(nightmareArray);
+
+    const {data, error} = await supabase.from('nightmares')
+    .upsert(convertedNightmareList, { returning: 'minimal', ignoreDuplicates: true})  
     console.log(error);
 
-    //Finally, format nihgtmare list and insert into database
 
 
 
@@ -372,6 +376,7 @@ function convertNightmaresToList(nightmareList)
     currRow['global'] = nightmare['Global']
     currRow['attribute_id'] = nightmare['Attribute']
     currRow['rarity_id'] = nightmare['Rarity']
+    currRow['jp_rank'] = nightmare['Rank']
 
     nightmareRows.push(currRow)
   })
