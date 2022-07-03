@@ -73,29 +73,34 @@ app.listen(port, async() => {
     console.log(jpEnSkillList)
 
     await supabase.from('pure_colo_skill_names')
-    .upsert(jpEnSkillList, { returning: 'minimal', ignoreDuplicates: true})  
+    .upsert(jpEnSkillList, { returning: 'minimal'})  
 
     //Get a list of unique skill ranks
     let uniqueRanks = getRankList(nightmareArray);
 
     //Insert ranks into database
     await supabase.from('ranks')
-    .upsert(uniqueRanks, { returning: 'minimal', ignoreDuplicates: true})  
+    .upsert(uniqueRanks, { returning: 'minimal'})  
+
 
     //Get a list of colo skills (unique pure skills + rank combination)
     let coloSkillList = getColoSkillList(nightmareArray);
 
-    console.log(coloSkillList)
-
     await supabase.from('colosseum_skills')
-    .upsert(coloSkillList, { returning: 'minimal', ignoreDuplicates: true})  
+    .upsert(coloSkillList, { returning: 'minimal'})  
 
     //Finally, format nihgtmare list and insert into database
     let convertedNightmareList = convertNightmaresToList(nightmareArray);
 
-    const {data, error} = await supabase.from('nightmares')
-    .upsert(convertedNightmareList, { returning: 'minimal', ignoreDuplicates: true})  
-    console.log(error);
+    await supabase.from('nightmares')
+    .upsert(convertedNightmareList, { returning: 'minimal'})  
+
+    let { data: nightmareswithtags } = await supabase
+    .from('nightmareswithtags')
+    .select()
+    console.log(nightmareswithtags);
+
+
   
   }
   catch(err)
