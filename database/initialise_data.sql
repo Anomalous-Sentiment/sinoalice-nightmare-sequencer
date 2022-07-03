@@ -17,5 +17,7 @@ VALUES
 -- Initialise tags table
 INSERT INTO tags (tag, description)
 VALUES
-    ('test', 'test description'),
-    ('test2', 'test2 description');
+    ('P.Atk Buff', 'Buffs or increases physical attack'),
+    ('M.Atk Buff', 'Buffs or increases magical attack'),
+    ('M.Def Buff', 'Buffs or increases magical defense'),
+    ('P.Def Buff', 'Buffs or increases physica defense');
