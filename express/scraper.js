@@ -90,47 +90,63 @@ async function fullScrape()
   
 }
 
-async function scrapeSkills()
+async function fullEnNightmareScrape()
 {
   let $ = await scraperInit.initialiseWebPage(null, null, false)
-  let skillList = findSkills($)
+  let nightmareList = scrapeNightmares($)
 
   $ = await scraperInit.initialiseWebPage(null, null, true)
-  let skillList2 = findSkills($)
+  let nightmareList2 = scrapeNightmares($)
 
-  let combinedSkillList = Object.assign(skillList, skillList2)
+  let completeNightmareList = nightmareList.concat(nightmareList2)
 
-  return combinedSkillList;
+  return completeNightmareList;
 }
 
-function findSkills($)
+function scrapeNightmares($)
 {
-  const skillList = {}
+  const nightmareList = []
 
   $("tbody tr").each((parentIndex, parentElem) => {
-    let element = null;
-    let elementDetails = null;
+    let row= {}
+    let jpName = null;
+    let enName = null;
+    let element = null
+    let enSkillName = null;
+    let enSkillDetails = null;
+
+    //Find the jp name
+    element = $(parentElem).find('.rawname');
+    jpName = element.text().trim();
+
+    //Find the en name
+    element = $(parentElem).find('.link.enname');
+    enName = element.text().trim();
 
     // Find the skill name element and get the skill name (class='gvgTitle')
     element = $(parentElem).find('.gvgTitle')
-    element = element.text().trim()
+    enSkillName = element.text().trim()
 
     // Find the skill name element and get the skill description (class='tableDetail en')
-    elementDetails = $(parentElem).find('.tableDetail.en')
-    elementDetails = elementDetails.text().trim();
+    element = $(parentElem).find('.tableDetail.en')
+    enSkillDetails = element.text().trim();
 
-    //Add to list if not duplicate
-    if (!(element in skillList))
-    {
-      skillList[element] = elementDetails;
-    }
+    //Place all values into json object
+    row['Name'] = jpName;
+    row['NameEN'] = enName;
+    row['GvgSkillEN'] = enSkillName;
+    row['GvgSkillDetailEN'] = enSkillDetails;
+
+    nightmareList.push(row)
+
   })
-  return skillList;
+
+  return nightmareList;
 }
 
 module.exports = 
 {
     scrapeWebPage,
     fullScrape,
-    scrapeSkills
+    fullEnNightmareScrape
 }

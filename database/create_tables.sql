@@ -5,8 +5,7 @@ CREATE TABLE pure_colo_skill_names
 (
     jp_colo_skill_name varchar,
     en_colo_skill_name varchar,
-    UNIQUE (en_colo_skill_name),
-    PRIMARY KEY (jp_colo_skill_name)
+    PRIMARY KEY (jp_colo_skill_name, en_colo_skill_name)
 );
 
 DROP TABLE IF EXISTS element_attributes;
@@ -46,6 +45,7 @@ DROP TABLE IF EXISTS colosseum_skills;
 CREATE TABLE colosseum_skills
 (
     jp_colo_skill_name VARCHAR,
+    en_colo_skill_name VARCHAR,
     jp_colo_skill_desc TEXT,
     prep_time SMALLINT,
     effective_time SMALLINT,
@@ -53,7 +53,7 @@ CREATE TABLE colosseum_skills
     en_colo_skill_desc TEXT,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() AT TIME ZONE 'Etc/GMT+8'),
     CONSTRAINT fk_jp_skill_name
-        FOREIGN KEY (jp_colo_skill_name) REFERENCES pure_colo_skill_names (jp_colo_skill_name),
+        FOREIGN KEY (jp_colo_skill_name, en_colo_skill_name) REFERENCES pure_colo_skill_names (jp_colo_skill_name, en_colo_skill_name),
     CONSTRAINT fk_skill_rank
         FOREIGN KEY (jp_rank) REFERENCES ranks (jp_rank),
     PRIMARY KEY (jp_colo_skill_name, jp_rank)
@@ -100,10 +100,11 @@ DROP TABLE IF EXISTS skill_tag_relations;
 CREATE TABLE skill_tag_relations
 (
     tag VARCHAR,
+    jp_colo_skill_name VARCHAR,
     en_colo_skill_name VARCHAR,
     CONSTRAINT fk_skill_relation_tag
         FOREIGN KEY (tag) REFERENCES tags (tag),
-    CONSTRAINT fk_skill_relation_skill
-        FOREIGN KEY (en_colo_skill_name) REFERENCES pure_colo_skill_names (en_colo_skill_name),
-    PRIMARY KEY (tag, en_colo_skill_name)
+    CONSTRAINT fk_skill_relation_skill  
+        FOREIGN KEY (jp_colo_skill_name, en_colo_skill_name) REFERENCES pure_colo_skill_names (jp_colo_skill_name, en_colo_skill_name),
+    PRIMARY KEY (tag, jp_colo_skill_name)
 );
