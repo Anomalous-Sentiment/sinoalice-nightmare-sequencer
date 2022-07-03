@@ -34,13 +34,18 @@ const firebaseConfig = {
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 //const analytics = firebaseAnalytics.getAnalytics(firebaseApp);
 
-let completeNightmareArray = null;
-
 app.use(cors())
 
 app.get('/', async(req, res) => {
+  console.time();
+  let { data: nightmareswithtags } = await supabase
+  .from('nightmareswithtags')
+  .select()
+  console.log(nightmareswithtags);
 
-  return res.status(200).json({nightmares: completeNightmareArray});
+  console.timeEnd();
+
+  return res.status(200).json({nightmares: nightmareswithtags});
 })
 
 
@@ -49,16 +54,15 @@ app.get('/', async(req, res) => {
 app.listen(port, async() => {
   console.log(`App listening on port ${port}`)
   try {
-    // Scrape sinoalice db for nightmare list
-    console.time()
+    console.time('Update Time');
 
     // getNightmares() uses the sinaolice api to get nightmare list.
     // Although en skill name can be incorrect for some nightmares
     let nightmareArray = await getNightmares()
+
+    // Scrape sinoalice db for nightmare list
     let scrapedNightmares = await scraper.fullEnNightmareScrape()
-    console.log(scrapedNightmares)
-    console.log(scrapedNightmares.length)
-    console.timeEnd()
+
 
     //Split the skill rank from the skill base name
     scrapedNightmares = processRanks(scrapedNightmares);
@@ -72,41 +76,47 @@ app.listen(port, async() => {
 
     console.log(jpEnSkillList)
 
-    await supabase.from('pure_colo_skill_names')
-    .upsert(jpEnSkillList, { returning: 'minimal'})  
+    const {error: pureColoSkillError} = await supabase.from('pure_colo_skill_names')
+    .upsert(jpEnSkillList, { returning: 'minimal'})
 
     //Get a list of unique skill ranks
     let uniqueRanks = getRankList(nightmareArray);
+    console.log(uniqueRanks)
+
+    //Testing update triggers
+    //uniqueRanks[uniqueRanks.length - 1] = {jp_rank: '肆/神速', en_rank: 'Testing update trigger'}
 
     //Insert ranks into database
-    await supabase.from('ranks')
+    const {error: rankUpdateError} = await supabase.from('ranks')
     .upsert(uniqueRanks, { returning: 'minimal'})  
-
 
     //Get a list of colo skills (unique pure skills + rank combination)
     let coloSkillList = getColoSkillList(nightmareArray);
 
-    await supabase.from('colosseum_skills')
-    .upsert(coloSkillList, { returning: 'minimal'})  
+    const {error: colosseumSkillUpdateError} = await supabase.from('colosseum_skills')
+    .upsert(coloSkillList, { returning: 'minimal'})
+
 
     //Finally, format nihgtmare list and insert into database
     let convertedNightmareList = convertNightmaresToList(nightmareArray);
 
-    await supabase.from('nightmares')
-    .upsert(convertedNightmareList, { returning: 'minimal'})  
+    const {error: nightmareUpdateError} = await supabase.from('nightmares')
+    .upsert(convertedNightmareList, { returning: 'minimal'})
 
-    let { data: nightmareswithtags } = await supabase
-    .from('nightmareswithtags')
-    .select()
-    console.log(nightmareswithtags);
+    if (pureColoSkillError || rankUpdateError || colosseumSkillUpdateError || nightmareUpdateError)
+    {
+      console.log(pureColoSkillError)
+      console.log(rankUpdateError)
+      console.log(colosseumSkillUpdateError)
+      console.log(nightmareUpdateError)
+    }
 
 
-  
+    console.timeEnd('Update Time');
   }
   catch(err)
   {
     console.log(err)
-    completeNightmareArray = {err}
   }
   
 
