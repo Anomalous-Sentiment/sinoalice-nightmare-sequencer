@@ -96,57 +96,6 @@ app.listen(port, async() => {
     const {data, error} = await supabase.from('nightmares')
     .upsert(convertedNightmareList, { returning: 'minimal', ignoreDuplicates: true})  
     console.log(error);
-
-
-
-
-
-
-    /*
-    // Add EN skill descriptions to each nightmare according to the skill name
-    let finalNightmareArray = nightmareArray.map((nightmare, index, array) => {
-      nightmare['GvgSkillDetailEN'] = skills[nightmare['GvgSkillEN']]
-      return nightmare;
-    })
-
-    console.timeEnd()
-    completeNightmareArray = finalNightmareArray;
-
-    completeSkillList = getCombinedSkillList(completeNightmareArray, skills)
-
-    let completeRankList = getRankList(completeSkillList)
-    */
-
-    /*
-    //Upsert ranks into database. Ignore duplicates and do not return inserted rows
-    await supabase.from('ranks')
-    .upsert(completeRankList, { returning: 'minimal', ignoreDuplicates: true})
-
-    //Upsert colo skills into database
-    //Convert skill list into suitable format first
-    formattedSkills = convertKeyMapToList(completeSkillList)
-
-    //Convert data into suitable format to insert into 'pure_colo_skill_names' table
-    let pureSkills = convert_to_pure_skill_list(formattedSkills);
-
-    console.log(pureSkills)
-    await supabase.from('pure_colo_skill_names')
-    .upsert(pureSkills, { returning: 'minimal', ignoreDuplicates: true})  
-
-
-    const {data, error} = await supabase.from('colosseum_skills')
-    .upsert(formattedSkills, { returning: 'minimal', ignoreDuplicates: true})
-  
-    //console.log(formattedSkills)
-    console.log(error)
-
-    //Upsert nightmares into database
-    //Convert nightmares into suitable format
-    let formattedNightmares = convertNightmaresToList(completeNightmareArray)
-    const {data, error} = await supabase.from('nightmares')
-    .upsert(formattedNightmares, { returning: 'minimal', ignoreDuplicates: true})
-    //console.log(error)
-    */
   
   }
   catch(err)
@@ -250,54 +199,6 @@ async function getNightmares()
     })
 }
 
-function getCombinedSkillList(nightmareList, enSkillList)
-{
-  let jp_en_skill_list = {}
-
-  //Iterate through all nightmares and map every jp skill to their en equivalent
-  //  and return as json
-  nightmareList.forEach((value, index, array) => {
-    //If not in skill list, add along with en name and description
-    if(!(value['GvgSkill'] in jp_en_skill_list))
-    {
-      //jp name and description will always exist, but en equivalents may not
-      let jp_name = value['GvgSkill'].trim();
-      let en_name = '';
-      let jp_details = value['GvgSkillDetail'].trim()
-      let en_details = '';
-
-      if (value['GvgSkillEN'] != undefined && value['GvgSkillEN'] != null && value['GvgSkillEN'] != '')
-      {
-        en_name = value['GvgSkillEN'];
-      }
-
-      if (value['GvgSkillDetailEN'] != undefined && value['GvgSkillDetailEN'] != null && value['GvgSkillDetailEN'] != '')
-      {
-        en_details = value['GvgSkillDetailEN'];
-      }
-
-      let jp_rank = null;
-      let en_rank = null;
-      let startIndex = null;
-      let endIndex = null;
-
-      //Parse string to find jp and en ranks
-      let jpSkillString = value['GvgSkill']
-      startIndex = jpSkillString.lastIndexOf('(')
-      endIndex = jpSkillString.lastIndexOf(')')
-      jp_rank = jpSkillString.substring(startIndex + 1, endIndex)
-
-      let enSKillString = value['GvgSkillEN']
-      startIndex = enSKillString.lastIndexOf('(')
-      endIndex = enSKillString.lastIndexOf(')')
-      en_rank = enSKillString.substring(startIndex + 1, endIndex)
-
-      jp_en_skill_list[jp_name] = [en_name, jp_details, en_details, value['GvgSkillLead'], value['GvgSkillDur'], jp_rank, en_rank]
-    }
-  })
-
-  return jp_en_skill_list;
-}
 
 function getRankList(nightmareList)
 {
@@ -320,44 +221,6 @@ function getRankList(nightmareList)
   return rankList;
 }
 
-function convertKeyMapToList(skillList)
-{
-  let skillRows = []
-
-  // Iterate through all skills
-  for (var key of Object.keys(skillList)) 
-  {
-    let currRow = {}
-    const jpLastBracketIndex = key.lastIndexOf('(');
-    const enLastBracketIndex = skillList[key][0].lastIndexOf('(');
-
-
-    const jpPureSkill = key.substring(0, jpLastBracketIndex - 1);
-    const enPureSkill = skillList[key][0].substring(0, enLastBracketIndex - 1);
-
-    currRow['jp_colo_skill_name'] = jpPureSkill;
-    // This check is only because sometimes the api lists the jp skill as en skill
-    if (jpPureSkill != enPureSkill)
-    {
-      currRow['en_colo_skill_name'] = enPureSkill;
-    }
-    else
-    {
-      console.log(key)
-      console.log(skillList[key])
-      currRow['en_colo_skill_name'] = '';
-    }
-    currRow['jp_colo_skill_desc'] = skillList[key][1];
-    currRow['en_colo_skill_desc'] = skillList[key][2];
-    currRow['prep_time'] = parseInt(skillList[key][3]);
-    currRow['effective_time'] = parseInt(skillList[key][4]);
-    currRow['jp_rank'] = skillList[key][5];
-
-    skillRows.push(currRow);
-  }
-
-  return skillRows;
-}
 
 function convertNightmaresToList(nightmareList)
 {
@@ -382,34 +245,6 @@ function convertNightmaresToList(nightmareList)
   })
   
   return nightmareRows;
-}
-
-function convert_to_pure_skill_list(skillList)
-{
-  let pureList = [];
-
-  skillList.forEach((skill) => {
-    const jpLastBracketIndex = skill['jp_colo_skill_name'].lastIndexOf('(');
-    const enLastBracketIndex = skill['en_colo_skill_name'].lastIndexOf('(');
-
-
-    const jpPureSkill = skill['jp_colo_skill_name'].substring(0, jpLastBracketIndex - 1);
-    const enPureSkill = skill['en_colo_skill_name'].substring(0, enLastBracketIndex - 1);
-
-    //Add to list if jp skill not in list (add if it is unique)
-    if (pureList.every((value) => jpPureSkill != value['jp_colo_skill_name']))
-    {
-      let newRow = {}
-      newRow['jp_colo_skill_name'] = jpPureSkill;
-      newRow['en_colo_skill_name'] = enPureSkill;
-
-      //Add to list
-      pureList.push(newRow);
-    }
-
-  })
-
-  return pureList;
 }
 
 function processRanks(array)
