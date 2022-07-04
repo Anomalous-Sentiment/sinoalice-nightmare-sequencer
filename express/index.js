@@ -38,14 +38,33 @@ app.use(cors())
 
 app.get('/', async(req, res) => {
   console.time();
-  let { data: nightmareswithtags } = await supabase
-  .from('nightmareswithtags')
+  //Get all nightmares
+  let { data: allNightmares } = await supabase
+  .from('allnightmaredetails')
   .select()
-  console.log(nightmareswithtags);
+  console.log(allNightmares);
+
+  //Get all element/attributes
+  let { data: allAttributes } = await supabase
+  .from('element_attributes')
+  .select()
+  console.log(allAttributes);
+
+  //Get all possible tags
+  let { data: allTags } = await supabase
+  .from('tags')
+  .select()
+  console.log(allTags);
+
+  //Get all rarities
+  let { data: allRarities } = await supabase
+  .from('rarities')
+  .select()
+  console.log(allRarities);
 
   console.timeEnd();
 
-  return res.status(200).json({nightmares: nightmareswithtags});
+  return res.status(200).json({nightmares: allNightmares, attributes: allAttributes, tags: allTags, rarities: allRarities});
 })
 
 
@@ -81,10 +100,6 @@ app.listen(port, async() => {
 
     //Get a list of unique skill ranks
     let uniqueRanks = getRankList(nightmareArray);
-    console.log(uniqueRanks)
-
-    //Testing update triggers
-    uniqueRanks[uniqueRanks.length - 1] = {jp_rank: '肆/神速', en_rank: 'Testing update trigger'}
 
     //Insert ranks into database
     const {error: rankUpdateError} = await supabase.from('ranks')
