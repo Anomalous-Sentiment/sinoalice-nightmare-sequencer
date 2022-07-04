@@ -37,32 +37,37 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 app.use(cors())
 
 app.get('/', async(req, res) => {
-  console.time();
+  console.time('nightmares');
   //Get all nightmares
   let { data: allNightmares } = await supabase
   .from('allnightmaredetails')
   .select()
-  console.log(allNightmares);
+  console.timeEnd('nightmares');
+
+  console.time('attributes');
 
   //Get all element/attributes
   let { data: allAttributes } = await supabase
   .from('element_attributes')
   .select()
-  console.log(allAttributes);
+  console.timeEnd('attributes');
 
+
+  console.time('tags');
   //Get all possible tags
   let { data: allTags } = await supabase
   .from('tags')
   .select()
-  console.log(allTags);
+  console.timeEnd('tags');
+
+  console.time('rarities');
 
   //Get all rarities
   let { data: allRarities } = await supabase
   .from('rarities')
   .select()
-  console.log(allRarities);
 
-  console.timeEnd();
+  console.timeEnd('rarities');
 
   return res.status(200).json({nightmares: allNightmares, attributes: allAttributes, tags: allTags, rarities: allRarities});
 })

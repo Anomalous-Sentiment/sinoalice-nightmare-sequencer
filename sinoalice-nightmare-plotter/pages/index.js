@@ -15,10 +15,10 @@ export default function Home() {
   const [serverNightmares, updateServerNightmares] = useState(null)
   const [globalNightmares, updateGlobalNightmares] = useState(null)
   const [jpnightmares, updateJpNightmares] = useState(null)
-  const [iconKey, setIconKey] = useState('IconEN') 
-  const [displayNameKey, setDisplayNameKey] = useState('NameEN')
-  const [toolTipSkillNameKey, setToolTipSkillNameKey] = useState('GvgSkillEN')
-  const [toolTipDescriptionKey, setToolTipDescriptionKey] = useState('GvgSkillDetailEN')
+  const [iconKey, setIconKey] = useState('en_icon_url') 
+  const [displayNameKey, setDisplayNameKey] = useState('en_name')
+  const [toolTipSkillNameKey, setToolTipSkillNameKey] = useState('en_colo_skill_name')
+  const [toolTipDescriptionKey, setToolTipDescriptionKey] = useState('en_colo_skill_desc')
   const timelineStateRef = useRef();
   const selectedNightmaresStateRef = useRef();
   const [selectedNightmares, setSelected] = useState([])
@@ -79,9 +79,11 @@ export default function Home() {
     fetch("http://localhost:3001/")
     .then(response => response.json())
     .then((json) => {
+      console.log('Retrieved')
       filterByServer(json["nightmares"]);
       updateServerNightmares(globalNightmares)
-    });
+    })
+    .catch(err => console.log(err));
   }
 
   //Function called when a nightmare clicke/selected
@@ -90,8 +92,8 @@ export default function Home() {
     console.log("Entered")
     let prepRow = null;
     let durRow = null;
-    let prepTime = parseInt(selectedNightmare['GvgSkillLead']);
-    let durTime = parseInt(selectedNightmare['GvgSkillDur']);
+    let prepTime = selectedNightmare['prep_time'];
+    let durTime = selectedNightmare['effective_time'];
     let previousNightmareEndTime = null;
     //Check if this is the first nightmare in the timeline
     if (selectedNightmaresStateRef.current.length == 0)
@@ -122,7 +124,7 @@ export default function Home() {
     newRows = [...timelineStateRef.current, prepRow]
     
     //Check if there is an effective duration
-    if(selectedNightmare['GvgSkillDur'] != '0')
+    if(selectedNightmare['effective_time'] != '0')
     {
       //Add active duration row on after end of prep time
       durRow = [selectedNightmare[displayNameKey], "Active", currentNightmarePrepEndTime.toJSDate(), currentNightmareEndTime.toJSDate()]
@@ -150,8 +152,8 @@ export default function Home() {
   //Function called when nightmare deselected/removed
   function onRemove(deselectedNightmare)
   {
-    let prepTime = parseInt(deselectedNightmare['GvgSkillLead']);
-    let durTime = parseInt(deselectedNightmare['GvgSkillDur']);
+    let prepTime = deselectedNightmare['prep_time'];
+    let durTime = deselectedNightmare['effective_time'];
     let newRows = [...shinmaTimes];
     let filteredNightmares = null;
 
@@ -178,10 +180,10 @@ export default function Home() {
       //Add prep row to newrows array
       newRows.push(prepRow);
 
-      if (nightmare['GvgSkillDur'] != '0')
+      if (nightmare['effective_time'] != '0')
       {
         //Add dur row if there is a active duration
-        durRow = [nightmare[displayNameKey], "Active", prepRow[3], DateTime.fromJSDate(prepRow[3]).plus({ seconds: durTime }).toJSDate()]
+        durRow = [nightmare[displayNameKey], "Active", prepRow[3], DateTime.fromJSDate(prepRow[3]).plus({ seconds: nightmare['effective_time'] }).toJSDate()]
         newRows.push(durRow)
       }
     })
@@ -197,7 +199,7 @@ export default function Home() {
   function filterByServer(unfilteredNightmares)
   {
     //filter by global nightmares
-    updateGlobalNightmares(unfilteredNightmares.filter(nightmare => nightmare['Global'] == true))
+    updateGlobalNightmares(unfilteredNightmares.filter(nightmare => nightmare['global'] == true))
 
     //filter by jp nightmares
     updateJpNightmares(unfilteredNightmares)
@@ -210,18 +212,18 @@ export default function Home() {
     if (newServer == 'Global')
     {
       updateServerNightmares(globalNightmares)
-      setIconKey('IconEN')
-      setDisplayNameKey('NameEN')
-      setToolTipSkillNameKey('GvgSkillEN')
-      setToolTipDescriptionKey('GvgSkillDetailEN')
+      setIconKey('en_icon_url')
+      setDisplayNameKey('en_name')
+      setToolTipSkillNameKey('en_colo_skill_name')
+      setToolTipDescriptionKey('en_colo_skill_desc')
     }
     else
     {
       updateServerNightmares(jpnightmares)
-      setIconKey('Icon')
-      setDisplayNameKey('Name')
-      setToolTipSkillNameKey('GvgSkill')
-      setToolTipDescriptionKey('GvgSkillDetail')
+      setIconKey('jp_icon_url')
+      setDisplayNameKey('jp_name')
+      setToolTipSkillNameKey('jp_colo_skill_name')
+      setToolTipDescriptionKey('jp_colo_skkill_desc')
     }
   }
 
