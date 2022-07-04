@@ -15,9 +15,9 @@ VALUES
     (6, 'L');
 
 -- Initialise tags table
-INSERT INTO tags (tag, description)
+INSERT INTO tags (tag_id, tag, description)
 VALUES
-    ('P.Atk Buff', 'Buffs or increases physical attack'),
-    ('M.Atk Buff', 'Buffs or increases magical attack'),
-    ('M.Def Buff', 'Buffs or increases magical defense'),
-    ('P.Def Buff', 'Buffs or increases physica defense');
+    (0, 'P.Atk Buff', 'Buffs or increases physical attack'),
+    (1, 'M.Atk Buff', 'Buffs or increases magical attack'),
+    (2, 'P.Def Buff', 'Buffs or increases physical defense'),
+    (3, 'M.Def Buff', 'Buffs or increases magical defense');
