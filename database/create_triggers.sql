@@ -16,3 +16,12 @@ CREATE TRIGGER on_rank_update
     FOR EACH ROW
     WHEN ( OLD.* IS DISTINCT FROM NEW.* )
     EXECUTE PROCEDURE public.update_rank_time_column();
+
+DROP TRIGGER IF EXISTS on_base_skill_update ON pure_colo_skill_names;
+
+-- Trigger for updating the update_at field when rank base skills are updated
+CREATE TRIGGER on_base_skill_update
+    BEFORE UPDATE ON pure_colo_skill_names
+    FOR EACH ROW
+    WHEN ( OLD.* IS DISTINCT FROM NEW.* )
+    EXECUTE PROCEDURE public.update_skill_time_column();

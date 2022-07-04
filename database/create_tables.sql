@@ -20,9 +20,10 @@ CREATE TABLE element_attributes
 DROP TABLE IF EXISTS tags;
 CREATE TABLE tags
 (
+    tag_id SMALLINT,
     tag VARCHAR,
     description VARCHAR,
-    PRIMARY KEY (tag)
+    PRIMARY KEY (tag_id)
 );
 
 DROP TABLE IF EXISTS ranks;
@@ -86,24 +87,24 @@ CREATE TABLE nightmares
 DROP TABLE IF EXISTS nightmare_tag_relations;
 CREATE TABLE nightmare_tag_relations
 (
-    tag VARCHAR,
+    tag_id SMALLINT,
     jp_name VARCHAR,
     rarity_id SMALLINT,
     CONSTRAINT fk_nightmare_relation_tag
-        FOREIGN KEY (tag) REFERENCES tags (tag),
+        FOREIGN KEY (tag_id) REFERENCES tags (tag_id),
     CONSTRAINT fk_nightmare_relation_nightmare
         FOREIGN KEY (jp_name, rarity_id) REFERENCES nightmares (jp_name, rarity_id),
-    PRIMARY KEY (tag, jp_name, rarity_id)
+    PRIMARY KEY (tag_id, jp_name, rarity_id)
 );
 
 DROP TABLE IF EXISTS skill_tag_relations;
 CREATE TABLE skill_tag_relations
 (
-    tag VARCHAR,
+    tag_id SMALLINT,
     jp_colo_skill_name VARCHAR,
     CONSTRAINT fk_skill_relation_tag
-        FOREIGN KEY (tag) REFERENCES tags (tag),
+        FOREIGN KEY (tag_id) REFERENCES tags (tag_id),
     CONSTRAINT fk_skill_relation_skill  
         FOREIGN KEY (jp_colo_skill_name) REFERENCES pure_colo_skill_names (jp_colo_skill_name),
-    PRIMARY KEY (tag, jp_colo_skill_name)
+    PRIMARY KEY (tag_id, jp_colo_skill_name)
 );
