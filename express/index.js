@@ -84,7 +84,7 @@ app.listen(port, async() => {
     console.log(uniqueRanks)
 
     //Testing update triggers
-    //uniqueRanks[uniqueRanks.length - 1] = {jp_rank: '肆/神速', en_rank: 'Testing update trigger'}
+    uniqueRanks[uniqueRanks.length - 1] = {jp_rank: '肆/神速', en_rank: 'Testing update trigger'}
 
     //Insert ranks into database
     const {error: rankUpdateError} = await supabase.from('ranks')
