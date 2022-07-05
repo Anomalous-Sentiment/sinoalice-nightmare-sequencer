@@ -12,9 +12,13 @@ VALUES
     (7, '偽リハ鎧ヲ破壊スル'), -- False destruction, debuff
     (21, '偽リハ鎧ヲ破壊スル'), -- False destruction, pdef debuff
     (15, '叫声ハ炎熱ノ壁トナル'), -- Engulfing shout, reduce fire
-    (14, '号令ハ疾風ノ加護トナル'), -- Gale blessing, wind buff
+    (27, '叫声ハ炎熱ノ壁トナル'), -- Engulfing shout, reduce fire
+    (26, '号令ハ疾風ノ加護トナル'), -- Gale blessing, wind buff
+    (14, '号令ハ疾風ノ加護トナル'), -- Gale blessing, element buff
     (15, '呟キハ流水ノ壁トナル'), -- Cry of the damned, reduce water
+    (28, '呟キハ流水ノ壁トナル'), -- Cry of the damned, reduce water
     (15, '命令ハ疾風ノ壁トナル'), -- Soothing command, reduce wind
+    (29, '命令ハ疾風ノ壁トナル'), -- Soothing command, reduce wind
     (16, '咆哮ハ反撃ノ狼煙トナル'), -- Defiant roar, disadvantage
     (6, '唱歌ハ忠義ノ刃トナル'), -- Song of camaraderie, buff
     (0, '唱歌ハ忠義ノ刃トナル'), -- Song of camaraderie, patk buff
@@ -23,8 +27,10 @@ VALUES
     (0, '唱歌ハ裏切リノ刃トナル'), -- Song of betrayal, patk buff
     (1, '唱歌ハ裏切リノ刃トナル'), -- Song of betrayal, matk buff
     (18, '嘆息ハ援護ヲ妨ゲル'), -- Hindering wail, support skill rate down
+    (25, '囁キハ流水ノ加護トナル'), -- Aqueous blessing, water buff
     (14, '囁キハ流水ノ加護トナル'), -- Aqueous blessing, water buff
     (4, '妖精王ハ魔力ヲ供給スル'), -- Fairy king magic, reduce sp
+    (24, '怒号ハ炎熱ノ加護トナル'), -- Combustive blessing, fire buff
     (14, '怒号ハ炎熱ノ加護トナル'), -- Combustive blessing, fire buff
     (7, '怨嗟ハ刃ヲ脆ク鈍ラセル'), -- Begrudging blade, patk reduce
     (19, '怨嗟ハ刃ヲ脆ク鈍ラセル'), -- Begrudging blade, patk reduce
