@@ -23,6 +23,9 @@ export default function Home() {
   const selectedNightmaresStateRef = useRef();
   const [selectedNightmares, setSelected] = useState([])
 
+  const prepTimeKey = 'prep_time';
+  const effectTimeKey = 'effective_time';
+
   const columns = [
     { type: "string", id: "nightmare"},
     { type: "string", id: "state"},
@@ -152,8 +155,6 @@ export default function Home() {
   //Function called when nightmare deselected/removed
   function onRemove(deselectedNightmare)
   {
-    let prepTime = deselectedNightmare['prep_time'];
-    let durTime = deselectedNightmare['effective_time'];
     let newRows = [...shinmaTimes];
     let filteredNightmares = null;
 
@@ -169,12 +170,12 @@ export default function Home() {
       if (index == 0)
       {
         //First nightmare in list, start at time 0
-        prepRow = [nightmare[displayNameKey], "Prep", now.toJSDate(), now.plus({ seconds: prepTime }).toJSDate()]        
+        prepRow = [nightmare[displayNameKey], "Prep", now.toJSDate(), now.plus({ seconds: nightmare[prepTimeKey] }).toJSDate()]        
       }
       else
       {
         //Not the first nightmare. calculate time using previous row
-        prepRow = [nightmare[displayNameKey], "Prep", newRows[newRows.length - 1][3], DateTime.fromJSDate(newRows[newRows.length - 1][3]).plus({ seconds: prepTime }).toJSDate()]
+        prepRow = [nightmare[displayNameKey], "Prep", newRows[newRows.length - 1][3], DateTime.fromJSDate(newRows[newRows.length - 1][3]).plus({ seconds: nightmare[prepTimeKey] }).toJSDate()]
       }
 
       //Add prep row to newrows array
@@ -183,10 +184,13 @@ export default function Home() {
       if (nightmare['effective_time'] != '0')
       {
         //Add dur row if there is a active duration
-        durRow = [nightmare[displayNameKey], "Active", prepRow[3], DateTime.fromJSDate(prepRow[3]).plus({ seconds: nightmare['effective_time'] }).toJSDate()]
+        durRow = [nightmare[displayNameKey], "Active", prepRow[3], DateTime.fromJSDate(prepRow[3]).plus({ seconds: nightmare[effectTimeKey] }).toJSDate()]
         newRows.push(durRow)
       }
     })
+
+    //Update selected nightmares
+    setSelected(filteredNightmares)
 
     //Update timeline rows
     setTimelineRows(newRows)
@@ -211,19 +215,19 @@ export default function Home() {
     //change the filter to filter by new server
     if (newServer == 'Global')
     {
-      updateServerNightmares(globalNightmares)
       setIconKey('en_icon_url')
       setDisplayNameKey('en_name')
       setToolTipSkillNameKey('en_colo_skill_name')
       setToolTipDescriptionKey('en_colo_skill_desc')
+      updateServerNightmares(globalNightmares)
     }
     else
     {
-      updateServerNightmares(jpnightmares)
       setIconKey('jp_icon_url')
       setDisplayNameKey('jp_name')
       setToolTipSkillNameKey('jp_colo_skill_name')
       setToolTipDescriptionKey('jp_colo_skkill_desc')
+      updateServerNightmares(jpnightmares)
     }
   }
 
@@ -256,6 +260,12 @@ export default function Home() {
       <Tab eventKey="elemental" title="Elemental Nightmares">
       </Tab>
       <Tab eventKey="bells" title="Bells">
+      </Tab>
+      <Tab eventKey="sp_recovery" title="SP Recovery">
+      </Tab>
+      <Tab eventKey="sp_reduction" title="SP Reduction">
+      </Tab>
+      <Tab eventKey="weapon_effect" title="Weapon Effectiveness">
       </Tab>
       <Tab eventKey="reset" title="Gear Reset">
       </Tab>

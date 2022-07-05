@@ -25,5 +25,3 @@ CREATE TRIGGER on_base_skill_update
     FOR EACH ROW
     WHEN ( OLD.* IS DISTINCT FROM NEW.* )
     EXECUTE PROCEDURE public.update_skill_time_column();
-
-DROP TRIGGER IF EXISTS on_nightmare_update ON nightmares;

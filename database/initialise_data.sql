@@ -50,7 +50,7 @@ VALUES
     (26, 'Wind Buff', 'Increases wind weapon effectiveness'),
     (27, 'Fire Debuff', 'Decreases fire weapon effectiveness'),
     (28, 'Water Debuff', 'Decreases water weapon effectiveness'),
-    (29, 'Wind Debuff', 'Decreases wind weapon effectiveness'),
+    (29, 'Wind Debuff', 'Decreases wind weapon effectiveness')
 ON CONFLICT (tag_id) 
-    DO UPDATE SET tags.tag = EXCLUDED.tag, tags.description = EXCLUDED.description;
+    DO UPDATE SET tag = EXCLUDED.tag, description = EXCLUDED.description;
 

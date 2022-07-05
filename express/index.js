@@ -62,10 +62,10 @@ app.get('/', async(req, res) => {
 
   dbRequests.push(nightmareRequest, elementRequest, tagRequest, rarityRequest);
 
-  console.time('Requests start')
+  console.time('DB Requests Timer')
   //Wait or all concurrent requests to complete and get their returned values
   let [{data: allNightmares}, {data: allAttributes}, {data: allTags}, {data: allRarities}] = await Promise.all(dbRequests);
-  console.timeEnd('Requests start')
+  console.timeEnd('DB Requests Timer')
 
 
   //Return the values obtained from the database
