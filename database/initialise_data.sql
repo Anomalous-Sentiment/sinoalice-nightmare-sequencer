@@ -4,7 +4,9 @@ INSERT INTO element_attributes (attribute_id, attribute)
 VALUES
     (1, 'Fire'),
     (2, 'Water'),
-    (3, 'Wind');
+    (3, 'Wind')
+ON CONFLICT (attribute_id) DO NOTHING;
+
 
 -- Initialise rarities table
 INSERT INTO rarities (rarity_id, rarity)
@@ -12,9 +14,11 @@ VALUES
     (3, 'A'),
     (4, 'S'),
     (5, 'SS/SR'),
-    (6, 'L');
+    (6, 'L')
+ON CONFLICT (rarity_id) DO NOTHING;
 
--- Initialise tags table
+
+-- Initialise tags table. If conflict, update the tag name and description
 INSERT INTO tags (tag_id, tag, description)
 VALUES
     (0, 'P.Atk Buff', 'Buffs or increases physical attack'),
@@ -41,3 +45,12 @@ VALUES
     (21, 'P.Def Debuff', 'Debuffs or decreases physical defense'),
     (22, 'M.Def Debuff', 'Debuffs or decreases magical defense'),
     (23, 'Gear Reset', 'Increases number of times players can change gear sets'),
+    (24, 'Fire Buff', 'Increases fire weapon effectiveness'),
+    (25, 'Water Buff', 'Increases water weapon effectiveness'),
+    (26, 'Wind Buff', 'Increases wind weapon effectiveness'),
+    (27, 'Fire Debuff', 'Decreases fire weapon effectiveness'),
+    (28, 'Water Debuff', 'Decreases water weapon effectiveness'),
+    (29, 'Wind Debuff', 'Decreases wind weapon effectiveness'),
+ON CONFLICT (tag_id) 
+    DO UPDATE SET tags.tag = EXCLUDED.tag, tags.description = EXCLUDED.description;
+
