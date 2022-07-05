@@ -55,6 +55,7 @@ export default function NightmareImageList(props) {
     })
 
     useEffect(() => {
+      console.log('List: ', props.list)
       if (props.list != null)
       {
         let newList = props.list.map((nightmare, index, arr) => {
