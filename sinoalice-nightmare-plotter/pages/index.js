@@ -23,6 +23,9 @@ export default function Home() {
   const selectedNightmaresStateRef = useRef();
   const [selectedNightmares, setSelected] = useState([])
 
+    // Get the current time. Useing state only so that it's maintained across re-renders, and so it doesn't get a new time if re-rendering after a day
+  const [now, setTime] = useState(DateTime.now().startOf('day'))
+
   const prepTimeKey = 'prep_time';
   const effectTimeKey = 'effective_time';
 
@@ -32,8 +35,7 @@ export default function Home() {
     { type: "date", id: "Start" },
     { type: "date", id: "End" },
   ]
-  // Get the current time
-  const now = DateTime.now().startOf('hour');
+
 
   //Define demon/shinma appearance times
   const shinmaTimes = [

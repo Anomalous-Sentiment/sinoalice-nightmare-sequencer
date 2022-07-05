@@ -30,7 +30,7 @@ export default function NightmareImageList(props) {
     {
       console.log(parseInt(window.innerWidth))
         //Calculate number of columns based on window size and update
-        setColumns(parseInt(window.innerWidth / 90))
+        setColumns(parseInt(window.innerWidth / 90) - 2)
     }
     
 
