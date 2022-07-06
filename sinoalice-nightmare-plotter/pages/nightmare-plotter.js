@@ -261,14 +261,17 @@ export default function NightmarePlotter() {
       <Tab eventKey="debuff" title="Debuff">
       </Tab>
       <Tab eventKey="elemental" title="Elemental Nightmares">
+      <NightmareImageList list={serverNightmares ? serverNightmares.filter(nm => nm['applied_tags'].includes('Elemental Buff')) : null} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
       </Tab>
       <Tab eventKey="bells" title="Bells">
       </Tab>
       <Tab eventKey="sp_recovery" title="SP Recovery">
+      <NightmareImageList list={serverNightmares ? serverNightmares.filter(nm => nm['applied_tags'].includes('SP Recovery')) : null} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
       </Tab>
       <Tab eventKey="sp_reduction" title="SP Reduction">
       </Tab>
       <Tab eventKey="weapon_effect" title="Weapon Effectiveness">
+      <NightmareImageList list={serverNightmares ? serverNightmares.filter(nm => nm['applied_tags'].includes('Reduce Weapon Effect')) : null} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
       </Tab>
       <Tab eventKey="reset" title="Gear Reset">
       </Tab>

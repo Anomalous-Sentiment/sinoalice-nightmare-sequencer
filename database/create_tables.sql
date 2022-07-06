@@ -17,13 +17,25 @@ CREATE TABLE element_attributes
     PRIMARY KEY (attribute_id)
 );
 
-DROP TABLE IF EXISTS tags;
-CREATE TABLE tags
+DROP TABLE IF EXISTS major_categories;
+CREATE TABLE major_categories
 (
-    tag_id SMALLINT NOT NULL,
-    tag VARCHAR NOT NULL,
+    major_tag_id SMALLINT NOT NULL,
+    major_tag VARCHAR NOT NULL,
     description VARCHAR NOT NULL,
-    PRIMARY KEY (tag_id)
+    PRIMARY KEY (major_tag_id)
+);
+
+DROP TABLE IF EXISTS sub_categories;
+CREATE TABLE sub_categories
+(
+    sub_tag_id SMALLINT NOT NULL,
+    major_tag_id SMALLINT NOT NULL,
+    sub_tag VARCHAR NOT NULL,
+    description VARCHAR NOT NULL,
+    CONSTRAINT fk_major_tag
+        FOREIGN KEY (major_tag_id) REFERENCES major_categories (major_tag_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (sub_tag_id)
 );
 
 DROP TABLE IF EXISTS ranks;
@@ -83,7 +95,7 @@ CREATE TABLE nightmares
         FOREIGN KEY (rarity_id) REFERENCES rarities (rarity_id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (jp_name, rarity_id)
 );
-
+/*
 DROP TABLE IF EXISTS nightmare_tag_relations;
 CREATE TABLE nightmare_tag_relations
 (
@@ -96,15 +108,16 @@ CREATE TABLE nightmare_tag_relations
         FOREIGN KEY (jp_name, rarity_id) REFERENCES nightmares (jp_name, rarity_id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (tag_id, jp_name, rarity_id)
 );
+*/
 
 DROP TABLE IF EXISTS skill_tag_relations;
 CREATE TABLE skill_tag_relations
 (
-    tag_id SMALLINT NOT NULL,
+    sub_tag_id SMALLINT NOT NULL,
     jp_colo_skill_name VARCHAR NOT NULL,
     CONSTRAINT fk_skill_relation_tag
-        FOREIGN KEY (tag_id) REFERENCES tags (tag_id),
+        FOREIGN KEY (sub_tag_id) REFERENCES sub_categories (sub_tag_id),
     CONSTRAINT fk_skill_relation_skill  
         FOREIGN KEY (jp_colo_skill_name) REFERENCES pure_colo_skill_names (jp_colo_skill_name) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (tag_id, jp_colo_skill_name)
+    PRIMARY KEY (sub_tag_id, jp_colo_skill_name)
 );

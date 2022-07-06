@@ -52,7 +52,7 @@ app.get('/', async(req, res) => {
 
   //Get all possible tags
   const tagRequest = supabase
-  .from('tags')
+  .from('major_categories')
   .select()
 
   //Get all rarities
