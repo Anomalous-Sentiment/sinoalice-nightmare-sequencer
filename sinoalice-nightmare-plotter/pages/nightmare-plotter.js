@@ -10,6 +10,7 @@ import ToggleButton from 'react-bootstrap/ToggleButton'
 
 
 export default function NightmarePlotter() {
+  const [jsonData, setJsonData] = useState(null);
   const [serverNightmares, updateServerNightmares] = useState(null)
   const [globalNightmares, updateGlobalNightmares] = useState(null)
   const [jpnightmares, updateJpNightmares] = useState(null)
@@ -21,6 +22,7 @@ export default function NightmarePlotter() {
   const selectedNightmaresStateRef = useRef();
   const [selectedNightmares, setSelected] = useState([])
   const [globalOnly, setGlobalServer] = useState(null)
+  const [categoryTabs, setCategoryTabs] = useState(null)
 
     // Get the current time. Useing state only so that it's maintained across re-renders, and so it doesn't get a new time if re-rendering after a day
   const [now, setTime] = useState(DateTime.now().startOf('day'))
@@ -77,18 +79,39 @@ export default function NightmarePlotter() {
   console.log('Rows:', timelineRows)
   const [data, setData] = useState([columns, ...timelineRows]);
 
-    //Run only once
+    //Run only once on first render
     useEffect(() => {
         //Use the backend address here
         fetch("http://localhost:3001/")
         .then(response => response.json())
         .then((json) => {
-        console.log('Retrieved', json)
         filterByServer(json["nightmares"]);
+        setJsonData(json);
 
         })
         .catch(err => console.log(err));
     }, [])
+
+  useEffect(() => {
+    if (jsonData != null)
+    {
+      //Get all major categories and generate tabs for each category
+      let tabList = jsonData['tags'].map(jsonObj => {
+        const majorTagName = jsonObj['major_tag'];
+        const subTagsList = jsonObj['sub_tags'];
+
+        return(
+          <Tab eventKey={majorTagName} title={majorTagName}>
+            <NightmareImageList list={serverNightmares ? serverNightmares.filter(nm => nm['major_tags'].includes(majorTagName)) : null} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
+          </Tab>
+        )
+      }, [jsonData])
+
+      //Set the tabs
+      setCategoryTabs(tabList);
+    }
+
+  })
 
 
   //Function called when a nightmare clicke/selected
@@ -251,30 +274,11 @@ export default function NightmarePlotter() {
           </ToggleButton>
       </ToggleButtonGroup>
 
-      <Tabs defaultActiveKey="all" id="uncontrolled-tab-example" className="mb-3">
+      <Tabs defaultActiveKey="other" id="uncontrolled-tab-example" className="mb-3">
       <Tab eventKey="all" title="All Nightmares">
         <NightmareImageList list={serverNightmares} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
       </Tab>
-      <Tab eventKey="buff" title="Buff">
-      <NightmareImageList list={serverNightmares ? serverNightmares.filter(nm => nm['applied_tags'].includes('Buff')) : null} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
-      </Tab>
-      <Tab eventKey="debuff" title="Debuff">
-      </Tab>
-      <Tab eventKey="elemental" title="Elemental Nightmares">
-      <NightmareImageList list={serverNightmares ? serverNightmares.filter(nm => nm['applied_tags'].includes('Elemental Buff')) : null} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
-      </Tab>
-      <Tab eventKey="bells" title="Bells">
-      </Tab>
-      <Tab eventKey="sp_recovery" title="SP Recovery">
-      <NightmareImageList list={serverNightmares ? serverNightmares.filter(nm => nm['applied_tags'].includes('SP Recovery')) : null} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
-      </Tab>
-      <Tab eventKey="sp_reduction" title="SP Reduction">
-      </Tab>
-      <Tab eventKey="weapon_effect" title="Weapon Effectiveness">
-      <NightmareImageList list={serverNightmares ? serverNightmares.filter(nm => nm['applied_tags'].includes('Reduce Weapon Effect')) : null} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
-      </Tab>
-      <Tab eventKey="reset" title="Gear Reset">
-      </Tab>
+      {categoryTabs}
       <Tab eventKey="other" title="Other" disabled>
       </Tab>
       <Tab eventKey="selected" title="Selected Nightmares">
