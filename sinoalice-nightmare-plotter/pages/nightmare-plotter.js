@@ -8,21 +8,38 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
 import ToggleButton from 'react-bootstrap/ToggleButton'
 
+const EN_LANG = {
+  icon: 'en_icon_url',
+  name: 'en_name',
+  skill_name: 'en_colo_skill_name',
+  skill_description: 'en_colo_skill_desc',
+  skill_rank: 'en_rank',
+  prep_time: 'prep_time',
+  dur_time: 'effective_time'
+};
+
+const JP_LANG = {
+  icon: 'jp_icon_url',
+  name: 'jp_name',
+  skill_name: 'jp_colo_skill_name',
+  skill_description: 'jp_colo_skill_desc',
+  skill_rank: 'jp_rank',
+  prep_time: 'prep_time',
+  dur_time: 'effective_time'
+};
 
 export default function NightmarePlotter() {
   const [jsonData, setJsonData] = useState(null);
   const [serverNightmares, updateServerNightmares] = useState(null)
   const [globalNightmares, updateGlobalNightmares] = useState(null)
   const [jpnightmares, updateJpNightmares] = useState(null)
-  const [iconKey, setIconKey] = useState('en_icon_url') 
-  const [displayNameKey, setDisplayNameKey] = useState('en_name')
-  const [toolTipSkillNameKey, setToolTipSkillNameKey] = useState('en_colo_skill_name')
-  const [toolTipDescriptionKey, setToolTipDescriptionKey] = useState('en_colo_skill_desc')
   const timelineStateRef = useRef();
   const selectedNightmaresStateRef = useRef();
   const [selectedNightmares, setSelected] = useState([])
   const [globalOnly, setGlobalServer] = useState(null)
   const [generalCategoryTabs, setCategoryTabs] = useState(null)
+  const [displayOptions, setDisplay] = useState(EN_LANG);
+
 
     // Get the current time. Useing state only so that it's maintained across re-renders, and so it doesn't get a new time if re-rendering after a day
   const [now, setTime] = useState(DateTime.now().startOf('day'))
@@ -79,18 +96,18 @@ export default function NightmarePlotter() {
   console.log('Rows:', timelineRows)
   const [data, setData] = useState([columns, ...timelineRows]);
 
-    //Run only once on first render
-    useEffect(() => {
-        //Use the backend address here
-        fetch("http://localhost:3001/")
-        .then(response => response.json())
-        .then((json) => {
-        filterByServer(json["nightmares"]);
-        setJsonData(json);
+  //Run only once on first render
+  useEffect(() => {
+      //Use the backend address here
+      fetch("http://localhost:3001/")
+      .then(response => response.json())
+      .then((json) => {
+      filterByServer(json["nightmares"]);
+      setJsonData(json);
 
-        })
-        .catch(err => console.log(err));
-    }, [])
+      })
+      .catch(err => console.log(err));
+  }, [])
 
   useEffect(() => {
     if (jsonData != null)
@@ -102,7 +119,10 @@ export default function NightmarePlotter() {
 
         return(
           <Tab eventKey={generalTagName} title={generalTagName}>
-            <NightmareImageList list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].includes(generalTagName)) : null} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
+            <NightmareImageList 
+            list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].includes(generalTagName)) : null} 
+            onClick={onSelection}
+            displayOptions={displayOptions} />
           </Tab>
         )
       }, [jsonData])
@@ -147,7 +167,7 @@ export default function NightmarePlotter() {
 
     
     //Add to selected list with appropriate prep time and duration
-    prepRow = [selectedNightmare[displayNameKey], "Prep", previousNightmareEndTime.toJSDate(), currentNightmarePrepEndTime.toJSDate()]
+    prepRow = [selectedNightmare[displayOptions['name']], "Prep", previousNightmareEndTime.toJSDate(), currentNightmarePrepEndTime.toJSDate()]
 
     newRows = [...timelineStateRef.current, prepRow]
     
@@ -155,7 +175,7 @@ export default function NightmarePlotter() {
     if(selectedNightmare['effective_time'] != '0')
     {
       //Add active duration row on after end of prep time
-      durRow = [selectedNightmare[displayNameKey], "Active", currentNightmarePrepEndTime.toJSDate(), currentNightmareEndTime.toJSDate()]
+      durRow = [selectedNightmare[displayOptions['name']], "Active", currentNightmarePrepEndTime.toJSDate(), currentNightmareEndTime.toJSDate()]
       newRows = [...newRows, durRow]
     }
 
@@ -178,18 +198,12 @@ export default function NightmarePlotter() {
     //Check if flag is set to show global nightmares only
     if (globalOnly)
     {
-      setIconKey('en_icon_url')
-      setDisplayNameKey('en_name')
-      setToolTipSkillNameKey('en_colo_skill_name')
-      setToolTipDescriptionKey('en_colo_skill_desc')
+      setDisplay(EN_LANG)
       updateServerNightmares(globalNightmares)
     }
     else
     {
-      setIconKey('jp_icon_url')
-      setDisplayNameKey('jp_name')
-      setToolTipSkillNameKey('jp_colo_skill_name')
-      setToolTipDescriptionKey('jp_colo_skkill_desc')
+      setDisplay(JP_LANG)
       updateServerNightmares(jpnightmares)
     }
   }, [globalOnly])
@@ -201,7 +215,7 @@ export default function NightmarePlotter() {
     let filteredNightmares = null;
 
     // Remove from selected list 
-    filteredNightmares = selectedNightmaresStateRef.current.filter(nightmare => nightmare[displayNameKey] != deselectedNightmare[displayNameKey])
+    filteredNightmares = selectedNightmaresStateRef.current.filter(nightmare => nightmare[displayOptions['name']] != deselectedNightmare[displayOptions['name']])
 
     // Recalculate timeline times according to modified selected nightmares list
     filteredNightmares.forEach((nightmare, index, array) => {
@@ -212,12 +226,12 @@ export default function NightmarePlotter() {
       if (index == 0)
       {
         //First nightmare in list, start at time 0
-        prepRow = [nightmare[displayNameKey], "Prep", now.toJSDate(), now.plus({ seconds: nightmare[prepTimeKey] }).toJSDate()]        
+        prepRow = [nightmare[displayOptions['name']], "Prep", now.toJSDate(), now.plus({ seconds: nightmare[displayOptions['prep_time']] }).toJSDate()]        
       }
       else
       {
         //Not the first nightmare. calculate time using previous row
-        prepRow = [nightmare[displayNameKey], "Prep", newRows[newRows.length - 1][3], DateTime.fromJSDate(newRows[newRows.length - 1][3]).plus({ seconds: nightmare[prepTimeKey] }).toJSDate()]
+        prepRow = [nightmare[displayOptions['name']], "Prep", newRows[newRows.length - 1][3], DateTime.fromJSDate(newRows[newRows.length - 1][3]).plus({ seconds: nightmare[prepTimeKey] }).toJSDate()]
       }
 
       //Add prep row to newrows array
@@ -226,7 +240,7 @@ export default function NightmarePlotter() {
       if (nightmare['effective_time'] != '0')
       {
         //Add dur row if there is a active duration
-        durRow = [nightmare[displayNameKey], "Active", prepRow[3], DateTime.fromJSDate(prepRow[3]).plus({ seconds: nightmare[effectTimeKey] }).toJSDate()]
+        durRow = [nightmare[displayOptions['name']], "Active", prepRow[3], DateTime.fromJSDate(prepRow[3]).plus({ seconds: nightmare[displayOptions['dur_time']] }).toJSDate()]
         newRows.push(durRow)
       }
     })
@@ -265,7 +279,7 @@ export default function NightmarePlotter() {
     <div>
       <Chart chartType="Timeline" data={data} width="100%" height="400px" options={options}/>
 
-      <ToggleButtonGroup name="servers" size="lg" className="mb-2" type="radio" defaultValue="Global" onChange={onServerchange}>
+      <ToggleButtonGroup name="servers" size="lg" className="mb-2" type="radio" defaultValue={true} onChange={onServerchange}>
           <ToggleButton id="global" value={true}>
             Global
           </ToggleButton>
@@ -276,16 +290,24 @@ export default function NightmarePlotter() {
 
       <Tabs defaultActiveKey="all" id="uncontrolled-tab-example" className="mb-3">
       <Tab eventKey="all" title="All Nightmares">
-        <NightmareImageList list={serverNightmares} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
+        <NightmareImageList list={serverNightmares} 
+        onClick={onSelection}
+        displayOptions={displayOptions}/>
       </Tab>
       {generalCategoryTabs}
-      <Tab eventKey="other" title="Other" disabled>
+      <Tab eventKey="other" title="Other">
+        <NightmareImageList 
+        list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].length == 0) : null} 
+        onClick={onSelection} 
+        displayOptions={displayOptions}/>
       </Tab>
       <Tab eventKey="selected" title="Selected Nightmares">
-      <NightmareImageList list={selectedNightmares} onClick={onRemove} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
+      <NightmareImageList 
+        list={selectedNightmares} 
+        onClick={onRemove} 
+        displayOptions={displayOptions}/>
       </Tab>
       </Tabs>
-
     </div>
 
   )

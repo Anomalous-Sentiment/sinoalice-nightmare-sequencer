@@ -8,7 +8,9 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function NightmareImageList(props) {
-    const [columns, setColumns] = useState(2)
+    const [columns, setColumns] = useState(2);
+    const [appliedFilterList, setFilters] = useState([]);
+
     const [imageList, updateImages] = useState(
         <ImageListItem key='0'>
         <Image
@@ -62,10 +64,10 @@ export default function NightmareImageList(props) {
         let newList = props.list.map((nightmare, index, arr) => {
           const renderTooltip = (props) => {
             return(
-              <Tooltip id={nightmare[props.displayName]}>
-              <b>{nightmare[props.toolTipSkillName]}</b>
+              <Tooltip id={nightmare[props.displayOptions['name']]}>
+              <b>{nightmare[props.displayOptions['skill_name']] + ' ' + nightmare[props.displayOptions['skill_rank']]}</b>
               <br/>
-              {nightmare[props.toolTipDescription]}
+              {nightmare[props.displayOptions['skill_description']]}
             </Tooltip>
             )
           }
@@ -74,13 +76,13 @@ export default function NightmareImageList(props) {
             <OverlayTrigger key={index} overlay={renderTooltip(props)}>
               <ImageListItem onClick={() => props.onClick(nightmare)} key={index} sx={{ width: 90, height: 90 }}>
                 <Image
-                  src={nightmare[props.iconKey]}
-                  alt={nightmare[props.displayName]}
+                  src={nightmare[props.displayOptions['icon']]}
+                  alt={nightmare[props.displayOptions['icon']]}
                   width='90'
                   height='90'
                 />
                 <ImageListItemBar
-                  title={nightmare[props.displayName]}
+                  title={nightmare[props.displayOptions['name']]}
                   position="below"
                 />
               </ImageListItem> 
