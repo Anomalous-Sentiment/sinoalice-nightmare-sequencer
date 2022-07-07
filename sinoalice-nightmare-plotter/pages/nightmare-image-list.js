@@ -35,9 +35,9 @@ export default function NightmareImageList(props) {
     
 
     //Run after render
-    useLayoutEffect(() => {
+    useEffect(() => {
         updateImageGridDimensions()
-    })
+    }, [])
     
     // Run on re-render
     useEffect(() => {
@@ -54,6 +54,7 @@ export default function NightmareImageList(props) {
       }
     })
 
+    //Update on re-render when list changes
     useEffect(() => {
       console.log('List: ', props.list)
       if (props.list != null)
