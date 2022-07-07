@@ -49,9 +49,13 @@ app.get('/', async(req, res) => {
   .from('element_attributes')
   .select()
 
+  //Get the general categories
+  const generalTagRequest = supabase
+  .from('general_major_relationships')
+  .select()
 
-  //Get all possible tags
-  const tagRequest = supabase
+  //Get the major categories
+  const majorTagRequest = supabase
   .from('major_sub_relationships')
   .select()
 
@@ -60,16 +64,16 @@ app.get('/', async(req, res) => {
   .from('rarities')
   .select()
 
-  dbRequests.push(nightmareRequest, elementRequest, tagRequest, rarityRequest);
+  dbRequests.push(nightmareRequest, elementRequest, generalTagRequest, majorTagRequest, rarityRequest);
 
   console.time('DB Requests Timer')
   //Wait or all concurrent requests to complete and get their returned values
-  let [{data: allNightmares}, {data: allAttributes}, {data: allTags}, {data: allRarities}] = await Promise.all(dbRequests);
+  let [{data: allNightmares}, {data: allAttributes}, {data: generalTags}, {data: majorTags}, {data: allRarities}] = await Promise.all(dbRequests);
   console.timeEnd('DB Requests Timer')
 
 
   //Return the values obtained from the database
-  return res.status(200).json({nightmares: allNightmares, attributes: allAttributes, tags: allTags, rarities: allRarities});
+  return res.status(200).json({nightmares: allNightmares, attributes: allAttributes, general_tags: generalTags, major_tags: majorTags, rarities: allRarities});
 })
 
 

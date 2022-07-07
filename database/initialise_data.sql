@@ -17,24 +17,38 @@ VALUES
     (6, 'L')
 ON CONFLICT (rarity_id) DO NOTHING;
 
--- Initialise tags table. If conflict, update the tag name and description
-INSERT INTO major_categories (major_tag_id, major_tag, description)
+
+-- Initialise general category table. If conflict, update the tag name and description
+INSERT INTO general_categories (general_tag_id, general_tag, description)
 VALUES
-    (0, 'Buff', 'Buffs or increases one or more stats'),
-    (1, 'Debuff', 'Debuffs or decreases one or more stats'),
-    (2, 'Elemental Buff', 'Increases effectiveness of weapons of a specified element'),
-    (3, 'Elemental Debuff', 'Decreases effectiveness of weapons of a specified element'),
-    (4, 'Elemental Bell', 'Increases element effectiveness and increases damage from opposing element'),
-    (5, 'Support Skill Rate Up', 'Increases activation rate of colosseum support skills'),
-    (6, 'Support Skill Rate Down', 'Decreases activation rate of colosseum support skills'),
-    (7, 'Gear Reset', 'Increases number of times players can change gear sets'),
-    (8, 'SP Recovery', 'Recovers SP'),
-    (9, 'SP Reduction', 'Reduces SP usage'),
-    (10, 'Increase Weapon Effect', 'Increases effectiveness of a weapon type'),
-    (11, 'Reduce Weapon Effect', 'Decreases effectiveness of a weapon type'),
-    (12, 'Disadvantage', 'Effective only when at a disadvantage')
+    (0, 'Buff & Debuff', 'Buffs or increases one or more stats'),
+    (1, 'Elemental', 'Increases effectiveness of weapons of a specified element'),
+    (2, 'Support Skill', 'Increases activation rate of colosseum support skills'),
+    (3, 'Gear Reset', 'Increases number of times players can change gear sets'),
+    (4, 'SP Usage', 'Affects SP'),
+    (5, 'Weapon Effectiveness', 'Affects effectiveness of a weapon type'),
+    (6, 'Disadvantage', 'Effective only when at a disadvantage')
+ON CONFLICT (general_tag_id) 
+    DO UPDATE SET general_tag = EXCLUDED.general_tag, description = EXCLUDED.description;
+
+-- Initialise tags table. If conflict, update the tag name and description
+INSERT INTO major_categories (major_tag_id, general_tag_id, major_tag, description)
+VALUES
+    (0, 0, 'Buff', 'Buffs or increases one or more stats'),
+    (1, 0, 'Debuff', 'Debuffs or decreases one or more stats'),
+    (2, 1, 'Elemental Buff', 'Increases effectiveness of weapons of a specified element'),
+    (3, 1, 'Elemental Debuff', 'Decreases effectiveness of weapons of a specified element'),
+    (4, 1, 'Elemental Bell', 'Increases element effectiveness and increases damage from opposing element'),
+    (5, 2, 'Support Skill Rate Up', 'Increases activation rate of colosseum support skills'),
+    (6, 2, 'Support Skill Rate Down', 'Decreases activation rate of colosseum support skills'),
+    (7, 3, 'Ally Gear Reset', 'Resets number of times allies can change gear sets'),
+    (8, 4, 'SP Recovery', 'Recovers SP'),
+    (9, 4, 'SP Reduction', 'Reduces SP usage'),
+    (10, 5, 'Increase Weapon Effect', 'Increases effectiveness of a weapon type'),
+    (11, 5, 'Reduce Weapon Effect', 'Decreases effectiveness of a weapon type'),
+    (12, 6, 'Disadv. Ally Effect', 'Ally effect only when at a disadvantage')
 ON CONFLICT (major_tag_id) 
-    DO UPDATE SET major_tag = EXCLUDED.major_tag, description = EXCLUDED.description;
+    DO UPDATE SET major_tag = EXCLUDED.major_tag, general_tag_id = EXCLUDED.general_tag_id, description = EXCLUDED.description;
 
 -- Initialise tags table. If conflict, update the tag name and description
 INSERT INTO sub_categories (sub_tag_id, major_tag_id, sub_tag, description)
@@ -55,7 +69,7 @@ VALUES
 --    (13, 10, '-', ''),
 --    (14, 2, '-', ''),
 --    (15, 3, '-', ''),
-    (16, 12, 'Disadvantage', 'Effective only when at a disadvantage'),
+    (16, 12, 'Disadv. Atk Wep Eff. Up', 'Effective only when at a disadvantage'),
     (17, 5, 'Support Skill Rate Up', 'Increases activation rate of colosseum support skills'),
     (18, 6, 'Support Skill Rate Down', 'Decreases activation rate of colosseum support skills'),
     (19, 1, 'P.Atk Debuff', 'Debuffs or decreases physical attack'),

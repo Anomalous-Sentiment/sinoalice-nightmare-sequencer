@@ -17,12 +17,24 @@ CREATE TABLE element_attributes
     PRIMARY KEY (attribute_id)
 );
 
+DROP TABLE IF EXISTS general_categories;
+CREATE TABLE general_categories
+(
+    general_tag_id SMALLINT NOT NULL,
+    general_tag VARCHAR NOT NULL,
+    description VARCHAR NOT NULL,
+    PRIMARY KEY (general_tag_id)
+);
+
 DROP TABLE IF EXISTS major_categories;
 CREATE TABLE major_categories
 (
     major_tag_id SMALLINT NOT NULL,
+    general_tag_id SMALLINT NOT NULL,
     major_tag VARCHAR NOT NULL,
     description VARCHAR NOT NULL,
+    CONSTRAINT fk_general_tag
+        FOREIGN KEY (general_tag_id) REFERENCES general_categories (general_tag_id),
     PRIMARY KEY (major_tag_id)
 );
 

@@ -22,7 +22,7 @@ export default function NightmarePlotter() {
   const selectedNightmaresStateRef = useRef();
   const [selectedNightmares, setSelected] = useState([])
   const [globalOnly, setGlobalServer] = useState(null)
-  const [categoryTabs, setCategoryTabs] = useState(null)
+  const [generalCategoryTabs, setCategoryTabs] = useState(null)
 
     // Get the current time. Useing state only so that it's maintained across re-renders, and so it doesn't get a new time if re-rendering after a day
   const [now, setTime] = useState(DateTime.now().startOf('day'))
@@ -96,13 +96,13 @@ export default function NightmarePlotter() {
     if (jsonData != null)
     {
       //Get all major categories and generate tabs for each category
-      let tabList = jsonData['tags'].map(jsonObj => {
-        const majorTagName = jsonObj['major_tag'];
-        const subTagsList = jsonObj['sub_tags'];
+      let tabList = jsonData['general_tags'].map(jsonObj => {
+        const generalTagName = jsonObj['general_tag'];
+        const majorTagsList = jsonObj['sub_tags'];
 
         return(
-          <Tab eventKey={majorTagName} title={majorTagName}>
-            <NightmareImageList list={serverNightmares ? serverNightmares.filter(nm => nm['major_tags'].includes(majorTagName)) : null} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
+          <Tab eventKey={generalTagName} title={generalTagName}>
+            <NightmareImageList list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].includes(generalTagName)) : null} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
           </Tab>
         )
       }, [jsonData])
@@ -278,7 +278,7 @@ export default function NightmarePlotter() {
       <Tab eventKey="all" title="All Nightmares">
         <NightmareImageList list={serverNightmares} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
       </Tab>
-      {categoryTabs}
+      {generalCategoryTabs}
       <Tab eventKey="other" title="Other" disabled>
       </Tab>
       <Tab eventKey="selected" title="Selected Nightmares">
