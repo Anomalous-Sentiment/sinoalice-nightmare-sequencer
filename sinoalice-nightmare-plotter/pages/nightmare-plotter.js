@@ -111,7 +111,7 @@ export default function NightmarePlotter() {
       setCategoryTabs(tabList);
     }
 
-  })
+  }, [jsonData, serverNightmares])
 
 
   //Function called when a nightmare clicke/selected
@@ -274,7 +274,7 @@ export default function NightmarePlotter() {
           </ToggleButton>
       </ToggleButtonGroup>
 
-      <Tabs defaultActiveKey="other" id="uncontrolled-tab-example" className="mb-3">
+      <Tabs defaultActiveKey="all" id="uncontrolled-tab-example" className="mb-3">
       <Tab eventKey="all" title="All Nightmares">
         <NightmareImageList list={serverNightmares} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
       </Tab>
