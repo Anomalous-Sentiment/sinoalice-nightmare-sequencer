@@ -5,24 +5,38 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function SubTabs(props)
 {
-    //props will have list of nightmares, and list of main categories
+    const [mainCategoryTabs, setTabs] = useState();
 
-    //Get list of main categories from props and create a tab for each
-    const tabs = props.mainCategories.map(category => {
-        //Pass in it's associated list of subcategories/filter options as well.
-        //Get it's subcategories/filter options
+    //props will have list of nightmares, and list of main categories, and displayOptions object
 
-        return (
-            <Tab eventKey={generalTagName} title={generalTagName}>
-                <NightmareImageList list={props.tabNightmares ? props.tabNightmares.filter(nm => nm['general_tags'].includes(generalTagName)) : null} onClick={onSelection} iconKey={iconKey} displayName={displayNameKey} toolTipSkillName={toolTipSkillNameKey} toolTipDescription={toolTipDescriptionKey}/>
-            </Tab>
-        )
-    })
+    useEffect(() => {
+        if (props.tabNightmares && props.displayOptions)
+        {
+            //Get list of main categories from props and create a tab for each
+            const tabs = props.mainCategories.map(category => {
+                //Pass in it's associated list of subcategories/filter options as well.
+                //Get it's subcategories/filter options
+                return (
+                    <Tab eventKey={generalTagName} title={generalTagName}>
+                        <NightmareImageList list={props.tabNightmares ? props.tabNightmares.filter(nm => nm['major_tags'].includes(category)) : null} 
+                        onClick={onSelection}
+                        displayOptions={props.displayOptions}
+                        />
+                    </Tab>
+                )
+            })
+            setTabs(tabs)
+            
+        }
+
+    }, [props.tabNightmares, props.displayOptions])
+
+
 
     return (
         <div>
             <Tabs>
-
+            {mainCategoryTabs}
             </Tabs>
         </div>
     )
