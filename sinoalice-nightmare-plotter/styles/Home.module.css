@@ -1,5 +1,6 @@
 .container {
-  padding: 0 2rem;
+  padding: 5rem 10rem;
+  border: 5px solid red;
 }
 
 .main {

@@ -11,6 +11,13 @@ a {
   text-decoration: none;
 }
 
+.btn{
+  border-color: none !important;
+  box-shadow: none !important;
+}
+
 * {
   box-sizing: border-box;
 }
+
+
