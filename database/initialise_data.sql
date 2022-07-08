@@ -17,6 +17,33 @@ VALUES
     (6, 'L')
 ON CONFLICT (rarity_id) DO NOTHING;
 
+-- Initialise rank table (Needed because ranks obtained from db are error prone)
+INSERT INTO ranks (jp_rank, en_rank)
+VALUES
+    ('Ⅰ', 'I'),
+    ('Ⅱ', 'II'),
+    ('Ⅲ', 'III'),
+    ('弐', 'II'),
+    ('参', 'III'),
+    ('壱', 'I'),
+    ('ⅡS', 'IIS'),
+    ('ⅢS', 'IIIS'),
+    ('Ⅳ', 'IV'),
+    ('弐/守', 'II/Guard'),
+    ('参/守', 'III/Guard'),
+    ('肆', 'IV'),
+    ('弐/短', 'II/Quick'),
+    ('参/短', 'III/Quick'),
+    ('ⅣS', 'IVS'),
+    ('参/物', ''),
+    ('肆/物', ''),
+    ('参/魔', ''),
+    ('肆/魔', ''),
+    ('参/神速', ''),
+    ('肆/神速', '')
+ON CONFLICT (jp_rank) DO
+    UPDATE SET en_rank = EXCLUDED.en_rank;
+
 
 -- Initialise general category table. If conflict, update the tag name and description
 INSERT INTO general_categories (general_tag_id, general_tag, description)

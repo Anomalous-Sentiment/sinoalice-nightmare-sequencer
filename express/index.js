@@ -102,17 +102,16 @@ app.listen(port, async() => {
 
     let jpEnSkillList = getjpEnSkillList(nightmareArray)
 
-    console.log(jpEnSkillList)
-
     const {error: pureColoSkillError} = await supabase.from('pure_colo_skill_names')
     .upsert(jpEnSkillList, { returning: 'minimal'})
 
     //Get a list of unique skill ranks
     let uniqueRanks = getRankList(nightmareArray);
 
-    //Insert ranks into database
+    //Insert ranks into database. Ignore duplicates, as this data may not be correct. 
+    // We do not want to overwrite correct data with incorrect data
     const {error: rankUpdateError} = await supabase.from('ranks')
-    .upsert(uniqueRanks, { returning: 'minimal'})  
+    .upsert(uniqueRanks, { returning: 'minimal', ignoreDuplicates: true})  
 
     //Get a list of colo skills (unique pure skills + rank combination)
     let coloSkillList = getColoSkillList(nightmareArray);
@@ -248,6 +247,25 @@ function getRankList(nightmareList)
     //Check if rank does not exist in rankList
     if (rankList.every(rank => (rank['jp_rank'] != nightmare['Rank'])))
     {
+      /* Not used. Infeasible to error check in code. Ranks now manually added in database instead.
+      //Extra error checking for ranks
+      const nightmaresWithRank = nightmareList.filter(innerNm => {
+        return innerNm['Rank'] == nightmare['Rank']
+      })
+
+      const rankDiff = []
+
+      //Iterate through nightmares with rank and find ones with differing EN ranks and add to rank diff
+      nightmaresWithRank.forEach(nm => {
+        if (rankDiff.every(rank => rank['RankEN'] != nm['RankEN']))
+        {
+          rankDiff.push({jp_rank: nm['Rank'], en_rank: nm['RankEN']})
+        }
+      })
+
+      console.log(rankDiff)
+      */
+
       const newRank = {};
       newRank['jp_rank'] = nightmare['Rank'];
       newRank['en_rank'] = nightmare['RankEN'];
@@ -371,6 +389,11 @@ function amendApiNightmareList(apiNightmares, scrapedNightmares)
 
         // rank is overwritten as well because the skill name changed, and may be different to what it was previously
         apiNightmare['RankEN'] = enNightmare['RankEN'];
+
+        if (enNightmare['NameEN'].includes('Delivery'))
+        {
+          console.log(enNightmare)
+        }
       }
     })
   })
