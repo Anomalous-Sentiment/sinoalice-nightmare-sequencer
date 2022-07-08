@@ -2,11 +2,13 @@ import { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import NightmareImageList from './nightmare-image-list'
 import { Chart } from "react-google-charts";
 import { DateTime } from "luxon";
+import TabContainer from 'react-bootstrap/TabContainer';
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
 import ToggleButton from 'react-bootstrap/ToggleButton'
+import SubTabs from './sub-tabs'
 
 const EN_LANG = {
   icon: 'en_icon_url',
@@ -93,7 +95,6 @@ export default function NightmarePlotter() {
     },
   };
 
-  console.log('Rows:', timelineRows)
   const [data, setData] = useState([columns, ...timelineRows]);
 
   //Run only once on first render
@@ -110,22 +111,24 @@ export default function NightmarePlotter() {
   }, [])
 
   useEffect(() => {
-    if (jsonData != null)
-    {
+    if (jsonData && serverNightmares)
+    {      
       //Get all major categories and generate tabs for each category
-      let tabList = jsonData['general_tags'].map(jsonObj => {
+      const tabList = jsonData['general_tags'].map((jsonObj, index, array) => {
         const generalTagName = jsonObj['general_tag'];
-        const majorTagsList = jsonObj['sub_tags'];
+        const majorTagsList = jsonData['major_tags'].filter(element => element['general_tag'] == generalTagName);
 
         return(
-          <Tab eventKey={generalTagName} title={generalTagName}>
-            <NightmareImageList 
-            list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].includes(generalTagName)) : null} 
+          <Tab key={generalTagName} eventKey={generalTagName} title={generalTagName}>
+            <SubTabs tabNightmares={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].includes(generalTagName)) : null}
+            displayOptions={displayOptions}
             onClick={onSelection}
-            displayOptions={displayOptions} />
+            mainCategories={majorTagsList}>
+            </SubTabs>
           </Tab>
+
         )
-      }, [jsonData])
+      })
 
       //Set the tabs
       setCategoryTabs(tabList);
@@ -288,7 +291,7 @@ export default function NightmarePlotter() {
           </ToggleButton>
       </ToggleButtonGroup>
 
-      <Tabs defaultActiveKey="all" id="uncontrolled-tab-example" className="mb-3">
+      <Tabs defaultActiveKey="all" id="general-tabs" className="mb-3">
       <Tab eventKey="all" title="All Nightmares">
         <NightmareImageList list={serverNightmares} 
         onClick={onSelection}
@@ -308,6 +311,7 @@ export default function NightmarePlotter() {
         displayOptions={displayOptions}/>
       </Tab>
       </Tabs>
+
     </div>
 
   )

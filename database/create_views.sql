@@ -32,10 +32,11 @@ CREATE OR REPLACE VIEW allNightmareDetails AS
 DROP VIEW IF EXISTS major_sub_relationships;
 -- View for getting all sub tags associated with a major tag
 CREATE VIEW major_sub_relationships AS
-    SELECT mj.major_tag_id, mj.major_tag, mj.description, ARRAY_REMOVE(ARRAY_AGG(sb.sub_tag), NULL) sub_tags
+    SELECT mj.major_tag_id, mj.major_tag, mj.description, gen.general_tag, ARRAY_REMOVE(ARRAY_AGG(sb.sub_tag), NULL) sub_tags
     FROM major_categories mj 
     LEFT JOIN sub_categories sb USING (major_tag_id)
-    GROUP BY mj.major_tag_id;
+    LEFT JOIN general_categories gen USING (general_tag_id)
+    GROUP BY mj.major_tag_id, gen.general_tag;
 
 DROP VIEW IF EXISTS general_major_relationships;
 -- View for getting all major tags associated with a general tag

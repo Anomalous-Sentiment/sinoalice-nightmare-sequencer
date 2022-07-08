@@ -5,6 +5,7 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import FilterBar from './filter-component';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function NightmareImageList(props) {
@@ -56,9 +57,16 @@ export default function NightmareImageList(props) {
       }
     })
 
+    //Update filter list component when filter list changes
+    useEffect(() => {
+      if (props.filterList)
+      {
+        setFilters(props.filterList)
+      }
+    }, [props.filterList])
+
     //Update on re-render when list changes
     useEffect(() => {
-      console.log('List: ', props.list)
       if (props.list != null)
       {
         let newList = props.list.map((nightmare, index, arr) => {
@@ -96,9 +104,21 @@ export default function NightmareImageList(props) {
 
     }, [props.list])
 
+    function changeFilters(newList)
+    {
+      console.log(newList)
+    }
+
   return (
+    <div>
+      <FilterBar filterList={props.filterList}
+      handleChange={changeFilters}>
+
+      </FilterBar>
     <ImageList cols={columns}>
       {imageList}
     </ImageList>
+    </div>
+
   );
 }
