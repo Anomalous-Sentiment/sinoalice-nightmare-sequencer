@@ -9,6 +9,7 @@ import FilterBar from './filter-component';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function NightmareImageList(props) {
+  const [nightmareList, setList] = useState()
     const [columns, setColumns] = useState(2);
     const [appliedFilterList, setFilters] = useState([]);
 
@@ -57,19 +58,19 @@ export default function NightmareImageList(props) {
       }
     })
 
-    //Update filter list component when filter list changes
-    useEffect(() => {
-      if (props.filterList)
-      {
-        setFilters(props.filterList)
-      }
-    }, [props.filterList])
-
     //Update on re-render when list changes
     useEffect(() => {
       if (props.list != null)
       {
-        let newList = props.list.map((nightmare, index, arr) => {
+        setList(props.list)
+      }
+
+    }, [props.list])
+
+    useEffect(() => {
+      if (nightmareList)
+      {
+        let newList = nightmareList.map((nightmare, index, arr) => {
           const renderTooltip = (props) => {
             return(
               <Tooltip id={nightmare[props.displayOptions['name']]}>
@@ -101,13 +102,25 @@ export default function NightmareImageList(props) {
   
         updateImages(newList)
       }
-
-    }, [props.list])
+    }, [nightmareList])
 
     function changeFilters(newList)
     {
       console.log(newList)
+      //Update the filter list
+      setFilters(newList)
     }
+
+    //Effect to run when filter list updated
+    useEffect(() => {
+      if (props.list && appliedFilterList)
+      {
+        //filter the nightmare list and update image list based on filtered nightmares
+        const filteredNms = props.list.filter(nm => appliedFilterList.every(filterTag => nm['applied_tags'].includes(filterTag)))
+
+        setList(filteredNms);
+      }
+    }, [appliedFilterList])
 
   return (
     <div>

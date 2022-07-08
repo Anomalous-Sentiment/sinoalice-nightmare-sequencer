@@ -19,7 +19,7 @@ export default function FilterBar(props) {
             //For each tag in the list, create a button and map a callback so that when clicked, will add/remove the tag from the list
             const filterList = props.filterList.map(filterValue => {
                 return (
-                    <ToggleButton id={filterValue} value={filterValue}>
+                    <ToggleButton key={filterValue} id={filterValue} value={filterValue}>
                     {filterValue}
                     </ToggleButton>
                 )

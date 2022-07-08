@@ -23,6 +23,7 @@ export default function SubTabs(props)
                         <NightmareImageList list={props.tabNightmares ? props.tabNightmares.filter(nm => nm['major_tags'].includes(category['major_tag'])) : null} 
                         onClick={props.onSelection}
                         displayOptions={props.displayOptions}
+                        filterList={filterOptions}
                         />
                     </Tab>
                 )
