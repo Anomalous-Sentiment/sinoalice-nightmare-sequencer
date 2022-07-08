@@ -106,6 +106,7 @@ app.listen(port, async() => {
     .upsert(jpEnSkillList, { returning: 'minimal'})
 
     //Get a list of unique skill ranks
+    // Note: This function may return an incorrect list of jp-en rank mapping. 
     let uniqueRanks = getRankList(nightmareArray);
 
     //Insert ranks into database. Ignore duplicates, as this data may not be correct. 
@@ -390,10 +391,6 @@ function amendApiNightmareList(apiNightmares, scrapedNightmares)
         // rank is overwritten as well because the skill name changed, and may be different to what it was previously
         apiNightmare['RankEN'] = enNightmare['RankEN'];
 
-        if (enNightmare['NameEN'].includes('Delivery'))
-        {
-          console.log(enNightmare)
-        }
       }
     })
   })
@@ -426,6 +423,7 @@ function getjpEnSkillList(apiNightmares)
       }
       else
       {
+
         //If none exists, set to empty string
         newTuple['en_colo_skill_name'] = '';
       }
@@ -444,13 +442,37 @@ function getColoSkillList(nightmares)
   let skillList = [];
 
   // Look through each nightmare to find unique skill+rank combinations
-  nightmares.forEach((nightmare) => {
+  nightmares.forEach((nightmare, index, array) => {
     //Check if unique skill (combination of pure skill and rank are unique)
     if (skillList.every(skill => (skill['jp_colo_skill_name'] != nightmare['GvgSkill']) || (skill['jp_rank'] != nightmare['Rank'])))
     {
       const newSkill = {};
       newSkill['jp_colo_skill_name'] = nightmare['GvgSkill'];
-      newSkill['en_colo_skill_desc'] = nightmare['GvgSkillDetailEN'];
+
+      //If no EN skill description
+      if (nightmare['GvgSkillDetailEN'] == '')
+      {
+        //Search for a nightmare with same skill name, and has description
+        const alt = array.find((value) => (value['GvgSkill'] == nightmare['GvgSkill']) && (value['Rank'] == nightmare['Rank']) && (value['GvgSkillDetailEN'] != ''))
+
+        if (alt)
+        {
+          console.log(alt)
+          //If alternative exists, use that nightmare's skill description instead
+          newSkill['en_colo_skill_desc'] = alt['GvgSkillDetailEN'];
+        }
+        else
+        {
+          //Else, use current nightmare's incomplete description
+          newSkill['en_colo_skill_desc'] = nightmare['GvgSkillDetailEN'];
+        }
+      }
+      else
+      {
+        //EN description is present. Use that description
+        newSkill['en_colo_skill_desc'] = nightmare['GvgSkillDetailEN'];
+      }
+
       newSkill['jp_colo_skill_desc'] = nightmare['GvgSkillDetail'];
       newSkill['prep_time'] = nightmare['GvgSkillLead'];
       newSkill['effective_time'] = nightmare['GvgSkillDur'];

@@ -17,7 +17,7 @@ VALUES
     (1, '唱歌ハ裏切リノ刃トナル'), -- Song of betrayal, matk buff
     (18, '嘆息ハ援護ヲ妨ゲル'), -- Hindering wail, support skill rate down
     (25, '囁キハ流水ノ加護トナル'), -- Aqueous blessing, water buff
-    (33, '妖精王ハ魔力ヲ供給スル'), -- Fairy king magic, reduce sp
+    (4, '妖精王ハ魔力ヲ供給スル'), -- Fairy king magic, reduce sp
     (24, '怒号ハ炎熱ノ加護トナル'), -- Combustive blessing, fire buff
     (19, '怨嗟ハ刃ヲ脆ク鈍ラセル'), -- Begrudging blade, patk reduce
     (20, '怨嗟ハ刃ヲ脆ク鈍ラセル'), -- Begrudging blade, matk reduce
@@ -37,7 +37,7 @@ VALUES
     (30, '炎精ハ魔力ヲ供給スル'), -- Infernal fairy magic, sp reduce
     (2, '祝福ハ堅固ナ鎧トナル'), -- Blessed armour, pdef buff
     (3, '祝福ハ堅固ナ鎧トナル'), -- Blessed armour, mdef buff
-    (29, '風精ハ魔力ヲ供給スル'), -- Zephyr fairy magic, sp reduce
+    (32, '風精ハ魔力ヲ供給スル'), -- Zephyr fairy magic, sp reduce
     (2, '祝福ハ強固ナ鎧トナル'), -- Enchanted armor, pdef buff
     (3, '祝福ハ強固ナ鎧トナル'), -- Enchanted armor, mdef buff
     (42, '血界ハ楽器ヲ拒ム'), -- World of silence, instru wep effect down
@@ -48,7 +48,7 @@ VALUES
     (10, '警鐘ハ散華ノ飛沫ヲ呼ブ'), -- For whom the bell splashes, water bell
     (34, '逆巻ク魔力ノ追風'), -- Reversal magic, sp recover
     (1, '真実ハ魔術ノ贄トナル'), -- Sacrifice of truth, matk buff
-    (33, '逆巻ク魔力ノ順風'), -- Magic order, sp recover
+    (35, '逆巻ク魔力ノ順風'), -- Magic order, sp recover
     (11, '警鐘ハ散華ノ風ヲ呼ブ'), -- Bell sounds a storm, wind bell
     (36, '血界ハ斬撃ヲ拒ム'), -- Rejecting the slash, blade hammer reduce
     (37, '血界ハ斬撃ヲ拒ム'), -- Rejecting the slash, blade hammer reduce

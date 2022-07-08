@@ -84,7 +84,7 @@ VALUES
     (1, 0, 'M.Atk Buff', 'Buffs or increases magical attack'),
     (2, 0, 'P.Def Buff', 'Buffs or increases physical defense'),
     (3, 0, 'M.Def Buff', 'Buffs or increases magical defense'),
---    (4, 9, '-', ''),
+    (4, 9, 'All SP Reduction', 'Reduces SP usage of all skills'),
 --    (5, 8, '-', ''),
 --    (6, 0, '-', ''),
 --    (7, 1, '-', ''),
