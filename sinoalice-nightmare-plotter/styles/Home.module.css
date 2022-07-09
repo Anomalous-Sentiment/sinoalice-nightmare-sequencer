@@ -1,7 +1,13 @@
 .container {
   padding: 5rem 10rem;
   border: 5px solid red;
+  background-color: aliceblue;
 }
+
+.maincontent{
+  background-color: rgb(232, 232, 232);
+}
+
 
 .main {
   min-height: 100vh;

@@ -90,8 +90,7 @@ export default function NightmarePlotter() {
     hAxis: {
       format: 'mm:ss',
       maxValue: now.plus({minutes: 20}).toJSDate(),
-      minValue: now.toJSDate(),
-      direction: '-1'
+      minValue: now.toJSDate()
     },
   };
 
@@ -103,6 +102,9 @@ export default function NightmarePlotter() {
       fetch("http://localhost:3001/")
       .then(response => response.json())
       .then((json) => {
+        const nightmares = json['nightmares']
+        //Initialise selected key field to false (for usage in image list)
+        nightmares.forEach(element => element['selected'] = false)
       filterByServer(json["nightmares"]);
       setJsonData(json);
 
@@ -122,7 +124,7 @@ export default function NightmarePlotter() {
           <Tab key={generalTagName} eventKey={generalTagName} title={generalTagName}>
             <SubTabs tabNightmares={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].includes(generalTagName)) : null}
             displayOptions={displayOptions}
-            onClick={onSelection}
+            onClick={onNightmareClick}
             mainCategories={majorTagsList}>
             </SubTabs>
           </Tab>
@@ -135,6 +137,33 @@ export default function NightmarePlotter() {
     }
 
   }, [jsonData, serverNightmares])
+
+  function onNightmareClick(nightmare)
+  {
+    //Check if nightmare is selected
+    if (!nightmare['selected'])
+    {
+      //Is selected. Call relevant function
+      onSelection(nightmare)
+    }
+    else
+    {
+      //Is not selected. Call deselection function
+      onRemove(nightmare)
+    }
+
+    //Set the nightmare's select field value to opposite value
+    const serverNightmaresCopy = [...serverNightmares];
+    serverNightmaresCopy.forEach(element => {
+      //This will affect non-evolved versions as well
+      if(element['jp_name'] == nightmare['jp_name'])
+      {
+        element['selected'] = !element['selected']
+      }
+    })
+
+    updateServerNightmares(serverNightmaresCopy);
+  }
 
 
   //Function called when a nightmare clicke/selected
@@ -168,7 +197,7 @@ export default function NightmarePlotter() {
     console.log(selectedNightmaresStateRef.current)
     console.log(timelineStateRef.current)
 
-    
+
     //Add to selected list with appropriate prep time and duration
     prepRow = [selectedNightmare[displayOptions['name']], "Prep", previousNightmareEndTime.toJSDate(), currentNightmarePrepEndTime.toJSDate()]
 
@@ -190,6 +219,8 @@ export default function NightmarePlotter() {
 
     setTimelineRows(newRows)
     setData([columns, ...newRows])
+
+
 
 
 
@@ -294,7 +325,7 @@ export default function NightmarePlotter() {
       <Tabs defaultActiveKey="all" id="general-tabs" className="mb-3">
       <Tab eventKey="all" title="All Nightmares">
         <NightmareImageList list={serverNightmares} 
-        onClick={onSelection}
+        onClick={onNightmareClick}
         displayOptions={displayOptions}/>
       </Tab>
       {generalCategoryTabs}
@@ -307,7 +338,7 @@ export default function NightmarePlotter() {
       <Tab eventKey="selected" title="Selected Nightmares">
       <NightmareImageList 
         list={selectedNightmares} 
-        onClick={onRemove} 
+        onClick={onNightmareClick} 
         displayOptions={displayOptions}/>
       </Tab>
       </Tabs>

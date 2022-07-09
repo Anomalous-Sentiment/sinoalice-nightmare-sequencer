@@ -32,6 +32,7 @@ export default function FilterBar(props) {
 
     return (
     <div>
+        <p>Filter buttons (May select multiiple at once):</p>
         <ToggleButtonGroup type="checkbox" defaultValue={[]} className="mb-2" onChange={props.handleChange}>
             {filterButtons}
         </ToggleButtonGroup>

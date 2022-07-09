@@ -15,16 +15,42 @@ a {
 }
 
 .btn{
+  margin: 5px;
+  color: white !important;
   border-color: none !important;
   box-shadow: none !important;
 }
 
+.selected {
+  filter: brightness(50%);
+}
+/*
 .mb-3{
-
+  background-color: rgb(146, 146, 146) !important;
 }
 
+.nav-link {
+  background-color: rgb(174, 174, 174) !important;
+  color: white !important;
+}
+
+.nav-link:hover {
+  background-color: blue !important;
+  color: white !important;
+}
+
+.nav-link:focus{
+  background-color: black !important;
+  color: white !important;
+}
+
+.nav-link:active{
+  background-color: black !important;
+  color: white !important;
+}
+*/
 * {
   box-sizing: border-box;
 }
 
-
+/**/
