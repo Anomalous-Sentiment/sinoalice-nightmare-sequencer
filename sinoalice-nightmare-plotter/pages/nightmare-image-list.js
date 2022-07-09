@@ -125,7 +125,6 @@ export default function NightmareImageList(props) {
     <div ref={ref}>
       <FilterBar filterList={props.filterList}
       handleChange={changeFilters}>
-
       </FilterBar>
     <ImageList cols={columns}>
       {imageList}

@@ -30,12 +30,20 @@ export default function FilterBar(props) {
 
     }, [props.filterList])
 
+    //This part deserves some explanation. Basically, if props.filterList exists, it will return the expression (a div containing the <p> text and filter buttons)
+    // Else, it will not return anything. Used so that the text isn't rendered when there are not filters to display
     return (
     <div>
-        <p>Filter buttons (May select multiiple at once):</p>
-        <ToggleButtonGroup type="checkbox" defaultValue={[]} className="mb-2" onChange={props.handleChange}>
-            {filterButtons}
-        </ToggleButtonGroup>
+        {props.filterList && 
+        <div>
+            <p>Filter buttons (May select multiiple at once):</p>
+            <ToggleButtonGroup type="checkbox" defaultValue={[]} className="mb-2" onChange={props.handleChange}>
+                {filterButtons}
+            </ToggleButtonGroup>
+        </div>
+
+        }
+
     </div>
     )
 }
