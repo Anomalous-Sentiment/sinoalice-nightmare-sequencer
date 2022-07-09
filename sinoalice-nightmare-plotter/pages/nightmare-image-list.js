@@ -1,17 +1,23 @@
 import * as React from 'react';
 import Image from 'next/image';
-import { useState, useEffect, useLayoutEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import FilterBar from './filter-component';
+import { useResizeDetector } from 'react-resize-detector';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function NightmareImageList(props) {
   const [nightmareList, setList] = useState()
     const [columns, setColumns] = useState(2);
     const [appliedFilterList, setFilters] = useState([]);
+    const {width, height, ref} = useResizeDetector()
+    const [dimensions, setDimensions] = useState({
+      height: 0,
+      width: 0
+    });
 
     const [imageList, updateImages] = useState(
         <ImageListItem key='0'>
@@ -30,23 +36,38 @@ export default function NightmareImageList(props) {
     )
 
     //Function for updating the image grid size based on window dimensions
-    function updateImageGridDimensions()
+    useEffect(() => {
+      if (dimensions.width != 0)
+      {
+        console.log('dim: ', dimensions)
+        setColumns(parseInt(dimensions.width / 90) - 1)
+
+      }
+    }, [dimensions])
+
+    function updateDimensions()
     {
-      console.log(parseInt(window.innerWidth))
-        //Calculate number of columns based on window size and update
-        setColumns(parseInt(window.innerWidth / 90) - 2)
+      if (width)
+      {
+        console.log('div height (tab?): ', parseInt(height))
+        console.log('div width: ', parseInt(width))
+        setDimensions({
+          height: parseInt(height),
+          width: parseInt(width)
+        })
+      }
+
     }
-    
 
     //Run after render
     useEffect(() => {
-        updateImageGridDimensions()
-    }, [])
+      updateDimensions()
+    }, [width])
     
     // Run on re-render
     useEffect(() => {
       function handleResize() {
-        updateImageGridDimensions()
+        updateDimensions()
       }
 
       //Add the listener
@@ -123,7 +144,7 @@ export default function NightmareImageList(props) {
     }, [appliedFilterList])
 
   return (
-    <div>
+    <div ref={ref}>
       <FilterBar filterList={props.filterList}
       handleChange={changeFilters}>
 

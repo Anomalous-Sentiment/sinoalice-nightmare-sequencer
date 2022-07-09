@@ -10,10 +10,17 @@ a {
   color: inherit;
   text-decoration: none;
 }
+.main-content{
+  border: 1px solid #dee2e6;
+}
 
 .btn{
   border-color: none !important;
   box-shadow: none !important;
+}
+
+.mb-3{
+
 }
 
 * {
