@@ -9,6 +9,7 @@ import FilterBar from './filter-component';
 import { useResizeDetector } from 'react-resize-detector';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
+import Grid from '@mui/material/Grid';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -159,9 +160,9 @@ export default function NightmareImageList(props) {
       onSelect={onSortingSelect}>
         {sortByList}
       </DropdownButton>
-      <ImageList cols={columns}>
+      <Grid container spacing={2} columns={columns}>
         {imageList}
-      </ImageList>
+      </Grid>
     </div>
 
   );

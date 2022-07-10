@@ -3,6 +3,7 @@ import ImageListItemBar from '@mui/material/ImageListItemBar';
 import { Fragment, memo } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Image from 'next/image';
+import Grid from '@mui/material/Grid';
 
 
 function ImageComponent(props)
@@ -22,21 +23,17 @@ function ImageComponent(props)
     return(
         <Fragment>
             <OverlayTrigger overlay={renderTooltip(props)}>
-                <ImageListItem 
-                onClick={() => props.onClick(props.nightmare)} 
-                sx={{ width: 90, height: 90 }} 
-                className={props.nightmare['selected'] ? 'selected' : ''}>
+            <Grid item>
                 <Image
-                    src={props.nightmare[props.displayOptions['icon']]}
-                    alt={props.nightmare[props.displayOptions['icon']]}
-                    width='90'
-                    height='90'
-                />
-                <ImageListItemBar
-                    title={props.nightmare[props.displayOptions['name']]}
-                    position="below"
-                />
-                </ImageListItem> 
+                        src={props.nightmare[props.displayOptions['icon']]}
+                        alt={props.nightmare[props.displayOptions['icon']]}
+                        width='90'
+                        height='90'
+                        onClick={() => props.onClick(props.nightmare)}
+                        className={props.nightmare['selected'] ? 'selected' : ''}
+                    />
+            </Grid>
+
             </OverlayTrigger>
         </Fragment>
 
