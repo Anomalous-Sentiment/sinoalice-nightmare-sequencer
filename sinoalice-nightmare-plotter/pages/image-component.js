@@ -6,15 +6,6 @@ import Image from 'next/image';
 
 export default function ImageComponent(props)
 {
-    //Create a state for the image to show whether it is selected or not.
-    const [selected, setSelected] = useState(false);
-
-    function onClick(nm)
-    {
-        setSelected(!selected)
-        props.onClick(nm)
-    }
-
     const renderTooltip = (props) => {
         return(
             <Tooltip id={props.nightmare[props.displayOptions['name']]}>
@@ -30,7 +21,7 @@ export default function ImageComponent(props)
     return(
         <Fragment>
             <OverlayTrigger overlay={renderTooltip(props)}>
-                <ImageListItem onClick={() => onClick(props.nightmare)} sx={{ width: 90, height: 90 }} className={props.nightmare['selected'] ? 'selected' : ''}>
+                <ImageListItem onClick={() => props.onClick(props.nightmare)} sx={{ width: 90, height: 90 }} className={props.nightmare['selected'] ? 'selected' : ''}>
                 <Image
                     src={props.nightmare[props.displayOptions['icon']]}
                     alt={props.nightmare[props.displayOptions['icon']]}

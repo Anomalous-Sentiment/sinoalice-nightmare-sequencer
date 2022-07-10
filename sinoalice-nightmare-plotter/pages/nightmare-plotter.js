@@ -283,7 +283,7 @@ export default function NightmarePlotter() {
     let filteredNightmares = null;
 
     // Remove from selected list 
-    filteredNightmares = selectedNightmaresStateRef.current.filter(nightmare => nightmare[displayOptions['name']] != deselectedNightmare[displayOptions['name']])
+    filteredNightmares = selectedNightmaresStateRef.current.filter(nightmare => nightmare['jp_name'] != deselectedNightmare['jp_name'])
 
     // Recalculate timeline times according to modified selected nightmares list
     filteredNightmares.forEach((nightmare, index, array) => {
