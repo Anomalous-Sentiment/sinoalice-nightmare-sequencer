@@ -92,12 +92,15 @@ export default function NightmarePlotter() {
 
   const [data, setData] = useState([columns, ...timelineRows]);
 
-  //Run only once on first render
   useEffect(() => {
-    //Initialise refs
+    //Initialise refs every render
     //These will need to be accessed by callbacks
     selectedNightmaresStateRef.current = selectedNightmares;
     timelineStateRef.current = timelineRows;
+  })
+
+  //Run only once on first render
+  useEffect(() => {
 
     //Use the backend address here
     fetch("http://localhost:3001/")
