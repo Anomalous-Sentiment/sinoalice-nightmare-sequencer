@@ -155,15 +155,18 @@ export default function NightmarePlotter() {
     {
       //nightmare may have a selected state = true, even if not in selectdNightmares list
       //If not in list, it is a nm with the same base skill name
-      if (selectedNightmares.some(element => element['jp_name'] == nightmare['jp_name']))
+      if (selectedNightmaresStateRef.current.some(element => element['jp_name'] == nightmare['jp_name']))
       {
         //In selected nm list. Call deselection function
         onRemove(nightmare)
       }
       else
       {
+        console.log(selectedNightmaresStateRef.current)
+        console.log(selectedNightmares)
+        console.log(nightmare)
         // Alert informing user which nightmare in list has the same skill
-        let sameSkillNm = selectedNightmares.find(element => element['jp_colo_skill_name'] == nightmare['jp_colo_skill_name'])
+        let sameSkillNm = selectedNightmaresStateRef.current.find(element => element['jp_colo_skill_name'] == nightmare['jp_colo_skill_name'])
 
         console.log('Nightmare: ', sameSkillNm[displayOptions['name']], ', has the same skill effect. Deselect this nightmare to select this nightmare.')
       }

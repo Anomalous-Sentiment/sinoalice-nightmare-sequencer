@@ -10,7 +10,6 @@ import { useResizeDetector } from 'react-resize-detector';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function NightmareImageList(props) {
-  const [nightmareList, setList] = useState()
     const [columns, setColumns] = useState(2);
     const [appliedFilterList, setFilters] = useState([]);
     const {width, height, ref} = useResizeDetector()
@@ -63,36 +62,6 @@ export default function NightmareImageList(props) {
     useEffect(() => {
       updateDimensions()
     }, [width])
-    
-    // Run on re-render
-    useEffect(() => {
-      function handleResize() {
-        updateDimensions()
-      }
-
-      //Add the listener
-      window.addEventListener('resize', handleResize)
-
-      // The function returned is called afterwards. Listerner is removed in this function
-      return () => {
-        window.removeEventListener('resize', handleResize)
-      }
-    })
-
-    useEffect(() => {
-      if (nightmareList)
-      {
-        let newList = nightmareList.map((nightmare, index, arr) => {
-
-          return (
-            <ImageComponent key={index} nightmare={nightmare} index={index} displayOptions={props.displayOptions} onClick={props.onClick}/>
-          )
-
-        })
-  
-        updateImages(newList)
-      }
-    }, [nightmareList])
 
     function changeFilters(newList)
     {
