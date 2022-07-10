@@ -1,9 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
-import ToggleButton from 'react-bootstrap/ToggleButton'
 import Form from 'react-bootstrap/Form';
-import FormCheck from 'react-bootstrap/FormCheck';
-//import FormCheck from 'react-bootstrap/FormCheck';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function FilterBar(props) {

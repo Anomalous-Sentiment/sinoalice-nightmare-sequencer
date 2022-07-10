@@ -2,7 +2,6 @@ import { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import NightmareImageList from './nightmare-image-list'
 import { Chart } from "react-google-charts";
 import { DateTime } from "luxon";
-import TabContainer from 'react-bootstrap/TabContainer';
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -64,9 +63,6 @@ export default function NightmarePlotter() {
   ]
   const [timelineRows, setTimelineRows] = useState(shinmaTimes)
   
-  //These will need to be accessed by callbacks
-  selectedNightmaresStateRef.current = selectedNightmares;
-  timelineStateRef.current = timelineRows;
 
   const placeholderRows = [
     ["Fear", "Prep", now.toJSDate(), now.plus({ seconds: 40 }).toJSDate()],
@@ -98,18 +94,23 @@ export default function NightmarePlotter() {
 
   //Run only once on first render
   useEffect(() => {
-      //Use the backend address here
-      fetch("http://localhost:3001/")
-      .then(response => response.json())
-      .then((json) => {
-        const nightmares = json['nightmares']
-        //Initialise selected key field to false (for usage in image list)
-        nightmares.forEach(element => element['selected'] = false)
+    //Initialise refs
+    //These will need to be accessed by callbacks
+    selectedNightmaresStateRef.current = selectedNightmares;
+    timelineStateRef.current = timelineRows;
+
+    //Use the backend address here
+    fetch("http://localhost:3001/")
+    .then(response => response.json())
+    .then((json) => {
+      const nightmares = json['nightmares']
+      //Initialise selected key field to false (for usage in image list)
+      nightmares.forEach(element => element['selected'] = false)
       filterByServer(json["nightmares"]);
       setJsonData(json);
 
-      })
-      .catch(err => console.log(err));
+    })
+    .catch(err => console.log(err));
   }, [])
 
   useEffect(() => {
@@ -149,8 +150,21 @@ export default function NightmarePlotter() {
     }
     else
     {
-      //Is not selected. Call deselection function
-      onRemove(nightmare)
+      //nightmare may have a selected state = true, even if not in selectdNightmares list
+      //If not in list, it is a nm with the same base skill name
+      if (selectedNightmares.some(element => element['jp_name'] == nightmare['jp_name']))
+      {
+        //In selected nm list. Call deselection function
+        onRemove(nightmare)
+      }
+      else
+      {
+        // Alert informing user which nightmare in list has the same skill
+        let sameSkillNm = selectedNightmares.find(element => element['jp_colo_skill_name'] == nightmare['jp_colo_skill_name'])
+
+        console.log('Nightmare: ', sameSkillNm[displayOptions['name']], ', has the same skill effect. Deselect this nightmare to select this nightmare.')
+      }
+
     }
   }
 
@@ -159,8 +173,8 @@ export default function NightmarePlotter() {
     //Set the nightmare's select field value to opposite value
     const serverNightmaresCopy = [...serverNightmares];
     serverNightmaresCopy.forEach(element => {
-      //This will affect non-evolved versions as well
-      if(element['jp_name'] == nightmare['jp_name'])
+      //This will affect non-evolved versions, as well as nightmares with the base skill name
+      if(element['jp_name'] == nightmare['jp_name'] || element['jp_colo_skill_name'] == nightmare['jp_colo_skill_name'])
       {
         element['selected'] = !element['selected']
       }
