@@ -83,7 +83,11 @@ export default function NightmareImageList(props) {
       newList = newList.map((nightmare, index, arr) => {
     
         return (
-          <ImageComponent key={index} nightmare={nightmare} index={index} displayOptions={props.displayOptions} onClick={props.onClick}/>
+          <ImageComponent 
+          key={nightmare['jp_name'] + nightmare['jp_rank']} 
+          nightmare={nightmare} 
+          displayOptions={props.displayOptions} 
+          onClick={props.onClick}/>
         )
     
       })
@@ -135,12 +139,11 @@ export default function NightmareImageList(props) {
       setFilters(newList)
     }
 
-    //Effect to run when filter list updated or list changed
+    //Effect to run when filter list updated, list changed or sorting function changed
     useEffect(() => {
       if (props.list)
       {
         mapNightmaresToComponents(props.list)
-
       }
     }, [props.list, appliedFilterList, sorter])
 

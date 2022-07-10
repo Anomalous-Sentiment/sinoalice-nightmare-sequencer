@@ -42,7 +42,7 @@ export default function NightmarePlotter() {
   const [displayOptions, setDisplay] = useState(EN_LANG);
 
 
-    // Get the current time. Useing state only so that it's maintained across re-renders, and so it doesn't get a new time if re-rendering after a day
+  // Get the current time. Useing state only so that it's maintained across re-renders, and so it doesn't get a new time if re-rendering after a day
   const [now, setTime] = useState(DateTime.now().startOf('day'))
 
   const prepTimeKey = 'prep_time';
@@ -118,14 +118,15 @@ export default function NightmarePlotter() {
 
   useEffect(() => {
     if (jsonData && serverNightmares)
-    {      
+    {
+      
       //Get all major categories and generate tabs for each category
       const tabList = jsonData['general_tags'].map((jsonObj, index, array) => {
         const generalTagName = jsonObj['general_tag'];
         const majorTagsList = jsonData['major_tags'].filter(element => element['general_tag'] == generalTagName);
 
         return(
-          <Tab key={generalTagName} eventKey={generalTagName} title={generalTagName}>
+          <Tab key={jsonObj['general_tag_id']} eventKey={generalTagName} title={generalTagName}>
             <SubTabs tabNightmares={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].includes(generalTagName)) : null}
             displayOptions={displayOptions}
             onClick={onNightmareClick}
@@ -138,6 +139,7 @@ export default function NightmarePlotter() {
 
       //Set the tabs
       setCategoryTabs(tabList);
+      
     }
 
   }, [jsonData, serverNightmares])
@@ -193,7 +195,6 @@ export default function NightmarePlotter() {
   //Function called when a nightmare clicke/selected
   function onSelection(selectedNightmare)
   {
-    console.log("Entered")
     let prepRow = null;
     let durRow = null;
     let prepTime = selectedNightmare['prep_time'];
@@ -253,6 +254,8 @@ export default function NightmarePlotter() {
     {
       //Time exceeds 20 minutes. Show alert
     }
+
+
     
 
 

@@ -19,7 +19,7 @@ export default function SubTabs(props)
                 const filterOptions = category['sub_tags'];
 
                 return (
-                    <Tab key={category['major_tag']} eventKey={category['major_tag']} title={category['major_tag']} className='tab'>
+                    <Tab key={category['major_tag_id']} eventKey={category['major_tag']} title={category['major_tag']} className='tab'>
                         <NightmareImageList list={props.tabNightmares ? props.tabNightmares.filter(nm => nm['major_tags'].includes(category['major_tag'])) : null} 
                         onClick={props.onClick}
                         displayOptions={props.displayOptions}

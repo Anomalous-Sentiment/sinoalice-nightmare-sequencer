@@ -1,10 +1,11 @@
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
-import { Fragment, useState } from 'react';
+import { Fragment, memo } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Image from 'next/image';
 
-export default function ImageComponent(props)
+
+function ImageComponent(props)
 {
     const renderTooltip = (props) => {
         return(
@@ -21,7 +22,10 @@ export default function ImageComponent(props)
     return(
         <Fragment>
             <OverlayTrigger overlay={renderTooltip(props)}>
-                <ImageListItem onClick={() => props.onClick(props.nightmare)} sx={{ width: 90, height: 90 }} className={props.nightmare['selected'] ? 'selected' : ''}>
+                <ImageListItem 
+                onClick={() => props.onClick(props.nightmare)} 
+                sx={{ width: 90, height: 90 }} 
+                className={props.nightmare['selected'] ? 'selected' : ''}>
                 <Image
                     src={props.nightmare[props.displayOptions['icon']]}
                     alt={props.nightmare[props.displayOptions['icon']]}
@@ -39,3 +43,23 @@ export default function ImageComponent(props)
 
     )
 }
+
+function areEqual(prevProps, nextProps)
+{
+    let isEqual = false;
+
+    // If same jp nightmare name, jp rank, and selected state. They are equal
+    if (prevProps.nightmare['jp_name'] === nextProps.nightmare['jp_name'] && prevProps.nightmare['rarity_id'] === nextProps.nightmare['rarity_id'])
+    {
+        if (prevProps.nightmare['selected'] === nextProps.nightmare['selected'] && prevProps.onClick === nextProps.onClick)
+        {
+            isEqual = true;
+        }
+    }
+
+
+    return isEqual;
+
+}
+
+export default memo(ImageComponent, areEqual)
