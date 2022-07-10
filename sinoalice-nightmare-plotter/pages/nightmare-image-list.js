@@ -79,15 +79,6 @@ export default function NightmareImageList(props) {
       }
     })
 
-    //Update on re-render when list changes
-    useEffect(() => {
-      if (props.list != null)
-      {
-        setList(props.list)
-      }
-
-    }, [props.list])
-
     useEffect(() => {
       if (nightmareList)
       {
@@ -110,16 +101,39 @@ export default function NightmareImageList(props) {
       setFilters(newList)
     }
 
-    //Effect to run when filter list updated
+    //Effect to run when filter list updated or list changed
     useEffect(() => {
       if (props.list && appliedFilterList)
       {
-        //filter the nightmare list and update image list based on filtered nightmares
-        const filteredNms = props.list.filter(nm => appliedFilterList.every(filterTag => nm['applied_tags'].includes(filterTag)))
+        let newList = props.list;
 
-        setList(filteredNms);
+        if (appliedFilterList.length != 0)
+        {
+          //filter the nightmare list and update image list based on filtered nightmares
+          const filteredNms = props.list.filter(nm => appliedFilterList.every(filterTag => nm['applied_tags'].includes(filterTag)))
+
+          newList = filteredNms.map((nightmare, index, arr) => {
+
+            return (
+              <ImageComponent key={index} nightmare={nightmare} index={index} displayOptions={props.displayOptions} onClick={props.onClick}/>
+            )
+
+          })
+        }
+        else
+        {
+          newList = props.list.map((nightmare, index, arr) => {
+
+            return (
+              <ImageComponent key={index} nightmare={nightmare} index={index} displayOptions={props.displayOptions} onClick={props.onClick}/>
+            )
+
+          })
+        }
+
+        updateImages(newList)
       }
-    }, [appliedFilterList])
+    }, [props.list, appliedFilterList])
 
   return (
     <div ref={ref}>

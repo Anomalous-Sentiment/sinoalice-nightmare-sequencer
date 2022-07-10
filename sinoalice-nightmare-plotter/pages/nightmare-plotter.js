@@ -32,7 +32,7 @@ const JP_LANG = {
 
 export default function NightmarePlotter() {
   const [jsonData, setJsonData] = useState(null);
-  const [serverNightmares, updateServerNightmares] = useState(null)
+  const [serverNightmares, updateServerNightmares] = useState()
   const [globalNightmares, updateGlobalNightmares] = useState(null)
   const [jpnightmares, updateJpNightmares] = useState(null)
   const timelineStateRef = useRef();
@@ -145,13 +145,17 @@ export default function NightmarePlotter() {
     {
       //Is selected. Call relevant function
       onSelection(nightmare)
+
     }
     else
     {
       //Is not selected. Call deselection function
       onRemove(nightmare)
     }
+  }
 
+  function updateNightmareSelectionState(nightmare)
+  {
     //Set the nightmare's select field value to opposite value
     const serverNightmaresCopy = [...serverNightmares];
     serverNightmaresCopy.forEach(element => {
@@ -198,28 +202,38 @@ export default function NightmarePlotter() {
     console.log(timelineStateRef.current)
 
 
-    //Add to selected list with appropriate prep time and duration
-    prepRow = [selectedNightmare[displayOptions['name']], "Prep", previousNightmareEndTime.toJSDate(), currentNightmarePrepEndTime.toJSDate()]
-
-    newRows = [...timelineStateRef.current, prepRow]
-    
-    //Check if there is an effective duration
-    if(selectedNightmare['effective_time'] != '0')
+    //Check if the end time of the last nightmare exceeds 20 minutes
+    if (now.plus({minutes: 20}) > previousNightmareEndTime)
     {
-      //Add active duration row on after end of prep time
-      durRow = [selectedNightmare[displayOptions['name']], "Active", currentNightmarePrepEndTime.toJSDate(), currentNightmareEndTime.toJSDate()]
-      newRows = [...newRows, durRow]
+      //Add to selected list with appropriate prep time and duration
+      prepRow = [selectedNightmare[displayOptions['name']], "Prep", previousNightmareEndTime.toJSDate(), currentNightmarePrepEndTime.toJSDate()]
+
+      newRows = [...timelineStateRef.current, prepRow]
+
+      //Check if there is an effective duration
+      if(selectedNightmare['effective_time'] != '0')
+      {
+        //Add active duration row on after end of prep time
+        durRow = [selectedNightmare[displayOptions['name']], "Active", currentNightmarePrepEndTime.toJSDate(), currentNightmareEndTime.toJSDate()]
+        newRows = [...newRows, durRow]
+      }
+
+
+      //Add nightmare to selected nightmares list
+      selectedNightmaresCopy.push(selectedNightmare)
+
+      setSelected(selectedNightmaresCopy)
+
+      setTimelineRows(newRows)
+      setData([columns, ...newRows])
+
+      updateNightmareSelectionState(selectedNightmare)
     }
-
-
-    //Add nightmare to selected nightmares list
-    selectedNightmaresCopy.push(selectedNightmare)
-
-    setSelected(selectedNightmaresCopy)
-
-    setTimelineRows(newRows)
-    setData([columns, ...newRows])
-
+    else
+    {
+      //Time exceeds 20 minutes. Show alert
+    }
+    
 
 
 
@@ -287,6 +301,9 @@ export default function NightmarePlotter() {
 
     //Update the timeline graph
     setData([columns, ...newRows])
+
+    updateNightmareSelectionState(deselectedNightmare)
+
 
   }
 

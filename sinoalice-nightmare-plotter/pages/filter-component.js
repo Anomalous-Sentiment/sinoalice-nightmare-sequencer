@@ -1,13 +1,40 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
 import ToggleButton from 'react-bootstrap/ToggleButton'
+import Form from 'react-bootstrap/Form';
+import FormCheck from 'react-bootstrap/FormCheck';
+//import FormCheck from 'react-bootstrap/FormCheck';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function FilterBar(props) {
 
     const [filterButtons, setButtons] = useState();
+    const [appliedFilters, setFilters] = useState([])
+
+    const filtersRef = useRef();
+    filtersRef.current = appliedFilters;
 
 
+    function handleChange(event)
+    {
+        //Copy filter list
+        let newFilterListState = [...filtersRef.current];
+
+        if (event.target.checked == true)
+        {
+            //Add to filter list
+            newFilterListState.push(event.target.value)
+        }
+        else
+        {
+            // Remove from filter list
+            newFilterListState = newFilterListState.filter(element => element != event.target.value)
+        }
+
+        setFilters(newFilterListState)
+
+        props.handleChange(newFilterListState)
+    }
     //useEffect function to update filter buttons when the tag list changes
 
 
@@ -16,12 +43,21 @@ export default function FilterBar(props) {
         //Check if not null
         if (props.filterList)
         {
+            let newFilters = {};
+
             //For each tag in the list, create a button and map a callback so that when clicked, will add/remove the tag from the list
             const filterList = props.filterList.map(filterValue => {
+                //Set default state
+                newFilters[filterValue] = false;
                 return (
-                    <ToggleButton key={filterValue} id={filterValue} value={filterValue}>
-                    {filterValue}
-                    </ToggleButton>
+                    <Form.Check 
+                    type="switch"
+                    key={filterValue}
+                    id={filterValue}
+                    label={filterValue}
+                    value={filterValue}
+                    onChange={handleChange}
+                     />
                 )
             })
 
@@ -37,9 +73,9 @@ export default function FilterBar(props) {
         {props.filterList && 
         <div>
             <p>Filter buttons (May select multiiple at once):</p>
-            <ToggleButtonGroup type="checkbox" defaultValue={[]} className="mb-2" onChange={props.handleChange}>
+            <Form>
                 {filterButtons}
-            </ToggleButtonGroup>
+            </Form>
         </div>
 
         }
