@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useLayoutEffect } from 'react';
+import { useEffect, useState } from 'react';
 import NightmareImageList from './nightmare-image-list'
 import { Chart } from "react-google-charts";
 import { DateTime } from "luxon";

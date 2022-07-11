@@ -1,46 +1,40 @@
-import ImageListItem from '@mui/material/ImageListItem';
-import ImageListItemBar from '@mui/material/ImageListItemBar';
 import { Fragment, memo, useMemo, useState} from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Image from 'next/image';
-import Grid from '@mui/material/Grid';
 import styles from '../styles/ImageComponent.module.css'
-
 
 function ImageComponent(props)
 {
+    const tooltip = useMemo(() => {
+        return (
+            <Tooltip id={props.nightmare[props.displayOptions['name']]}>
+            <b>{props.nightmare[props.displayOptions['skill_name']] + ' (' + props.nightmare[props.displayOptions['skill_rank']] + ')'}</b>
+            <br/>
+            {props.nightmare[props.displayOptions['skill_description']]}
+        </Tooltip>
+        )
+    }, [props.nightmare, props.displayOptions])
+    
     const nightmareImage = useMemo(() => {
         return(
-            <Image
-            src={props.nightmare[props.displayOptions['icon']]}
-            alt={props.nightmare[props.displayOptions['icon']]}
-            width='90'
-            height='90'
-            className={props.nightmare['selected'] ? 'selected' : ''}
-        />
+            <OverlayTrigger overlay={tooltip}>
+            <div>
+                <Image
+                src={props.nightmare[props.displayOptions['icon']]}
+                alt={props.nightmare[props.displayOptions['icon']]}
+                width='90'
+                height='90'
+                className={props.nightmare['selected'] ? 'selected overlay': 'overlay'}/>
+            </div>
+        </OverlayTrigger>
+
         )
     }, [props.nightmare['selected'], props.displayOptions])
 
-    const renderTooltip = useMemo(() => {
-        const tooltipFunction = () => {
-            return(
-                <Tooltip id={props.nightmare[props.displayOptions['name']]}>
-                <b>{props.nightmare[props.displayOptions['skill_name']] + ' (' + props.nightmare[props.displayOptions['skill_rank']] + ')'}</b>
-                <br/>
-                {props.nightmare[props.displayOptions['skill_description']]}
-            </Tooltip>
-            )
-        }
-
-        return tooltipFunction;
-
-    }, [props.nightmare, props.displayOptions])
-    
     //The class name for the image list item changes depending on whether the selected value of the nightmare is true or false
 
     return(
         <Fragment>
-            <OverlayTrigger overlay={renderTooltip(props)}>
             <div className={styles.item}
             onClick={() => {
                 if (!props.nightmare['selected'])
@@ -118,9 +112,10 @@ function ImageComponent(props)
 
             }
         }>
+
             {nightmareImage}
             </div>
-            </OverlayTrigger>
+
 
 
         </Fragment>

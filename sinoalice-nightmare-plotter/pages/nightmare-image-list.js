@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Image from 'next/image';
-import { useState, useEffect, useRef } from 'react';
-import ImageList from '@mui/material/ImageList';
+import { useState, useEffect } from 'react';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import ImageComponent from './image-component';
@@ -9,7 +8,6 @@ import FilterBar from './filter-component';
 import { useResizeDetector } from 'react-resize-detector';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
-import Grid from '@mui/material/Grid';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from '../styles/ImageComponent.module.css'
 

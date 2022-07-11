@@ -24,6 +24,7 @@ a {
 .selected {
   filter: brightness(50%);
 }
+
 /*
 .mb-3{
   background-color: rgb(146, 146, 146) !important;
