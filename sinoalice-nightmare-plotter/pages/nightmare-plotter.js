@@ -34,8 +34,6 @@ export default function NightmarePlotter() {
   const [serverNightmares, updateServerNightmares] = useState()
   const [globalNightmares, updateGlobalNightmares] = useState(null)
   const [jpnightmares, updateJpNightmares] = useState(null)
-  const timelineStateRef = useRef();
-  const selectedNightmaresStateRef = useRef();
   const [selectedNightmares, setSelected] = useState([])
   const [globalOnly, setGlobalServer] = useState(null)
   const [generalCategoryTabs, setCategoryTabs] = useState(null)
@@ -92,13 +90,6 @@ export default function NightmarePlotter() {
 
   const [data, setData] = useState([columns, ...timelineRows]);
 
-  useEffect(() => {
-    //Initialise refs every render
-    //These will need to be accessed by callbacks
-    selectedNightmaresStateRef.current = selectedNightmares;
-    timelineStateRef.current = timelineRows;
-  })
-
   //Run only once on first render
   useEffect(() => {
 
@@ -129,8 +120,9 @@ export default function NightmarePlotter() {
           <Tab key={jsonObj['general_tag_id']} eventKey={generalTagName} title={generalTagName}>
             <SubTabs tabNightmares={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].includes(generalTagName)) : null}
             displayOptions={displayOptions}
-            onClick={onNightmareClick}
-            mainCategories={majorTagsList}>
+            mainCategories={majorTagsList}
+            setSelected={setSelected}
+            updateServerNightmares={updateServerNightmares}>
             </SubTabs>
           </Tab>
 
@@ -143,125 +135,6 @@ export default function NightmarePlotter() {
     }
 
   }, [jsonData, serverNightmares])
-
-  function onNightmareClick(nightmare)
-  {
-    //Check if nightmare is selected
-    if (!nightmare['selected'])
-    {
-      //Is selected. Call relevant function
-      onSelection(nightmare)
-
-    }
-    else
-    {
-      //nightmare may have a selected state = true, even if not in selectdNightmares list
-      //If not in list, it is a nm with the same base skill name
-      if (selectedNightmaresStateRef.current.some(element => element['jp_name'] == nightmare['jp_name']))
-      {
-        //In selected nm list. Call deselection function
-        onRemove(nightmare)
-      }
-      else
-      {
-        console.log(selectedNightmaresStateRef.current)
-        console.log(selectedNightmares)
-        console.log(nightmare)
-        // Alert informing user which nightmare in list has the same skill
-        let sameSkillNm = selectedNightmaresStateRef.current.find(element => element['jp_colo_skill_name'] == nightmare['jp_colo_skill_name'])
-
-        console.log('Nightmare: ', sameSkillNm[displayOptions['name']], ', has the same skill effect. Deselect this nightmare to select this nightmare.')
-      }
-
-    }
-  }
-
-  function updateNightmareSelectionState(nightmare)
-  {
-    //Set the nightmare's select field value to opposite value
-    const serverNightmaresCopy = [...serverNightmares];
-    serverNightmaresCopy.forEach(element => {
-      //This will affect non-evolved versions, as well as nightmares with the base skill name
-      if(element['jp_name'] == nightmare['jp_name'] || element['jp_colo_skill_name'] == nightmare['jp_colo_skill_name'])
-      {
-        element['selected'] = !element['selected']
-      }
-    })
-
-    updateServerNightmares(serverNightmaresCopy);
-  }
-
-
-  //Function called when a nightmare clicke/selected
-  function onSelection(selectedNightmare)
-  {
-    let prepRow = null;
-    let durRow = null;
-    let prepTime = selectedNightmare['prep_time'];
-    let durTime = selectedNightmare['effective_time'];
-    let previousNightmareEndTime = null;
-    //Check if this is the first nightmare in the timeline
-    if (selectedNightmaresStateRef.current.length == 0)
-    {
-      //If first, the prep time starts from 0:00
-      previousNightmareEndTime = now;
-      console.log('length = 0')
-
-    }
-    else
-    {
-      //If not first, prep time starts from end of last nightmare
-      console.log(timelineStateRef.current[timelineRows.length - 1][3])
-      previousNightmareEndTime = DateTime.fromJSDate(timelineStateRef.current[timelineStateRef.current.length - 1][3]);
-      console.log('length > 0')
-    }
-    let currentNightmarePrepEndTime = previousNightmareEndTime.plus({seconds: prepTime});
-    let currentNightmareEndTime = currentNightmarePrepEndTime.plus({seconds: durTime});
-    let newRows = null;
-    let selectedNightmaresCopy = [...selectedNightmaresStateRef.current]
-    console.log(selectedNightmaresStateRef.current)
-    console.log(timelineStateRef.current)
-
-
-    //Check if the end time of the last nightmare exceeds 20 minutes
-    if (now.plus({minutes: 20}) > previousNightmareEndTime)
-    {
-      //Add to selected list with appropriate prep time and duration
-      prepRow = [selectedNightmare[displayOptions['name']], "Prep", previousNightmareEndTime.toJSDate(), currentNightmarePrepEndTime.toJSDate()]
-
-      newRows = [...timelineStateRef.current, prepRow]
-
-      //Check if there is an effective duration
-      if(selectedNightmare['effective_time'] != '0')
-      {
-        //Add active duration row on after end of prep time
-        durRow = [selectedNightmare[displayOptions['name']], "Active", currentNightmarePrepEndTime.toJSDate(), currentNightmareEndTime.toJSDate()]
-        newRows = [...newRows, durRow]
-      }
-
-
-      //Add nightmare to selected nightmares list
-      selectedNightmaresCopy.push(selectedNightmare)
-
-      setSelected(selectedNightmaresCopy)
-
-      setTimelineRows(newRows)
-      setData([columns, ...newRows])
-
-      updateNightmareSelectionState(selectedNightmare)
-    }
-    else
-    {
-      //Time exceeds 20 minutes. Show alert
-    }
-
-
-    
-
-
-
-
-  }
 
   useEffect(() => {
     //Function to run when flag changes
@@ -279,17 +152,12 @@ export default function NightmarePlotter() {
     }
   }, [globalOnly])
 
-  //Function called when nightmare deselected/removed
-  function onRemove(deselectedNightmare)
-  {
+  useEffect(() => {
     let newRows = [...shinmaTimes];
-    let filteredNightmares = null;
 
-    // Remove from selected list 
-    filteredNightmares = selectedNightmaresStateRef.current.filter(nightmare => nightmare['jp_name'] != deselectedNightmare['jp_name'])
 
     // Recalculate timeline times according to modified selected nightmares list
-    filteredNightmares.forEach((nightmare, index, array) => {
+    selectedNightmares.forEach((nightmare, index, array) => {
       //Calculate new times for each nightmare in list in order
       let prepRow = null;
       let durRow = null;
@@ -315,20 +183,13 @@ export default function NightmarePlotter() {
         newRows.push(durRow)
       }
     })
-
-    //Update selected nightmares
-    setSelected(filteredNightmares)
-
     //Update timeline rows
     setTimelineRows(newRows)
 
     //Update the timeline graph
     setData([columns, ...newRows])
 
-    updateNightmareSelectionState(deselectedNightmare)
-
-
-  }
+  }, [selectedNightmares])
 
   function filterByServer(unfilteredNightmares)
   {
@@ -365,21 +226,27 @@ export default function NightmarePlotter() {
       <Tabs defaultActiveKey="all" id="general-tabs" className="mb-3">
       <Tab eventKey="all" title="All Nightmares">
         <NightmareImageList list={serverNightmares} 
-        onClick={onNightmareClick}
-        displayOptions={displayOptions}/>
+        displayOptions={displayOptions}
+        updateServerNightmares={updateServerNightmares}
+        setSelected={setSelected}
+        />
       </Tab>
       {generalCategoryTabs}
       <Tab eventKey="other" title="Other">
         <NightmareImageList 
         list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].length == 0) : null} 
-        onClick={onSelection} 
-        displayOptions={displayOptions}/>
+        displayOptions={displayOptions}
+        updateServerNightmares={updateServerNightmares}
+        setSelected={setSelected}
+        />
       </Tab>
       <Tab eventKey="selected" title="Selected Nightmares">
       <NightmareImageList 
         list={selectedNightmares} 
-        onClick={onNightmareClick} 
-        displayOptions={displayOptions}/>
+        displayOptions={displayOptions}
+        updateServerNightmares={updateServerNightmares}
+        setSelected={setSelected}
+        />
       </Tab>
       </Tabs>
 

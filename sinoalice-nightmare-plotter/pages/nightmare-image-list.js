@@ -11,6 +11,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Grid from '@mui/material/Grid';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import styles from '../styles/ImageComponent.module.css'
 
 
 export default function NightmareImageList(props) {
@@ -88,7 +89,8 @@ export default function NightmareImageList(props) {
           key={nightmare['jp_name'] + nightmare['jp_rank']} 
           nightmare={nightmare} 
           displayOptions={props.displayOptions} 
-          onClick={props.onClick}/>
+          setSelected={props.setSelected}
+          updateServerNightmares={props.updateServerNightmares}/>
         )
     
       })
@@ -160,9 +162,9 @@ export default function NightmareImageList(props) {
       onSelect={onSortingSelect}>
         {sortByList}
       </DropdownButton>
-      <Grid container spacing={2} columns={columns}>
+      <div className={styles.grid}>
         {imageList}
-      </Grid>
+      </div>
     </div>
 
   );

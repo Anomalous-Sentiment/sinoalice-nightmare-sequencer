@@ -21,9 +21,10 @@ export default function SubTabs(props)
                 return (
                     <Tab key={category['major_tag_id']} eventKey={category['major_tag']} title={category['major_tag']} className='tab'>
                         <NightmareImageList list={props.tabNightmares ? props.tabNightmares.filter(nm => nm['major_tags'].includes(category['major_tag'])) : null} 
-                        onClick={props.onClick}
+                        updateServerNightmares={props.updateServerNightmares}
                         displayOptions={props.displayOptions}
                         filterList={filterOptions}
+                        setSelected={props.setSelected}
                         />
                     </Tab>
                 )
