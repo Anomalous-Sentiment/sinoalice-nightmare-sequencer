@@ -7,6 +7,8 @@ import Tab from 'react-bootstrap/Tab'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
 import ToggleButton from 'react-bootstrap/ToggleButton'
+import { useSelector, useDispatch } from 'react-redux'
+import { getSelectedNightmares } from '../redux/nightmaresSlice'
 import SubTabs from './sub-tabs'
 
 const EN_LANG = {
@@ -34,10 +36,11 @@ export default function NightmarePlotter() {
   const [serverNightmares, updateServerNightmares] = useState([])
   const [globalNightmares, updateGlobalNightmares] = useState([])
   const [jpnightmares, updateJpNightmares] = useState([])
-  const [selectedNightmares, setSelected] = useState([])
+  //const [selectedNightmares, setSelected] = useState([])
   const [globalOnly, setGlobalServer] = useState()
   const [generalCategoryTabs, setCategoryTabs] = useState([])
   const [displayOptions, setDisplay] = useState(EN_LANG);
+  const selectedNightmares = useSelector(getSelectedNightmares);
 
 
   // Get the current time. Useing state only so that it's maintained across re-renders, and so it doesn't get a new time if re-rendering after a day
@@ -104,7 +107,6 @@ export default function NightmarePlotter() {
             <SubTabs tabNightmares={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].includes(generalTagName)) : null}
             displayOptions={displayOptions}
             mainCategories={majorTagsList}
-            setSelected={setSelected}
             updateServerNightmares={updateServerNightmares}>
             </SubTabs>
           </Tab>
@@ -140,6 +142,7 @@ export default function NightmarePlotter() {
     let newRows = [...shinmaTimes];
 
 
+    console.log(selectedNightmares)
     // Recalculate timeline times according to modified selected nightmares list
     selectedNightmares.forEach((nightmare, index, array) => {
       //Calculate new times for each nightmare in list in order
@@ -202,31 +205,29 @@ export default function NightmarePlotter() {
       </ToggleButtonGroup>
 
       <Tabs defaultActiveKey="all" id="general-tabs" className="mb-3">
-      <Tab eventKey="all" title="All Nightmares">
-        <NightmareImageList list={serverNightmares} 
-        displayOptions={displayOptions}
-        updateServerNightmares={updateServerNightmares}
-        setSelected={setSelected}
-        />
-      </Tab>
-      {generalCategoryTabs}
-      <Tab eventKey="other" title="Other">
+        <Tab eventKey="all" title="All Nightmares">
+          <NightmareImageList list={serverNightmares} 
+          displayOptions={displayOptions}
+          updateServerNightmares={updateServerNightmares}
+          />
+        </Tab>
+        {generalCategoryTabs}
+        <Tab eventKey="other" title="Other">
+          <NightmareImageList 
+          list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].length == 0) : null} 
+          displayOptions={displayOptions}
+          updateServerNightmares={updateServerNightmares}
+          />
+        </Tab>
+        <Tab eventKey="selected" title="Selected Nightmares">
         <NightmareImageList 
-        list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].length == 0) : null} 
-        displayOptions={displayOptions}
-        updateServerNightmares={updateServerNightmares}
-        setSelected={setSelected}
-        />
-      </Tab>
-      <Tab eventKey="selected" title="Selected Nightmares">
-      <NightmareImageList 
-        list={selectedNightmares} 
-        displayOptions={displayOptions}
-        updateServerNightmares={updateServerNightmares}
-        setSelected={setSelected}
-        />
-      </Tab>
+          list={selectedNightmares} 
+          displayOptions={displayOptions}
+          updateServerNightmares={updateServerNightmares}
+          />
+        </Tab>
       </Tabs>
+      
 
     </div>
 

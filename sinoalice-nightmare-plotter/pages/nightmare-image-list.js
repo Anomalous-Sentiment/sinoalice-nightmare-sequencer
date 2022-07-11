@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import ImageComponent from './image-component';
@@ -12,7 +12,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from '../styles/ImageComponent.module.css'
 
 
-export default function NightmareImageList(props) {
+function NightmareImageList(props) {
     const [columns, setColumns] = useState(2);
     const [appliedFilterList, setFilters] = useState([]);
     const {width, height, ref} = useResizeDetector()
@@ -69,83 +69,7 @@ export default function NightmareImageList(props) {
       newList = newList.map((nightmare, index, arr) => {
     
         return (
-          <div key={nightmare[props.displayOptions['icon']]} className={styles.item}
-          onClick={() => {
-              if (!nightmare['selected'])
-              {
-                  //Update server nightmare state by changing the selected flags
-                  props.updateServerNightmares(prevState => {
-                      //This passes a function to the setState of the server nightmare list
-                      let prevStateCopy = [...prevState];
-
-                      prevStateCopy.forEach(element => {
-                          //This will affect non-evolved versions, as well as nightmares with the base skill name
-                          if(element['jp_name'] == nightmare['jp_name'] || element['jp_colo_skill_name'] == nightmare['jp_colo_skill_name'])
-                          {
-                              element['selected'] = !element['selected']
-                          }
-                      })
-                  
-                      // updated state with relevant nightmare selected values changed
-                      return prevStateCopy;
-                  })
-                  
-                  //If not selected, add to selected list
-                  //Update selected nightmare list
-                  props.setSelected(prevState => {
-                      //check current nightmare selected status
-                      let newState = [...prevState];
-
-                      newState.push(nightmare)
-
-                      return newState;
-                  })
-                  
-              }
-              else
-              {
-                  //If nightmare's selected flag is true, it is either in the selected list, or nightmare with same skill
-                  //As one in the list
-                  props.setSelected(prevState => {
-                      let newState = [...prevState];
-                      
-                      //Check if the nightmare is in the selected list
-                      if (prevState.some(element => element['jp_name'] == nightmare['jp_name']))
-                      {
-                          //Nightmare exists in selected list
-                          //Update server nightmare state by changing the selected flags
-                          props.updateServerNightmares(prevState => {
-                              //This passes a function to the setState of the server nightmare list
-                              let prevStateCopy = [...prevState];
-
-                              prevStateCopy.forEach(element => {
-                                  //This will affect non-evolved versions, as well as nightmares with the base skill name
-                                  if(element['jp_name'] == nightmare['jp_name'] || element['jp_colo_skill_name'] == nightmare['jp_colo_skill_name'])
-                                  {
-                                      element['selected'] = !element['selected']
-                                  }
-                              })
-                          
-                              // updated state with relevant nightmare selected values changed
-                              return prevStateCopy;
-                          })
-
-                          //Remove from list
-                          newState = newState.filter(nightmare => nightmare['jp_name'] != nightmare['jp_name'])
-                      }
-                      else
-                      {
-                          //Nightmare does not exist in list (It is a nightmare with same skill as one in the list)
-                      }
-
-                      return newState;
-                  })
-              }
-
-
-
-          }
-      }>
+          <div key={nightmare[props.displayOptions['icon']]} className={styles.item}>
           <ImageComponent 
           key={nightmare[props.displayOptions['icon']]} 
           nightmare={nightmare} 
@@ -230,3 +154,25 @@ export default function NightmareImageList(props) {
 
   );
 }
+
+function areEqual(prevProps, nextProps)
+{
+  let isEqual = false;
+
+  //Check if old list is same as new list
+  if (prevProps.list && nextProps.list)
+  {
+    if (nextProps.list.length > 0 && prevProps.list.length > 0)
+    {
+      if (prevProps.list.every((element, index) => nextProps.list[index]['jp_icon'] == element['jp_icon']))
+      {
+        isEqual = true;
+      }
+    }
+  }
+
+
+  return isEqual;
+}
+
+export default memo(NightmareImageList, areEqual);
