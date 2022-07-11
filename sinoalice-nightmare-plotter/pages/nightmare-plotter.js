@@ -30,13 +30,13 @@ const JP_LANG = {
 };
 
 export default function NightmarePlotter() {
-  const [jsonData, setJsonData] = useState(null);
-  const [serverNightmares, updateServerNightmares] = useState()
-  const [globalNightmares, updateGlobalNightmares] = useState(null)
-  const [jpnightmares, updateJpNightmares] = useState(null)
+  const [jsonData, setJsonData] = useState();
+  const [serverNightmares, updateServerNightmares] = useState([])
+  const [globalNightmares, updateGlobalNightmares] = useState([])
+  const [jpnightmares, updateJpNightmares] = useState([])
   const [selectedNightmares, setSelected] = useState([])
-  const [globalOnly, setGlobalServer] = useState(null)
-  const [generalCategoryTabs, setCategoryTabs] = useState(null)
+  const [globalOnly, setGlobalServer] = useState()
+  const [generalCategoryTabs, setCategoryTabs] = useState([])
   const [displayOptions, setDisplay] = useState(EN_LANG);
 
 
@@ -61,24 +61,6 @@ export default function NightmarePlotter() {
   ]
   const [timelineRows, setTimelineRows] = useState(shinmaTimes)
   
-
-  const placeholderRows = [
-    ["Fear", "Prep", now.toJSDate(), now.plus({ seconds: 40 }).toJSDate()],
-    ["Ugallu", "Prep", now.plus({ seconds: 40 }).toJSDate(), now.plus({ seconds: 40 + 80}).toJSDate()],
-    ["Ugallu", "Active", now.plus({ seconds: 120 }).toJSDate(), now.plus({ seconds: 120 + 120}).toJSDate()],
-    ["Griffon", "Prep", now.plus({ seconds: 240}).toJSDate(), now.plus({ seconds: 240 + 80}).toJSDate()],
-    ["Griffon", "Active", now.plus({ seconds: 320}).toJSDate(), now.plus({ seconds: 320 + 120}).toJSDate()],
-    ["Lindwyrm", "Prep", now.plus({ seconds: 440}).toJSDate(), now.plus({ seconds: 440 + 80}).toJSDate()],
-    ["Lindwyrm", "Active", now.plus({ seconds: 520}).toJSDate(), now.plus({ seconds: 520 + 120}).toJSDate()],
-    ["Freeze Golem", "Prep", now.plus({ seconds: 640}).toJSDate(), now.plus({ seconds: 640 + 80}).toJSDate()],
-    ["Freeze Golem", "Active", now.plus({ seconds: 720}).toJSDate(), now.plus({ seconds: 720 + 120}).toJSDate()],
-    ["Yuno", "Prep", now.plus({ seconds: 840}).toJSDate(), now.plus({ seconds: 890}).toJSDate()],
-    ["Yuno", "Active", now.plus({ seconds: 890}).toJSDate(), now.plus({ seconds: 990}).toJSDate()],
-    ["Dryas", "Prep", now.plus({ seconds: 990}).toJSDate(), now.plus({ seconds: 1040}).toJSDate()],
-    ["Dryas", "Active", now.plus({ seconds: 1040}).toJSDate(), now.plus({ seconds: 1140}).toJSDate()],
-    ["Rikone", "Prep", now.plus({ seconds: 1140}).toJSDate(), now.plus({ seconds: 1190}).toJSDate()],
-    ["Rikone", "Active", now.plus({ seconds: 1190}).toJSDate(), now.plus({ seconds: 1290}).toJSDate()]
-  ]
   const options = {
     colors : ["blue", "red"],
     hAxis: {
@@ -107,6 +89,7 @@ export default function NightmarePlotter() {
     .catch(err => console.log(err));
   }, [])
 
+  //Hook to populate tabs when nightmares are retrieved
   useEffect(() => {
     if (jsonData && serverNightmares)
     {
@@ -152,6 +135,7 @@ export default function NightmarePlotter() {
     }
   }, [globalOnly])
 
+  //Hook to update timeline when selected nightmares change
   useEffect(() => {
     let newRows = [...shinmaTimes];
 
@@ -203,18 +187,12 @@ export default function NightmarePlotter() {
     updateJpNightmares(unfilteredNightmares)
   }
 
-  function onServerchange(newValue)
-  {
-    //Change the server flag to the new value
-    setGlobalServer(newValue);
-
-  }
 
   return (
     <div>
       <Chart chartType="Timeline" data={data} width="100%" height="400px" options={options}/>
 
-      <ToggleButtonGroup name="servers" size="lg" className="mb-2" type="radio" defaultValue={true} onChange={onServerchange}>
+      <ToggleButtonGroup name="servers" size="lg" className="mb-2" type="radio" defaultValue={true} onChange={setGlobalServer}>
           <ToggleButton id="global" value={true}>
             Global
           </ToggleButton>
