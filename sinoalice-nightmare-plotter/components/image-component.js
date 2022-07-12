@@ -62,17 +62,20 @@ function ImageComponent(props)
         {
             //If not selected nightmare, add to store list
             dispatch(addNightmare(props.nightmare))
+            PubSub.publish('SUCCESS', 'Nightmare added!');
+
         }
         else if (skillUsed && isSelectedNightmare)
         {
             //If is selected nightmare
             dispatch(removeNightmare(props.nightmare))
+            PubSub.publish('SUCCESS', 'Nightmare removed!');
+
         }
         else if (skillUsed && !isSelectedNightmare)
         {
             // If not selected nightmare, but has same skill as a selected nightmare
             //Show error message
-            console.log("Same skill nightmare already selected!")
             PubSub.publish('ERROR', 'Nightmare with same skill already selected!');
         }
     }

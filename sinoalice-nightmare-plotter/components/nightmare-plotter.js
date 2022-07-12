@@ -41,12 +41,19 @@ const JP_LANG = {
 };
 
 export default function NightmarePlotter() {
-  const [open, setOpen] = useState(true);
-  const handleClose = (event, reason) => {
+  const [errorOpen, setErrorOpen] = useState(true);
+  const [successOpen, setSuccessOpen] = useState(true);
+  const handleErrorClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-    setOpen(false);
+    setErrorOpen(false);
+  };
+  const handleSuccessClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSuccessOpen(false);
   };
   const [jsonData, setJsonData] = useState();
   const selectedNightmares = useSelector(getSelectedNightmares);
@@ -83,8 +90,8 @@ export default function NightmarePlotter() {
   // Get the current time. Useing state only so that it's maintained across re-renders, and so it doesn't get a new time if re-rendering after a day
   const [now, setTime] = useState(DateTime.now().startOf('day'))
 
-  const prepTimeKey = 'prep_time';
-  const effectTimeKey = 'effective_time';
+  const [errorAlertMsg, setErrorMsg] = useState('');
+  const [successAlertMsg, setSuccessMsg] = useState('');
 
   const columns = [
     { type: "string", id: "nightmare"},
@@ -110,15 +117,30 @@ export default function NightmarePlotter() {
   };
 
   const errorListener = function (msg, data) {
-    setOpen(true)
+    setErrorOpen(true)
 
     //Set message
+    setErrorMsg(data)
+
   };
 
-  useEffect(() => {
-    let token = PubSub.subscribe('ERROR', errorListener);
+  const successListener = function (msg, data) {
+    setSuccessOpen(true)
 
-    return (() => PubSub.unsubscribe(token));
+    //Set message
+    setSuccessMsg(data)
+
+  };
+
+  //Subscribe every render, and unsubscribe before re-render
+  useEffect(() => {
+    let errorToken = PubSub.subscribe('ERROR', errorListener);
+    let successToken = PubSub.subscribe('SUCCESS', successListener);
+
+    return (() => {
+      PubSub.unsubscribe(errorToken);
+      PubSub.unsubscribe(successToken);
+    });
   })
 
   const data = useMemo(() => updateTimeline(), [selectedNightmares]);
@@ -209,7 +231,7 @@ export default function NightmarePlotter() {
       else
       {
         //Not the first nightmare. calculate time using previous row
-        prepRow = [nightmare[displayOptions['name']], "Prep", newRows[newRows.length - 1][3], DateTime.fromJSDate(newRows[newRows.length - 1][3]).plus({ seconds: nightmare[prepTimeKey] }).toJSDate()]
+        prepRow = [nightmare[displayOptions['name']], "Prep", newRows[newRows.length - 1][3], DateTime.fromJSDate(newRows[newRows.length - 1][3]).plus({ seconds: nightmare[displayOptions['prep_time']] }).toJSDate()]
       }
 
       //Add prep row to newrows array
@@ -261,11 +283,18 @@ export default function NightmarePlotter() {
         </Tab>
       </Tabs>
       <Snackbar
-        open={open}
+        open={errorOpen}
         autoHideDuration={2000}
-        onClose={handleClose}
+        onClose={handleErrorClose}
       >
-        <Alert severity="error" sx={{ width: '100%' }}>This is an error message!</Alert>
+        <Alert severity="error" sx={{ width: '100%' }}>{errorAlertMsg}</Alert>
+      </Snackbar>
+      <Snackbar
+        open={successOpen}
+        autoHideDuration={2000}
+        onClose={handleSuccessClose}
+      >
+        <Alert severity="success" sx={{ width: '100%' }}>{successAlertMsg}</Alert>
       </Snackbar>
     </div>
 
