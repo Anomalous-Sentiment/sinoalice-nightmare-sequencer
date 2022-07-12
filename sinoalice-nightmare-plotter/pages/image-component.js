@@ -33,7 +33,7 @@ function ImageComponent(props)
         //The class name for the image list item changes depending on whether the selected value of the nightmare is true or false
         return(
             <OverlayTrigger overlay={tooltip}>
-            <div>
+             <div className={styles.item}>
                 <Image
                 src={props.nightmare[props.displayOptions['icon']]}
                 alt={props.nightmare[props.displayOptions['icon']]}

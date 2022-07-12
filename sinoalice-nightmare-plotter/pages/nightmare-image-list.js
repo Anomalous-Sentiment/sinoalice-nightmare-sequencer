@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { useState, useEffect, memo, useMemo } from 'react';
+import { useState, memo, useMemo } from 'react';
 import ImageComponent from './image-component';
 import FilterBar from './filter-component';
-import { useResizeDetector } from 'react-resize-detector';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,13 +9,7 @@ import styles from '../styles/ImageComponent.module.css'
 
 
 function NightmareImageList(props) {
-    const [columns, setColumns] = useState(2);
     const [appliedFilterList, setFilters] = useState([]);
-    const {width, height, ref} = useResizeDetector()
-    const [dimensions, setDimensions] = useState({
-      height: 0,
-      width: 0
-    });
     const [sortByList, setSortOptions] = useState(
       [
         <Dropdown.Item key='0' eventKey="0">Rarity (Low to High)</Dropdown.Item>,
@@ -66,13 +59,10 @@ function NightmareImageList(props) {
       newList = newList.map((nightmare, index, arr) => {
     
         return (
-          <div key={nightmare[props.displayOptions['icon']]} className={styles.item}>
-          <ImageComponent 
-          key={nightmare[props.displayOptions['icon']]} 
+          <ImageComponent key={nightmare[props.displayOptions['icon']]} 
           nightmare={nightmare} 
           displayOptions={props.displayOptions} 
           />
-          </div>
         )
     
       })
@@ -88,35 +78,6 @@ function NightmareImageList(props) {
       return filteredNms;
     }
 
-    //Function for updating the image grid size based on window dimensions
-    useEffect(() => {
-      if (dimensions.width != 0)
-      {
-        console.log('dim: ', dimensions)
-        setColumns(parseInt(dimensions.width / 90) - 1)
-
-      }
-    }, [dimensions])
-
-    function updateDimensions()
-    {
-      if (width)
-      {
-        console.log('div height (tab?): ', parseInt(height))
-        console.log('div width: ', parseInt(width))
-        setDimensions({
-          height: parseInt(height),
-          width: parseInt(width)
-        })
-      }
-
-    }
-
-    //Run after render
-    useEffect(() => {
-      updateDimensions()
-    }, [width])
-
     function changeFilters(newList)
     {
       //Update the filter list
@@ -125,7 +86,7 @@ function NightmareImageList(props) {
 
 
   return (
-    <div ref={ref}>
+    <div>
       <FilterBar filterList={props.filterList}
       handleChange={changeFilters}>
       </FilterBar>
