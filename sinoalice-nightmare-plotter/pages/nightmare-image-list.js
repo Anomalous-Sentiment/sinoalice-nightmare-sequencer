@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useState, memo, useMemo } from 'react';
 import ImageComponent from './image-component';
 import FilterBar from './filter-component';
@@ -10,19 +9,22 @@ import styles from '../styles/ImageComponent.module.css'
 
 function NightmareImageList(props) {
     const [appliedFilterList, setFilters] = useState([]);
-    const [sortByList, setSortOptions] = useState(
-      [
+    const sortByList=[
         <Dropdown.Item key='0' eventKey="0">Rarity (Low to High)</Dropdown.Item>,
         <Dropdown.Item key='1' eventKey="1">Rarity (High to Low)</Dropdown.Item>,
         <Dropdown.Item key='2' eventKey="2">Element</Dropdown.Item>,
         <Dropdown.Item key='3' eventKey="3">Default</Dropdown.Item>
       ]
-    )
 
     function lowToHighRarity(a, b) {return a['rarity_id'] - b['rarity_id']};
     function highToLowRarity(a, b) {return b['rarity_id'] - a['rarity_id']};
     function element(a, b) {return a['attribute_id'] - b['attribute_id']};
     function defaultOrder(a, b) {return 0};
+
+    if (props.type)
+    {
+      console.log('all tab render')
+    }
 
     function onSortingSelect(eventKey, event)
     {
@@ -44,7 +46,6 @@ function NightmareImageList(props) {
 
 
     const imageList = useMemo(() => props.list ? mapNightmaresToComponents(props.list) : [], [props.list, appliedFilterList, sorter])
-    console.log('rendered')
 
     function mapNightmaresToComponents (list)
     {
@@ -78,17 +79,11 @@ function NightmareImageList(props) {
       return filteredNms;
     }
 
-    function changeFilters(newList)
-    {
-      //Update the filter list
-      setFilters(newList)
-    }
-
 
   return (
     <div>
       <FilterBar filterList={props.filterList}
-      handleChange={changeFilters}>
+      handleChange={setFilters}>
       </FilterBar>
       <DropdownButton 
       id="dropdown-basic-button" 
@@ -110,16 +105,13 @@ function areEqual(prevProps, nextProps)
   let isEqual = false;
 
   //Check if old list is same as new list
-  if (prevProps.list && nextProps.list)
+  if (prevProps.list && nextProps.list && prevProps.displayOptions && nextProps.displayOptions)
   {
     if (prevProps.displayOptions['icon'] == nextProps.displayOptions['icon'])
     {
       if (nextProps.list.length == prevProps.list.length)
       {
-        if (prevProps.list.every((element, index) => nextProps.list[index]['jp_icon'] == element['jp_icon']))
-        {
-          isEqual = true;
-        }
+        isEqual= true
       }
     }
 

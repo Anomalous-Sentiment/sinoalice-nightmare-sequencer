@@ -7,6 +7,7 @@ import styles from '../styles/ImageComponent.module.css'
 
 function ImageComponent(props)
 {
+
     const dispatch = useDispatch()
     // Check if this nightmare's skill has been chosen already
     const skillUsed = useSelector(state => state.nightmares.skillsUsed[props.nightmare['jp_colo_skill_name']]);
@@ -27,7 +28,7 @@ function ImageComponent(props)
             {props.nightmare[props.displayOptions['skill_description']]}
         </Tooltip>
         )
-    }, [props.nightmare, props.displayOptions])
+    }, [props.nightmare['jp_name'], props.displayOptions])
     
     const nightmareImage = useMemo(() => {
         //The class name for the image list item changes depending on whether the selected value of the nightmare is true or false

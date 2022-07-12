@@ -33,6 +33,7 @@ const JP_LANG = {
 
 export default function NightmarePlotter() {
   const [jsonData, setJsonData] = useState();
+  const selectedNightmares = useSelector(getSelectedNightmares);
   const globalNightmares = useMemo(() => {
     if (jsonData)
     {
@@ -60,11 +61,8 @@ export default function NightmarePlotter() {
     }
   }, [globalOnly])
   const generalCategoryTabs = useMemo(updateTabs, [jsonData, serverNightmares, displayOptions])
-  const selectedNightmares = useSelector(getSelectedNightmares);
 
   const dispatch = useDispatch();
-
-
 
   // Get the current time. Useing state only so that it's maintained across re-renders, and so it doesn't get a new time if re-rendering after a day
   const [now, setTime] = useState(DateTime.now().startOf('day'))
@@ -138,8 +136,34 @@ export default function NightmarePlotter() {
         )
       })
     }
+
+    const finalTabList = () => {
+      return (
+        <Tabs defaultActiveKey="all" id="general-tabs" className="mb-3">
+        <Tab eventKey="all" title="All Nightmares">
+          <NightmareImageList list={serverNightmares} 
+          displayOptions={displayOptions}
+          type='Render'
+          />
+        </Tab>
+        {tabList}
+        <Tab eventKey="other" title="Other">
+          <NightmareImageList 
+          list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].length == 0) : []} 
+          displayOptions={displayOptions}
+          />
+        </Tab>
+        <Tab eventKey="selected" title="Selected Nightmares">
+        <NightmareImageList 
+          list={selectedNightmares} 
+          displayOptions={displayOptions}
+          />
+        </Tab>
+      </Tabs>
+      )
+    }
     //Set the tabs
-    return tabList;
+    return finalTabList();
 
   }
 
@@ -196,27 +220,8 @@ export default function NightmarePlotter() {
           </ToggleButton>
       </ToggleButtonGroup>
 
-      <Tabs defaultActiveKey="all" id="general-tabs" className="mb-3">
-        <Tab eventKey="all" title="All Nightmares">
-          <NightmareImageList list={serverNightmares} 
-          displayOptions={displayOptions}
-          />
-        </Tab>
-        {generalCategoryTabs}
-        <Tab eventKey="other" title="Other">
-          <NightmareImageList 
-          list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].length == 0) : []} 
-          displayOptions={displayOptions}
-          />
-        </Tab>
-        <Tab eventKey="selected" title="Selected Nightmares">
-        <NightmareImageList 
-          list={selectedNightmares} 
-          displayOptions={displayOptions}
-          />
-        </Tab>
-      </Tabs>
-      
+
+      {generalCategoryTabs}
 
     </div>
 
