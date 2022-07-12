@@ -1,11 +1,12 @@
 import { Fragment, memo, useMemo } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux'
-import { addNightmare, removeNightmare } from '../redux/nightmaresSlice'
+import store from '../redux/store'
+import { addNightmare, removeNightmare, getColoTime, getSelectedNightmares} from '../redux/nightmaresSlice'
 import Figure from 'react-bootstrap/Figure';
 import styles from '../styles/ImageComponent.module.css'
 import PubSub from 'pubsub-js'
-
+import { SUCCESS, ERROR } from './constants'
 function ImageComponent(props)
 {
 
@@ -60,23 +61,43 @@ function ImageComponent(props)
     {
         if (!isSelectedNightmare && !skillUsed)
         {
-            //If not selected nightmare, add to store list
-            dispatch(addNightmare(props.nightmare))
-            PubSub.publish('SUCCESS', 'Nightmare added!');
+            //Check if adding the nightmare will exceed the 20 minute time limit
+            const selectedNms = store.getState().nightmares.nightmaresSelected;
+            //Convert to seconds
+            const timeLimit = store.getState().nightmares.coloTime * 60;
+            let sum = 0;
+            //Sum total nightmare time (prep + effective)
+            selectedNms.forEach(element => {
+                sum = sum + element['prep_time'] + element['effective_time']
+            });
+
+            if (sum < timeLimit)
+            {
+                //If not selected nightmare and below time limit, add to store list
+                dispatch(addNightmare(props.nightmare))
+                PubSub.publish(SUCCESS, 'Nightmare added!');
+            }
+            else
+            {
+                //Above time limit. Send error message
+                PubSub.publish(ERROR, 'Unable to add. Exceeds colosseum time limit.');
+
+            }
+
 
         }
         else if (skillUsed && isSelectedNightmare)
         {
             //If is selected nightmare
             dispatch(removeNightmare(props.nightmare))
-            PubSub.publish('SUCCESS', 'Nightmare removed!');
+            PubSub.publish(SUCCESS, 'Nightmare removed!');
 
         }
         else if (skillUsed && !isSelectedNightmare)
         {
             // If not selected nightmare, but has same skill as a selected nightmare
             //Show error message
-            PubSub.publish('ERROR', 'Nightmare with same skill already selected!');
+            PubSub.publish(ERROR, 'Nightmare with same skill already selected!');
         }
     }
 

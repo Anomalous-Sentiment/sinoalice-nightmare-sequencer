@@ -4,7 +4,8 @@ export const nightmareSlice = createSlice({
     name: 'nightmares',
     initialState: {
         nightmaresSelected: [],
-        skillsUsed: {}
+        skillsUsed: {},
+        coloTime: 20
     },
     reducers: {
         addNightmare: (state = initialState, action) => {
@@ -20,7 +21,6 @@ export const nightmareSlice = createSlice({
             //Remove nightmare from list
             state.nightmaresSelected = state.nightmaresSelected.filter(nightmare => nightmare['jp_name'] != action.payload['jp_name'])
 
-            console.log(state.nightmaresSelected)
             state.skillsUsed[action.payload['jp_colo_skill_name']] = false;
 
 
@@ -30,14 +30,21 @@ export const nightmareSlice = createSlice({
             action.payload.forEach(element => {
                 state.skillsUsed[element['jp_colo_skill_name']] = false
             });
+        },
+        updateColoTime: (state = initialState, action) => {
+            state.coloTime = action.payload;
         }
     }
 })
 
-export const {addNightmare, removeNightmare, initialiseSkillStates} = nightmareSlice.actions;
+export const {addNightmare, removeNightmare, initialiseSkillStates, updateColoTime} = nightmareSlice.actions;
 
 export const getSelectedNightmares = (state) => {
     return state.nightmares.nightmaresSelected;
+};
+
+export const getColoTime = (state) => {
+    return state.nightmares.coloTime;
 };
 
 export default nightmareSlice.reducer;

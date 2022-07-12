@@ -15,7 +15,7 @@ import { getSelectedNightmares, initialiseSkillStates } from '../redux/nightmare
 import PubSub from 'pubsub-js'
 import SubTabs from './sub-tabs'
 import Statistics from './data-display'
-
+import { SUCCESS, ERROR, NORMAL_COLO_TIME_MINS, SPECIAL_COLO_TIME_MINS } from './constants'
 const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -41,8 +41,8 @@ const JP_LANG = {
 };
 
 export default function NightmarePlotter() {
-  const [errorOpen, setErrorOpen] = useState(true);
-  const [successOpen, setSuccessOpen] = useState(true);
+  const [errorOpen, setErrorOpen] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
   const handleErrorClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -134,8 +134,8 @@ export default function NightmarePlotter() {
 
   //Subscribe every render, and unsubscribe before re-render
   useEffect(() => {
-    let errorToken = PubSub.subscribe('ERROR', errorListener);
-    let successToken = PubSub.subscribe('SUCCESS', successListener);
+    let errorToken = PubSub.subscribe(ERROR, errorListener);
+    let successToken = PubSub.subscribe(SUCCESS, successListener);
 
     return (() => {
       PubSub.unsubscribe(errorToken);
@@ -152,12 +152,14 @@ export default function NightmarePlotter() {
     fetch("http://localhost:3001/")
     .then(response => response.json())
     .then((json) => {
-      setGlobalServer(true)
-      setJsonData(json);
-
       //Initialise selected key field to false (for usage in image list)
       const baseSkills = json['base_skills']
       dispatch(initialiseSkillStates(baseSkills))
+      
+      setGlobalServer(true)
+      setJsonData(json);
+
+
 
     })
     .catch(err => console.log(err));
