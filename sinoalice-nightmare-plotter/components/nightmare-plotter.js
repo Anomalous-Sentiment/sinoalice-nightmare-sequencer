@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, forwardRef } from 'react';
+import { useEffect, useState, useMemo, forwardRef, useRef } from 'react';
 import NightmareImageList from './nightmare-image-list'
 import { Chart } from "react-google-charts";
 import { DateTime } from "luxon";
@@ -11,12 +11,13 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Accordion from 'react-bootstrap/Accordion';
 import { useSelector, useDispatch } from 'react-redux'
-import { getSelectedNightmares, initialiseSkillStates } from '../redux/nightmaresSlice'
+import { getSelectedNightmares, initialiseSkillStates, updateColoTime } from '../redux/nightmaresSlice'
 import { Resizable } from 'react-resizable';
 import PubSub from 'pubsub-js'
 import SubTabs from './sub-tabs'
 import Statistics from './data-display'
 import { SUCCESS, ERROR, NORMAL_COLO_TIME_MINS, SPECIAL_COLO_TIME_MINS } from './constants'
+import { Button } from 'react-bootstrap';
 const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -43,7 +44,6 @@ const JP_LANG = {
 
 export default function NightmarePlotter() {
   const [dimensions, setDimensions] = useState({
-    width: 800,
     height: 400
   });
   const [errorOpen, setErrorOpen] = useState(false);
@@ -124,6 +124,11 @@ export default function NightmarePlotter() {
       minValue: now.toJSDate()
     },
   };
+
+  function setColoLength(length)
+  {
+    dispatch(updateColoTime(length))
+  }
 
   const errorListener = function (msg, data) {
     setErrorOpen(true)
@@ -266,9 +271,9 @@ export default function NightmarePlotter() {
 
   return (
     <div>
-      <Resizable height={dimensions.height} onResize={onResize}>
-        <div className="box" style={{height: dimensions.height + 'px'}}>
-          <Chart chartType="Timeline" data={data} width="100%" height="100%" options={options}/>
+      <Resizable height={dimensions.height} onResize={onResize} axis='y' resizeHandles={['se', 's', 'sw']}>
+        <div ref={chartRef} className="box" style={{height: dimensions.height + 'px'}}>
+          <Chart chartType="Timeline" data={data} width="100%" height="100%" options={options} />
         </div>
       </Resizable>
       <Accordion>
@@ -287,6 +292,17 @@ export default function NightmarePlotter() {
             Japan Server
           </ToggleButton>
       </ToggleButtonGroup>
+      <ToggleButtonGroup name="colo_type" size="lg" className="mb-2" type="radio" defaultValue={NORMAL_COLO_TIME_MINS} onChange={setColoLength}>
+          <ToggleButton id="normal" value={NORMAL_COLO_TIME_MINS}>
+            Normal Colosseum
+          </ToggleButton>
+          <ToggleButton id="special" value={SPECIAL_COLO_TIME_MINS}>
+            Global 2nd Anniversary 40 min ver.
+          </ToggleButton>
+      </ToggleButtonGroup>
+      <Button>
+        Download Chart
+      </Button>
 
       <Tabs defaultActiveKey="all" id="general-tabs" className="mb-3">
         {generalCategoryTabs}
