@@ -1,8 +1,5 @@
 import * as React from 'react';
-import Image from 'next/image';
-import { useState, useEffect, memo } from 'react';
-import ImageListItem from '@mui/material/ImageListItem';
-import ImageListItemBar from '@mui/material/ImageListItemBar';
+import { useState, useEffect, memo, useMemo } from 'react';
 import ImageComponent from './image-component';
 import FilterBar from './filter-component';
 import { useResizeDetector } from 'react-resize-detector';
@@ -53,7 +50,8 @@ function NightmareImageList(props) {
     const [sorter, setSorter] = useState(sortingFunctions[3]);
 
 
-    const [imageList, updateImages] = useState()
+    const imageList = useMemo(() => props.list ? mapNightmaresToComponents(props.list) : [], [props.list, appliedFilterList, sorter])
+    console.log('rendered')
 
     function mapNightmaresToComponents (list)
     {
@@ -79,7 +77,7 @@ function NightmareImageList(props) {
     
       })
     
-      updateImages(newList);
+      return newList;
     }
 
     function applyFilters(list)
@@ -125,13 +123,6 @@ function NightmareImageList(props) {
       setFilters(newList)
     }
 
-    //Effect to run when filter list updated, list changed or sorting function changed
-    useEffect(() => {
-      if (props.list)
-      {
-        mapNightmaresToComponents(props.list)
-      }
-    }, [props.list, appliedFilterList, sorter])
 
   return (
     <div ref={ref}>

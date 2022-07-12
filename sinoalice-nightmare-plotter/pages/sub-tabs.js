@@ -12,7 +12,6 @@ export default function SubTabs(props)
     {
         if (props.tabNightmares && props.displayOptions && props.mainCategories)
         {
-            console.log('mapping')
             //Get list of main categories from props and create a tab for each
             const tabs = props.mainCategories.map(category => {
                 //Pass in it's associated list of subcategories/filter options as well.
@@ -21,7 +20,7 @@ export default function SubTabs(props)
 
                 return (
                     <Tab key={category['major_tag_id']} eventKey={category['major_tag']} title={category['major_tag']} className='tab'>
-                        <NightmareImageList list={props.tabNightmares ? props.tabNightmares.filter(nm => nm['major_tags'].includes(category['major_tag'])) : null} 
+                        <NightmareImageList list={props.tabNightmares ? props.tabNightmares.filter(nm => nm['major_tags'].includes(category['major_tag'])) : []} 
                         displayOptions={props.displayOptions}
                         filterList={filterOptions}
                         />

@@ -18,8 +18,9 @@ export const nightmareSlice = createSlice({
         },
         removeNightmare: (state = initialState, action) => {
             //Remove nightmare from list
-            state.nightmaresSelected = state.nightmaresSelected.filter(nightmare => nightmare['jp_name'] != action.payload['jp_name'] && nightmare['rarity_id'] != action.payload['rarity_id'])
+            state.nightmaresSelected = state.nightmaresSelected.filter(nightmare => nightmare['jp_name'] != action.payload['jp_name'])
 
+            console.log(state.nightmaresSelected)
             state.skillsUsed[action.payload['jp_colo_skill_name']] = false;
 
 

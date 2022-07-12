@@ -64,7 +64,6 @@ export default function NightmarePlotter() {
 
   const dispatch = useDispatch();
 
-  console.log('rendered')
 
 
   // Get the current time. Useing state only so that it's maintained across re-renders, and so it doesn't get a new time if re-rendering after a day
@@ -176,7 +175,6 @@ export default function NightmarePlotter() {
       }
     })
 
-    console.log([columns, ...newRows])
 
     //Update the timeline graph
     return [columns, ...newRows]
@@ -207,7 +205,7 @@ export default function NightmarePlotter() {
         {generalCategoryTabs}
         <Tab eventKey="other" title="Other">
           <NightmareImageList 
-          list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].length == 0) : null} 
+          list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].length == 0) : []} 
           displayOptions={displayOptions}
           />
         </Tab>
