@@ -21,11 +21,6 @@ function NightmareImageList(props) {
     function element(a, b) {return a['attribute_id'] - b['attribute_id']};
     function defaultOrder(a, b) {return 0};
 
-    if (props.type)
-    {
-      console.log('all tab render')
-    }
-
     function onSortingSelect(eventKey, event)
     {
       const sortingId = parseInt(eventKey);

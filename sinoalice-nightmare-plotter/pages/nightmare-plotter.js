@@ -213,10 +213,10 @@ export default function NightmarePlotter() {
 
       <ToggleButtonGroup name="servers" size="lg" className="mb-2" type="radio" defaultValue={true} onChange={setGlobalServer}>
           <ToggleButton id="global" value={true}>
-            Global
+            Global Server
           </ToggleButton>
           <ToggleButton id="japan" value={false}>
-            Japan
+            Japan Server
           </ToggleButton>
       </ToggleButtonGroup>
 

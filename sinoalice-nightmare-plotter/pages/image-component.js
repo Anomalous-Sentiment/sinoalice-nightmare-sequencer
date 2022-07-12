@@ -1,10 +1,9 @@
 import { Fragment, memo, useMemo } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import Image from 'next/image';
 import { useSelector, useDispatch } from 'react-redux'
 import { addNightmare, removeNightmare } from '../redux/nightmaresSlice'
 import styles from '../styles/ImageComponent.module.css'
-
+import Figure from 'react-bootstrap/Figure';
 function ImageComponent(props)
 {
 
@@ -35,13 +34,18 @@ function ImageComponent(props)
         return(
             <OverlayTrigger overlay={tooltip}>
              <div className={styles.item}>
-                <Image
+                <Figure>
+                <Figure.Image
                 src={props.nightmare[props.displayOptions['icon']]}
                 alt={props.nightmare[props.displayOptions['icon']]}
                 width='90'
                 height='90'
                 className={skillUsed ? 'selected': ''}
                 onClick={onClick}/>
+                <Figure.Caption>
+                    {props.nightmare[props.displayOptions['name']]}
+                </Figure.Caption>
+                </Figure>
             </div>
         </OverlayTrigger>
 
