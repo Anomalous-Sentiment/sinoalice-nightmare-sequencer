@@ -12,6 +12,7 @@ import MuiAlert from '@mui/material/Alert';
 import Accordion from 'react-bootstrap/Accordion';
 import { useSelector, useDispatch } from 'react-redux'
 import { getSelectedNightmares, initialiseSkillStates } from '../redux/nightmaresSlice'
+import { Resizable } from 'react-resizable';
 import PubSub from 'pubsub-js'
 import SubTabs from './sub-tabs'
 import Statistics from './data-display'
@@ -41,6 +42,10 @@ const JP_LANG = {
 };
 
 export default function NightmarePlotter() {
+  const [dimensions, setDimensions] = useState({
+    width: 800,
+    height: 400
+  });
   const [errorOpen, setErrorOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const handleErrorClose = (event, reason) => {
@@ -84,6 +89,10 @@ export default function NightmarePlotter() {
     }
   }, [globalOnly])
   const generalCategoryTabs = useMemo(updateTabs, [jsonData, serverNightmares, displayOptions])
+
+  const onResize = (event, {element, size, handle}) => {
+    setDimensions({width: size.width, height: size.height});
+  };
 
   const dispatch = useDispatch();
 
@@ -155,7 +164,7 @@ export default function NightmarePlotter() {
       //Initialise selected key field to false (for usage in image list)
       const baseSkills = json['base_skills']
       dispatch(initialiseSkillStates(baseSkills))
-      
+
       setGlobalServer(true)
       setJsonData(json);
 
@@ -257,7 +266,11 @@ export default function NightmarePlotter() {
 
   return (
     <div>
-      <Chart chartType="Timeline" data={data} width="100%" height="400px" options={options}/>
+      <Resizable height={dimensions.height} onResize={onResize}>
+        <div className="box" style={{height: dimensions.height + 'px'}}>
+          <Chart chartType="Timeline" data={data} width="100%" height="100%" options={options}/>
+        </div>
+      </Resizable>
       <Accordion>
       <Accordion.Item eventKey="0">
         <Accordion.Header>Miscellaneous Statistics</Accordion.Header>
