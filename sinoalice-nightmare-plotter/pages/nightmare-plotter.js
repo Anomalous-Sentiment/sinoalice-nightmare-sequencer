@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
 import ToggleButton from 'react-bootstrap/ToggleButton'
 import { useSelector, useDispatch } from 'react-redux'
-import { getSelectedNightmares } from '../redux/nightmaresSlice'
+import { getSelectedNightmares, initialiseSkillStates } from '../redux/nightmaresSlice'
 import SubTabs from './sub-tabs'
 
 const EN_LANG = {
@@ -41,6 +41,8 @@ export default function NightmarePlotter() {
   const [generalCategoryTabs, setCategoryTabs] = useState([])
   const [displayOptions, setDisplay] = useState(EN_LANG);
   const selectedNightmares = useSelector(getSelectedNightmares);
+
+  const dispatch = useDispatch();
 
 
   // Get the current time. Useing state only so that it's maintained across re-renders, and so it doesn't get a new time if re-rendering after a day
@@ -84,6 +86,9 @@ export default function NightmarePlotter() {
     .then((json) => {
       const nightmares = json['nightmares']
       //Initialise selected key field to false (for usage in image list)
+      const baseSkills = json['base_skills']
+      dispatch(initialiseSkillStates(baseSkills))
+
       nightmares.forEach(element => element['selected'] = false)
       filterByServer(json["nightmares"]);
       setJsonData(json);
@@ -142,7 +147,7 @@ export default function NightmarePlotter() {
     let newRows = [...shinmaTimes];
 
 
-    console.log(selectedNightmares)
+    //console.log(selectedNightmares)
     // Recalculate timeline times according to modified selected nightmares list
     selectedNightmares.forEach((nightmare, index, array) => {
       //Calculate new times for each nightmare in list in order

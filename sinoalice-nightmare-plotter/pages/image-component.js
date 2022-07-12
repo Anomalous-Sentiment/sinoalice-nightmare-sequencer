@@ -14,8 +14,8 @@ function ImageComponent(props)
     //Check if this nightmare is in the selected list
     const isSelectedNightmare = useSelector(state => {
         const selected = state.nightmares.nightmaresSelected.some(element => {
-        element['jp_name'] == props.nightmare['jp_name'] && element['jp_rank'] == props.nightmare['jp_rank']})
-
+            return (element['jp_name'] == props.nightmare['jp_name'] && element['rarity_id'] == props.nightmare['rarity_id'])
+        })
         return selected;
     })
 
@@ -50,7 +50,7 @@ function ImageComponent(props)
     //Function to update nightmare list depending on state
     function onClick()
     {
-        if (!isSelectedNightmare)
+        if (!isSelectedNightmare && !skillUsed)
         {
             //If not selected nightmare, add to store list
             dispatch(addNightmare(props.nightmare))

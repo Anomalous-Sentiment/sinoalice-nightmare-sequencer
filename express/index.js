@@ -64,16 +64,21 @@ app.get('/', async(req, res) => {
   .from('rarities')
   .select()
 
-  dbRequests.push(nightmareRequest, elementRequest, generalTagRequest, majorTagRequest, rarityRequest);
+    //Get all rarities
+    const pureSkillsRequest = supabase
+    .from('pure_colo_skill_names')
+    .select()
+
+  dbRequests.push(nightmareRequest, elementRequest, generalTagRequest, majorTagRequest, rarityRequest, pureSkillsRequest);
 
   console.time('DB Requests Timer')
   //Wait or all concurrent requests to complete and get their returned values
-  let [{data: allNightmares}, {data: allAttributes}, {data: generalTags}, {data: majorTags}, {data: allRarities}] = await Promise.all(dbRequests);
+  let [{data: allNightmares}, {data: allAttributes}, {data: generalTags}, {data: majorTags}, {data: allRarities}, {data: pureSkills}] = await Promise.all(dbRequests);
   console.timeEnd('DB Requests Timer')
 
 
   //Return the values obtained from the database
-  return res.status(200).json({nightmares: allNightmares, attributes: allAttributes, general_tags: generalTags, major_tags: majorTags, rarities: allRarities});
+  return res.status(200).json({nightmares: allNightmares, attributes: allAttributes, general_tags: generalTags, major_tags: majorTags, rarities: allRarities, base_skills: pureSkills});
 })
 
 

@@ -61,7 +61,6 @@ function NightmareImageList(props) {
       let newList = applyFilters(list)
 
       //Apply sorting to filtereed list if selected
-      console.log(sorter)
       newList = newList.sort(sorter[1])
     
 
@@ -122,7 +121,6 @@ function NightmareImageList(props) {
 
     function changeFilters(newList)
     {
-      console.log(newList)
       //Update the filter list
       setFilters(newList)
     }
