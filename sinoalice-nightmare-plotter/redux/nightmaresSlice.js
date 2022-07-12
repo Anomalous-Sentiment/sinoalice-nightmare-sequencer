@@ -22,7 +22,6 @@ export const nightmareSlice = createSlice({
 
             state.skillsUsed[action.payload['jp_colo_skill_name']] = false;
 
-            console.log(state.skillsUsed)
 
         },
         initialiseSkillStates: (state = initialState, action) => {
@@ -37,7 +36,6 @@ export const nightmareSlice = createSlice({
 export const {addNightmare, removeNightmare, initialiseSkillStates} = nightmareSlice.actions;
 
 export const getSelectedNightmares = (state) => {
-    console.log(state)
     return state.nightmares.nightmaresSelected;
 };
 

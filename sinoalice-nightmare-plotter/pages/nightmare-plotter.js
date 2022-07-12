@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import NightmareImageList from './nightmare-image-list'
 import { Chart } from "react-google-charts";
 import { DateTime } from "luxon";
@@ -36,10 +36,9 @@ export default function NightmarePlotter() {
   const [serverNightmares, updateServerNightmares] = useState([])
   const [globalNightmares, updateGlobalNightmares] = useState([])
   const [jpnightmares, updateJpNightmares] = useState([])
-  //const [selectedNightmares, setSelected] = useState([])
-  const [globalOnly, setGlobalServer] = useState()
-  const [generalCategoryTabs, setCategoryTabs] = useState([])
+  const [globalOnly, setGlobalServer] = useState(true)
   const [displayOptions, setDisplay] = useState(EN_LANG);
+  const generalCategoryTabs = useMemo(updateTabs, [jsonData, serverNightmares])
   const selectedNightmares = useSelector(getSelectedNightmares);
 
   const dispatch = useDispatch();
@@ -64,7 +63,6 @@ export default function NightmarePlotter() {
     ['Demon/Shinma', 'Demon 1', now.plus({minutes: 2}).toJSDate(), now.plus({minutes: 5}).toJSDate()],
     ['Demon/Shinma', 'Demon 2', now.plus({minutes: 12}).toJSDate(), now.plus({minutes: 15}).toJSDate()]
   ]
-  const [timelineRows, setTimelineRows] = useState(shinmaTimes)
   
   const options = {
     colors : ["blue", "red"],
@@ -75,7 +73,7 @@ export default function NightmarePlotter() {
     },
   };
 
-  const [data, setData] = useState([columns, ...timelineRows]);
+  const data = useMemo(() => updateTimeline(), [selectedNightmares]);
 
   //Run only once on first render
   useEffect(() => {
@@ -84,26 +82,27 @@ export default function NightmarePlotter() {
     fetch("http://localhost:3001/")
     .then(response => response.json())
     .then((json) => {
-      const nightmares = json['nightmares']
+      setJsonData(json);
+
       //Initialise selected key field to false (for usage in image list)
       const baseSkills = json['base_skills']
       dispatch(initialiseSkillStates(baseSkills))
 
-      nightmares.forEach(element => element['selected'] = false)
+      //Separate JP and EN server nightmares into own lists
       filterByServer(json["nightmares"]);
-      setJsonData(json);
-
     })
     .catch(err => console.log(err));
   }, [])
 
-  //Hook to populate tabs when nightmares are retrieved
-  useEffect(() => {
+
+  //Function to update tabs
+  function updateTabs()
+  {
+    let tabList = [];
     if (jsonData && serverNightmares)
     {
-      
       //Get all major categories and generate tabs for each category
-      const tabList = jsonData['general_tags'].map((jsonObj, index, array) => {
+      tabList = jsonData['general_tags'].map((jsonObj, index, array) => {
         const generalTagName = jsonObj['general_tag'];
         const majorTagsList = jsonData['major_tags'].filter(element => element['general_tag'] == generalTagName);
 
@@ -111,20 +110,17 @@ export default function NightmarePlotter() {
           <Tab key={jsonObj['general_tag_id']} eventKey={generalTagName} title={generalTagName}>
             <SubTabs tabNightmares={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].includes(generalTagName)) : null}
             displayOptions={displayOptions}
-            mainCategories={majorTagsList}
-            updateServerNightmares={updateServerNightmares}>
+            mainCategories={majorTagsList}>
             </SubTabs>
           </Tab>
 
         )
       })
-
-      //Set the tabs
-      setCategoryTabs(tabList);
-      
     }
+    //Set the tabs
+    return tabList;
 
-  }, [jsonData, serverNightmares])
+  }
 
   useEffect(() => {
     //Function to run when flag changes
@@ -140,14 +136,12 @@ export default function NightmarePlotter() {
       setDisplay(JP_LANG)
       updateServerNightmares(jpnightmares)
     }
-  }, [globalOnly])
+  }, [globalOnly, jsonData])
 
-  //Hook to update timeline when selected nightmares change
-  useEffect(() => {
+  function updateTimeline()
+  {
     let newRows = [...shinmaTimes];
 
-
-    //console.log(selectedNightmares)
     // Recalculate timeline times according to modified selected nightmares list
     selectedNightmares.forEach((nightmare, index, array) => {
       //Calculate new times for each nightmare in list in order
@@ -175,21 +169,18 @@ export default function NightmarePlotter() {
         newRows.push(durRow)
       }
     })
-    //Update timeline rows
-    setTimelineRows(newRows)
+
+    console.log([columns, ...newRows])
 
     //Update the timeline graph
-    setData([columns, ...newRows])
+    return [columns, ...newRows]
 
-  }, [selectedNightmares])
+  }
 
   function filterByServer(unfilteredNightmares)
   {
     //filter by global nightmares
     updateGlobalNightmares(unfilteredNightmares.filter(nightmare => nightmare['global'] == true))
-
-    //Change global only flag
-    setGlobalServer(true)
 
     //filter by jp nightmares
     updateJpNightmares(unfilteredNightmares)
@@ -213,7 +204,6 @@ export default function NightmarePlotter() {
         <Tab eventKey="all" title="All Nightmares">
           <NightmareImageList list={serverNightmares} 
           displayOptions={displayOptions}
-          updateServerNightmares={updateServerNightmares}
           />
         </Tab>
         {generalCategoryTabs}
@@ -221,14 +211,12 @@ export default function NightmarePlotter() {
           <NightmareImageList 
           list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].length == 0) : null} 
           displayOptions={displayOptions}
-          updateServerNightmares={updateServerNightmares}
           />
         </Tab>
         <Tab eventKey="selected" title="Selected Nightmares">
         <NightmareImageList 
           list={selectedNightmares} 
           displayOptions={displayOptions}
-          updateServerNightmares={updateServerNightmares}
           />
         </Tab>
       </Tabs>
