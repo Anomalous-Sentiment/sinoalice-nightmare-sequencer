@@ -1,30 +1,15 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, memo, useMemo} from 'react';
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 import NightmareImageList from './nightmare-image-list'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function SubTabs(props)
+export default function SubTabs(props)
 {
-    const [mainCategoryTabs, setTabs] = useState();
+    const mainCategoryTabs = useMemo(generateSubTabs, [props.tabNightmares, props.displayOptions, props.mainCategories]); 
 
-    if (!props.tabNightmares)
+    function generateSubTabs()
     {
-        console.log('nightmares')
-    }
-
-    if (!props.displayOptions)
-    {
-        console.log('display')
-    }
-
-    if (!props.mainCategories)
-    {
-        console.log('categories')
-    }
-
-    //props will have list of nightmares, and list of main categories, and displayOptions object
-    useEffect(() => {
         if (props.tabNightmares && props.displayOptions && props.mainCategories)
         {
             console.log('mapping')
@@ -43,13 +28,10 @@ function SubTabs(props)
                     </Tab>
                 )
             })
-            setTabs(tabs)
+            return tabs;
             
         }
-
-    }, [props.tabNightmares, props.displayOptions, props.mainCategories])
-
-
+    }
 
     return (
         <div>
@@ -60,13 +42,3 @@ function SubTabs(props)
     )
 }
 
-function areEqual(prevProps, nextProps)
-{
-    let isEqual = false;
-
-
-
-    return isEqual;
-}
-
-export default memo(SubTabs, areEqual)

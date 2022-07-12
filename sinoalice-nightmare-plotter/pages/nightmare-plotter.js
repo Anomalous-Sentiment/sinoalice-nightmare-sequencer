@@ -33,15 +33,38 @@ const JP_LANG = {
 
 export default function NightmarePlotter() {
   const [jsonData, setJsonData] = useState();
-  const [serverNightmares, updateServerNightmares] = useState([])
-  const [globalNightmares, updateGlobalNightmares] = useState([])
-  const [jpnightmares, updateJpNightmares] = useState([])
-  const [globalOnly, setGlobalServer] = useState(true)
+  const globalNightmares = useMemo(() => {
+    if (jsonData)
+    {
+      return jsonData['nightmares'].filter(nightmare => nightmare['global'] == true);
+    }
+  }, [jsonData])
+  const jpnightmares = useMemo(() => {
+    if (jsonData)
+    {
+      return jsonData['nightmares'];
+    }
+  }, [jsonData])
+  const [globalOnly, setGlobalServer] = useState()
   const [displayOptions, setDisplay] = useState(EN_LANG);
-  const generalCategoryTabs = useMemo(updateTabs, [jsonData, serverNightmares])
+  const serverNightmares = useMemo(() => {
+    if (globalOnly)
+    {
+      setDisplay(EN_LANG);
+      return globalNightmares;
+    }
+    else
+    {
+      setDisplay(JP_LANG);
+      return jpnightmares;
+    }
+  }, [globalOnly])
+  const generalCategoryTabs = useMemo(updateTabs, [jsonData, serverNightmares, displayOptions])
   const selectedNightmares = useSelector(getSelectedNightmares);
 
   const dispatch = useDispatch();
+
+  console.log('rendered')
 
 
   // Get the current time. Useing state only so that it's maintained across re-renders, and so it doesn't get a new time if re-rendering after a day
@@ -82,14 +105,13 @@ export default function NightmarePlotter() {
     fetch("http://localhost:3001/")
     .then(response => response.json())
     .then((json) => {
+      setGlobalServer(true)
       setJsonData(json);
 
       //Initialise selected key field to false (for usage in image list)
       const baseSkills = json['base_skills']
       dispatch(initialiseSkillStates(baseSkills))
 
-      //Separate JP and EN server nightmares into own lists
-      filterByServer(json["nightmares"]);
     })
     .catch(err => console.log(err));
   }, [])
@@ -121,22 +143,6 @@ export default function NightmarePlotter() {
     return tabList;
 
   }
-
-  useEffect(() => {
-    //Function to run when flag changes
-
-    //Check if flag is set to show global nightmares only
-    if (globalOnly)
-    {
-      setDisplay(EN_LANG)
-      updateServerNightmares(globalNightmares)
-    }
-    else
-    {
-      setDisplay(JP_LANG)
-      updateServerNightmares(jpnightmares)
-    }
-  }, [globalOnly, jsonData])
 
   function updateTimeline()
   {
@@ -177,14 +183,6 @@ export default function NightmarePlotter() {
 
   }
 
-  function filterByServer(unfilteredNightmares)
-  {
-    //filter by global nightmares
-    updateGlobalNightmares(unfilteredNightmares.filter(nightmare => nightmare['global'] == true))
-
-    //filter by jp nightmares
-    updateJpNightmares(unfilteredNightmares)
-  }
 
 
   return (
