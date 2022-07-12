@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, forwardRef } from 'react';
 import NightmareImageList from './nightmare-image-list'
 import { Chart } from "react-google-charts";
 import { DateTime } from "luxon";
@@ -7,9 +7,18 @@ import Tab from 'react-bootstrap/Tab'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
 import ToggleButton from 'react-bootstrap/ToggleButton'
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import Accordion from 'react-bootstrap/Accordion';
 import { useSelector, useDispatch } from 'react-redux'
 import { getSelectedNightmares, initialiseSkillStates } from '../redux/nightmaresSlice'
+import PubSub from 'pubsub-js'
 import SubTabs from './sub-tabs'
+import Statistics from './data-display'
+
+const Alert = forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const EN_LANG = {
   icon: 'en_icon_url',
@@ -32,6 +41,13 @@ const JP_LANG = {
 };
 
 export default function NightmarePlotter() {
+  const [open, setOpen] = useState(true);
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
   const [jsonData, setJsonData] = useState();
   const selectedNightmares = useSelector(getSelectedNightmares);
   const globalNightmares = useMemo(() => {
@@ -93,6 +109,18 @@ export default function NightmarePlotter() {
     },
   };
 
+  const errorListener = function (msg, data) {
+    setOpen(true)
+
+    //Set message
+  };
+
+  useEffect(() => {
+    let token = PubSub.subscribe('ERROR', errorListener);
+
+    return (() => PubSub.unsubscribe(token));
+  })
+
   const data = useMemo(() => updateTimeline(), [selectedNightmares]);
 
   //Run only once on first render
@@ -138,29 +166,25 @@ export default function NightmarePlotter() {
     }
 
     const finalTabList = () => {
-      return (
-        <Tabs defaultActiveKey="all" id="general-tabs" className="mb-3">
-        <Tab eventKey="all" title="All Nightmares">
-          <NightmareImageList list={serverNightmares} 
-          displayOptions={displayOptions}
-          type='Render'
-          />
-        </Tab>
-        {tabList}
-        <Tab eventKey="other" title="Other">
-          <NightmareImageList 
-          list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].length == 0) : []} 
-          displayOptions={displayOptions}
-          />
-        </Tab>
-        <Tab eventKey="selected" title="Selected Nightmares">
-        <NightmareImageList 
-          list={selectedNightmares} 
-          displayOptions={displayOptions}
-          />
-        </Tab>
-      </Tabs>
+      const allTabs = (
+        <Tab key ='all' eventKey="all" title="All Nightmares">
+        <NightmareImageList list={serverNightmares} 
+        displayOptions={displayOptions}
+        type='Render'
+        />
+      </Tab>
       )
+      const otherTab = (
+        <Tab key='other' eventKey="other" title="Other">
+        <NightmareImageList 
+        list={serverNightmares ? serverNightmares.filter(nm => nm['general_tags'].length == 0) : []} 
+        displayOptions={displayOptions}
+        />
+      </Tab>
+      )
+
+      const combinedTabList = [allTabs, ...tabList, otherTab];
+      return combinedTabList;
     }
     //Set the tabs
     return finalTabList();
@@ -210,7 +234,14 @@ export default function NightmarePlotter() {
   return (
     <div>
       <Chart chartType="Timeline" data={data} width="100%" height="400px" options={options}/>
-
+      <Accordion>
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>Miscellaneous Statistics</Accordion.Header>
+        <Accordion.Body>
+          <Statistics nightmares={selectedNightmares} />
+        </Accordion.Body>
+      </Accordion.Item>
+      </Accordion>
       <ToggleButtonGroup name="servers" size="lg" className="mb-2" type="radio" defaultValue={true} onChange={setGlobalServer}>
           <ToggleButton id="global" value={true}>
             Global Server
@@ -220,9 +251,22 @@ export default function NightmarePlotter() {
           </ToggleButton>
       </ToggleButtonGroup>
 
-
-      {generalCategoryTabs}
-
+      <Tabs defaultActiveKey="all" id="general-tabs" className="mb-3">
+        {generalCategoryTabs}
+        <Tab eventKey="selected" title="Selected Nightmares">
+          <NightmareImageList 
+            list={selectedNightmares} 
+            displayOptions={displayOptions}
+            />
+        </Tab>
+      </Tabs>
+      <Snackbar
+        open={open}
+        autoHideDuration={2000}
+        onClose={handleClose}
+      >
+        <Alert severity="error" sx={{ width: '100%' }}>This is an error message!</Alert>
+      </Snackbar>
     </div>
 
   )

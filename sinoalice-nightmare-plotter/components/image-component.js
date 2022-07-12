@@ -2,8 +2,10 @@ import { Fragment, memo, useMemo } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux'
 import { addNightmare, removeNightmare } from '../redux/nightmaresSlice'
-import styles from '../styles/ImageComponent.module.css'
 import Figure from 'react-bootstrap/Figure';
+import styles from '../styles/ImageComponent.module.css'
+import PubSub from 'pubsub-js'
+
 function ImageComponent(props)
 {
 
@@ -28,6 +30,7 @@ function ImageComponent(props)
         </Tooltip>
         )
     }, [props.nightmare['jp_name'], props.displayOptions])
+
     
     const nightmareImage = useMemo(() => {
         //The class name for the image list item changes depending on whether the selected value of the nightmare is true or false
@@ -70,6 +73,7 @@ function ImageComponent(props)
             // If not selected nightmare, but has same skill as a selected nightmare
             //Show error message
             console.log("Same skill nightmare already selected!")
+            PubSub.publish('ERROR', 'Nightmare with same skill already selected!');
         }
     }
 

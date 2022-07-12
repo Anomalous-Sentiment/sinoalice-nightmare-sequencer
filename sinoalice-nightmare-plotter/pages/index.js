@@ -5,7 +5,7 @@ import Tab from 'react-bootstrap/Tab'
 import store from '../redux/store'
 import { Provider } from 'react-redux'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import NightmarePlotter from './nightmare-plotter'
+import NightmarePlotter from '../components/nightmare-plotter'
 
 export default function Home() {
   
