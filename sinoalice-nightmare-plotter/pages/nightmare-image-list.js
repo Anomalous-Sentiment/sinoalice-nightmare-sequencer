@@ -162,13 +162,17 @@ function areEqual(prevProps, nextProps)
   //Check if old list is same as new list
   if (prevProps.list && nextProps.list)
   {
-    if (nextProps.list.length > 0 && prevProps.list.length > 0)
+    if (prevProps.displayOptions['icon'] == nextProps.displayOptions['icon'])
     {
-      if (prevProps.list.every((element, index) => nextProps.list[index]['jp_icon'] == element['jp_icon']))
+      if (nextProps.list.length == prevProps.list.length)
       {
-        isEqual = true;
+        if (prevProps.list.every((element, index) => nextProps.list[index]['jp_icon'] == element['jp_icon']))
+        {
+          isEqual = true;
+        }
       }
     }
+
   }
 
 

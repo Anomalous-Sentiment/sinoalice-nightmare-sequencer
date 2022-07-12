@@ -80,6 +80,8 @@ function areEqual(prevProps, nextProps)
 {
     let isEqual = false;
 
+    
+
     return isEqual;
 
 }
