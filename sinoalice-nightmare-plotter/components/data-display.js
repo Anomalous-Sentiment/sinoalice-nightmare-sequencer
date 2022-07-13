@@ -147,16 +147,16 @@ export default function Statistics(props)
                 chartType="PieChart"
                 data={prepVsEffectData}
                 options={timeOptions}
-                width={"100%"}
-                height={"200px"}
+                width={"50%"}
+                height={"300px"}
                 />
                 
                 <Chart
                 chartType="PieChart"
                 data={elementalData}
                 options={elementalOptions}
-                width={"100%"}
-                height={"200px"}
+                width={"50%"}
+                height={"300px"}
                 />
                 </div>
 
