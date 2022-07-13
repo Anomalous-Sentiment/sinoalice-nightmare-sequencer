@@ -75,7 +75,7 @@ export default function Statistics(props)
         backgroundColor: '#e8e8e8',
         colors: ['#ff0000', '#2e29cd', '#27bb1f'],
         chartArea: {
-            width: '50%',
+            width: '100%',
             height: '100%'
         }
     }

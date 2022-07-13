@@ -299,25 +299,34 @@ export default function NightmarePlotter() {
         </Accordion.Body>
       </Accordion.Item>
       </Accordion>
-      <ToggleButtonGroup name="servers" size="lg" className="mb-2" type="radio" defaultValue={true} onChange={setGlobalServer}>
-          <ToggleButton id="global" value={true}>
-            Global Server
-          </ToggleButton>
-          <ToggleButton id="japan" value={false}>
-            Japan Server
-          </ToggleButton>
-      </ToggleButtonGroup>
-      <ToggleButtonGroup name="colo_type" size="lg" className="mb-2" type="radio" defaultValue={NORMAL_COLO_TIME_MINS} onChange={setColoLength}>
-          <ToggleButton id="normal" value={NORMAL_COLO_TIME_MINS}>
-            Normal Colosseum
-          </ToggleButton>
-          <ToggleButton id="special" value={SPECIAL_COLO_TIME_MINS}>
-            Global 2nd Anniversary 40 min ver.
-          </ToggleButton>
-      </ToggleButtonGroup>
-      <Button size='lg' onClick={() => clearNightmares()}>
-        Clear Selected Nightmares
-      </Button>
+      <div>
+        <ToggleButtonGroup name="servers" size="lg" className="mb-2" type="radio" defaultValue={true} onChange={(value) => {
+          clearNightmares()
+          setGlobalServer(value)
+          }}>
+            <ToggleButton id="global" value={true}>
+              Global Server
+            </ToggleButton>
+            <ToggleButton id="japan" value={false}>
+              Japan Server
+            </ToggleButton>
+        </ToggleButtonGroup>
+      </div>
+
+      <div>
+        <ToggleButtonGroup name="colo_type" size="lg" className="mb-2" type="radio" defaultValue={NORMAL_COLO_TIME_MINS} onChange={setColoLength}>
+            <ToggleButton id="normal" value={NORMAL_COLO_TIME_MINS}>
+              Normal Colosseum
+            </ToggleButton>
+            <ToggleButton id="special" value={SPECIAL_COLO_TIME_MINS}>
+              Global 2nd Anniversary 40 min ver.
+            </ToggleButton>
+        </ToggleButtonGroup>
+        <Button id='clearbtn' size='lg' onClick={() => clearNightmares()}>
+          Clear Selected Nightmares
+        </Button>
+      </div>
+
 
       <Tabs defaultActiveKey="all" id="general-tabs" className="mb-3">
         {generalCategoryTabs}

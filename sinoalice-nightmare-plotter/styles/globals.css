@@ -29,6 +29,10 @@ div.inline {
   display: flex;
 }
 
+#clearbtn{
+  float: right;
+}
+
 .react-resizable {
   position: relative;
 }
