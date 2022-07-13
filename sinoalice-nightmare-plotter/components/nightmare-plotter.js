@@ -266,7 +266,7 @@ export default function NightmarePlotter() {
       if (nightmare['effective_time'] != '0')
       {
         //Add dur row if there is a active duration
-        durRow = [nightmare[displayOptions['name']], "Active", 'color: red', prepRow[4], DateTime.fromJSDate(prepRow[4]).plus({ seconds: nmActiveTime }).toJSDate()]
+        durRow = [nightmare[displayOptions['name']], "Active", 'color: ' + nightmare['active_colour'], prepRow[4], DateTime.fromJSDate(prepRow[4]).plus({ seconds: nmActiveTime }).toJSDate()]
         newRows.push(durRow)
       }
     })
