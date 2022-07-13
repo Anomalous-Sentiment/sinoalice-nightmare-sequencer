@@ -107,19 +107,19 @@ export default function NightmarePlotter() {
   const columns = [
     { type: "string", id: "nightmare"},
     { type: "string", id: "state"},
+    { type: "string", id: "style", role: "style"},
     { type: "date", id: "Start" },
-    { type: "date", id: "End" },
+    { type: "date", id: "End" }
   ]
 
 
   //Define demon/shinma appearance times
   const shinmaTimes = [
-    ['Demon/Shinma', 'Demon 1', now.plus({minutes: 2}).toJSDate(), now.plus({minutes: 5}).toJSDate()],
-    ['Demon/Shinma', 'Demon 2', now.plus({minutes: 12}).toJSDate(), now.plus({minutes: 15}).toJSDate()]
+    ['Demon/Shinma', 'Demon 1', 'color: #FFD700', now.plus({minutes: 2}).toJSDate(), now.plus({minutes: 5}).toJSDate()],
+    ['Demon/Shinma', 'Demon 2', 'color: #FFD700', now.plus({minutes: 12}).toJSDate(), now.plus({minutes: 15}).toJSDate()]
   ]
   
   const options = {
-    colors : ["blue", "red"],
     hAxis: {
       format: 'mm:ss',
       maxValue: now.plus({minutes: coloTime}).toJSDate(),
@@ -246,7 +246,7 @@ export default function NightmarePlotter() {
       if (index == 0)
       {
         //First nightmare in list, start at time 0
-        prepRow = [nightmare[displayOptions['name']], "Prep", now.toJSDate(), now.plus({ seconds: nmPrepTime }).toJSDate()]        
+        prepRow = [nightmare[displayOptions['name']], "Prep", 'color: #d3d3d3', now.toJSDate(), now.plus({ seconds: nmPrepTime }).toJSDate()]        
       }
       else
       {
@@ -257,7 +257,7 @@ export default function NightmarePlotter() {
         }
 
         //Not the first nightmare. calculate time using previous row
-        prepRow = [nightmare[displayOptions['name']], "Prep", newRows[newRows.length - 1][3], DateTime.fromJSDate(newRows[newRows.length - 1][3]).plus({ seconds: nmPrepTime }).toJSDate()]
+        prepRow = [nightmare[displayOptions['name']], "Prep", 'color: #d3d3d3', newRows[newRows.length - 1][4], DateTime.fromJSDate(newRows[newRows.length - 1][4]).plus({ seconds: nmPrepTime }).toJSDate()]
       }
 
       //Add prep row to newrows array
@@ -266,7 +266,7 @@ export default function NightmarePlotter() {
       if (nightmare['effective_time'] != '0')
       {
         //Add dur row if there is a active duration
-        durRow = [nightmare[displayOptions['name']], "Active", prepRow[3], DateTime.fromJSDate(prepRow[3]).plus({ seconds: nmActiveTime }).toJSDate()]
+        durRow = [nightmare[displayOptions['name']], "Active", 'color: red', prepRow[4], DateTime.fromJSDate(prepRow[4]).plus({ seconds: nmActiveTime }).toJSDate()]
         newRows.push(durRow)
       }
     })

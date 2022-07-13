@@ -5,6 +5,7 @@ CREATE TABLE pure_colo_skill_names
 (
     jp_colo_skill_name VARCHAR NOT NULL,
     en_colo_skill_name VARCHAR NOT NULL,
+    active_colour VARCHAR DEFAULT '#f598f2' NOT NULL,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() AT TIME ZONE 'Etc/GMT+8'),
     PRIMARY KEY (jp_colo_skill_name)
 );
