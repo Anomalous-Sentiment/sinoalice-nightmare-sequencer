@@ -240,16 +240,24 @@ export default function NightmarePlotter() {
       //Calculate new times for each nightmare in list in order
       let prepRow = null;
       let durRow = null;
+      let nmPrepTime = nightmare['prep_time']
+      let nmActiveTime = nightmare['effective_time']
 
       if (index == 0)
       {
         //First nightmare in list, start at time 0
-        prepRow = [nightmare[displayOptions['name']], "Prep", now.toJSDate(), now.plus({ seconds: nightmare[displayOptions['prep_time']] }).toJSDate()]        
+        prepRow = [nightmare[displayOptions['name']], "Prep", now.toJSDate(), now.plus({ seconds: nmPrepTime }).toJSDate()]        
       }
       else
       {
+        if (array[index - 1]['jp_colo_skill_name'] == '紫煙ハ瞬刻ヲ告ゲル')
+        {
+            //If previous nm skill was "Haze heralds the moment", set this nm prep time to 5 secs
+            nmPrepTime = 5;
+        }
+
         //Not the first nightmare. calculate time using previous row
-        prepRow = [nightmare[displayOptions['name']], "Prep", newRows[newRows.length - 1][3], DateTime.fromJSDate(newRows[newRows.length - 1][3]).plus({ seconds: nightmare[displayOptions['prep_time']] }).toJSDate()]
+        prepRow = [nightmare[displayOptions['name']], "Prep", newRows[newRows.length - 1][3], DateTime.fromJSDate(newRows[newRows.length - 1][3]).plus({ seconds: nmPrepTime }).toJSDate()]
       }
 
       //Add prep row to newrows array
@@ -258,7 +266,7 @@ export default function NightmarePlotter() {
       if (nightmare['effective_time'] != '0')
       {
         //Add dur row if there is a active duration
-        durRow = [nightmare[displayOptions['name']], "Active", prepRow[3], DateTime.fromJSDate(prepRow[3]).plus({ seconds: nightmare[displayOptions['dur_time']] }).toJSDate()]
+        durRow = [nightmare[displayOptions['name']], "Active", prepRow[3], DateTime.fromJSDate(prepRow[3]).plus({ seconds: nmActiveTime }).toJSDate()]
         newRows.push(durRow)
       }
     })
