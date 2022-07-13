@@ -94,8 +94,8 @@ export default function Statistics(props)
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                    <th>Type</th>
-                    <th>Total Time</th>
+                    <th>Times</th>
+                    <th>Total Time (sec)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,8 +115,8 @@ export default function Statistics(props)
                     <tr>
                     <th>Elemental Type</th>
                     <th>Number Nightmares</th>
-                    <th>Total Preparation Time</th>
-                    <th>Total Effective Time</th>
+                    <th>Total Preparation Time (sec)</th>
+                    <th>Total Effective Time (sec)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -142,6 +142,15 @@ export default function Statistics(props)
             </Table>
             {props.nightmares.length > 0 &&
             <div>
+                <div className="inline">
+                <Chart
+                chartType="PieChart"
+                data={prepVsEffectData}
+                options={timeOptions}
+                width={"100%"}
+                height={"200px"}
+                />
+                
                 <Chart
                 chartType="PieChart"
                 data={elementalData}
@@ -149,13 +158,8 @@ export default function Statistics(props)
                 width={"100%"}
                 height={"200px"}
                 />
-                    <Chart
-                chartType="PieChart"
-                data={prepVsEffectData}
-                options={timeOptions}
-                width={"100%"}
-                height={"200px"}
-                />
+                </div>
+
             </div>
 
             }

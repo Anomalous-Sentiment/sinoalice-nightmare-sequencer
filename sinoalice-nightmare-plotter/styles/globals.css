@@ -25,6 +25,10 @@ a {
   filter: brightness(50%);
 }
 
+div.inline {
+  display: flex;
+}
+
 .react-resizable {
   position: relative;
 }
