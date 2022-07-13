@@ -33,11 +33,21 @@ export const nightmareSlice = createSlice({
         },
         updateColoTime: (state = initialState, action) => {
             state.coloTime = action.payload;
-        }
+        },
+        clearSelected: (state = initialState, action) => {
+            //Clear selected nightmares
+            state.nightmaresSelected = [];
+
+            //Get list of keys (skill names)
+            let keys = Object.keys(state.skillsUsed);
+
+            //Set every skill to false
+            keys.forEach(skill => state.skillsUsed[skill] = false)
+        }   
     }
 })
 
-export const {addNightmare, removeNightmare, initialiseSkillStates, updateColoTime} = nightmareSlice.actions;
+export const {addNightmare, removeNightmare, initialiseSkillStates, updateColoTime, clearSelected} = nightmareSlice.actions;
 
 export const getSelectedNightmares = (state) => {
     return state.nightmares.nightmaresSelected;

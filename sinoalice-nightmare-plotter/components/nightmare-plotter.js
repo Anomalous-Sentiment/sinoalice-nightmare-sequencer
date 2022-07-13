@@ -11,13 +11,14 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Accordion from 'react-bootstrap/Accordion';
 import { useSelector, useDispatch } from 'react-redux'
-import { getSelectedNightmares, initialiseSkillStates, updateColoTime } from '../redux/nightmaresSlice'
+import { getSelectedNightmares, initialiseSkillStates, updateColoTime, getColoTime, clearSelected } from '../redux/nightmaresSlice'
 import { Resizable } from 'react-resizable';
 import PubSub from 'pubsub-js'
 import SubTabs from './sub-tabs'
 import Statistics from './data-display'
 import { SUCCESS, ERROR, NORMAL_COLO_TIME_MINS, SPECIAL_COLO_TIME_MINS } from './constants'
 import { Button } from 'react-bootstrap';
+
 const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -62,6 +63,7 @@ export default function NightmarePlotter() {
   };
   const [jsonData, setJsonData] = useState();
   const selectedNightmares = useSelector(getSelectedNightmares);
+  const coloTime = useSelector(getColoTime);
   const globalNightmares = useMemo(() => {
     if (jsonData)
     {
@@ -120,7 +122,7 @@ export default function NightmarePlotter() {
     colors : ["blue", "red"],
     hAxis: {
       format: 'mm:ss',
-      maxValue: now.plus({minutes: 20}).toJSDate(),
+      maxValue: now.plus({minutes: coloTime}).toJSDate(),
       minValue: now.toJSDate()
     },
   };
@@ -267,12 +269,17 @@ export default function NightmarePlotter() {
 
   }
 
+  function clearNightmares()
+  {
+    dispatch(clearSelected())
+  }
+
 
 
   return (
     <div>
       <Resizable height={dimensions.height} onResize={onResize} axis='y' resizeHandles={['se', 's', 'sw']}>
-        <div ref={chartRef} className="box" style={{height: dimensions.height + 'px'}}>
+        <div className="box" style={{height: dimensions.height + 'px'}}>
           <Chart chartType="Timeline" data={data} width="100%" height="100%" options={options} />
         </div>
       </Resizable>
@@ -300,8 +307,8 @@ export default function NightmarePlotter() {
             Global 2nd Anniversary 40 min ver.
           </ToggleButton>
       </ToggleButtonGroup>
-      <Button>
-        Download Chart
+      <Button size='lg' onClick={() => clearNightmares()}>
+        Clear All Nightmares
       </Button>
 
       <Tabs defaultActiveKey="all" id="general-tabs" className="mb-3">
