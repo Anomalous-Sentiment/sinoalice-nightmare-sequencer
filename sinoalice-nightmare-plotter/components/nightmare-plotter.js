@@ -181,6 +181,16 @@ export default function NightmarePlotter() {
     .catch(err => console.log(err));
   }, [])
 
+  function convertToImgHtmlTag(imageUrl)
+  {
+    let img = document.createElement('img');
+    img.src = imageUrl;
+    img.width = 50;
+    img.height = 50;
+
+    return img;
+  }
+
 
   //Function to update tabs
   function updateTabs()
@@ -243,6 +253,7 @@ export default function NightmarePlotter() {
       let nmPrepTime = nightmare['prep_time']
       let nmActiveTime = nightmare['effective_time']
 
+      console.log
       if (index == 0)
       {
         //First nightmare in list, start at time 0
@@ -281,6 +292,7 @@ export default function NightmarePlotter() {
   {
     dispatch(clearSelected())
   }
+
 
 
 
