@@ -3,6 +3,12 @@ const cors = require('cors')
 const app = express()
 const port = parseInt(process.env.PORT, 10) || 3001
 require('dotenv').config()
+
+const supabaseJs = require('@supabase/supabase-js')
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_KEY
+const supabase = supabaseJs.createClient(supabaseUrl, supabaseKey)
+
 const utility = require('./utilityFunctions')
 const timedFunctions = require('./timedFunctions')
 
