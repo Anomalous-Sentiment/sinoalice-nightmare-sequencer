@@ -257,7 +257,7 @@ export default function NightmarePlotter() {
       if (index == 0)
       {
         //First nightmare in list, start at time 0
-        prepRow = [nightmare[displayOptions['name']], "Prep", 'color: #d3d3d3', now.toJSDate(), now.plus({ seconds: nmPrepTime }).toJSDate()]        
+        prepRow = [nightmare[displayOptions['name']], "Prep", 'color:  #bababa', now.toJSDate(), now.plus({ seconds: nmPrepTime }).toJSDate()]        
       }
       else
       {
@@ -268,7 +268,7 @@ export default function NightmarePlotter() {
         }
 
         //Not the first nightmare. calculate time using previous row
-        prepRow = [nightmare[displayOptions['name']], "Prep", 'color: #d3d3d3', newRows[newRows.length - 1][4], DateTime.fromJSDate(newRows[newRows.length - 1][4]).plus({ seconds: nmPrepTime }).toJSDate()]
+        prepRow = [nightmare[displayOptions['name']], "Prep", 'color:  #bababa', newRows[newRows.length - 1][4], DateTime.fromJSDate(newRows[newRows.length - 1][4]).plus({ seconds: nmPrepTime }).toJSDate()]
       }
 
       //Add prep row to newrows array
@@ -331,7 +331,9 @@ export default function NightmarePlotter() {
               Normal Colosseum
             </ToggleButton>
             <ToggleButton id="special" value={SPECIAL_COLO_TIME_MINS}>
-              Global 2nd Anniversary 40 min ver.
+              <del>
+                Global 2nd Anniversary 40 min ver.
+              </del>
             </ToggleButton>
         </ToggleButtonGroup>
         <Button id='clearbtn' size='lg' onClick={() => clearNightmares()}>

@@ -128,7 +128,7 @@ export default function Home() {
   
   If there's any issues, can shoot me a message on Discord, I may... or may not try to resolve them. Feeling kinda burnt out to be honest, haha.
 
-  And with this, I'll be returning to my miserable life of having my job applications rejected. Hope you all have a good day, and if you read this wall of text to the end, thanks for hearing me out ^^
+  And with this, I'll be returning to my life of having my job applications rejected. Hope you all have a good day, and if you read this wall of text to the end, thanks for hearing me out ^^
 
 
   `

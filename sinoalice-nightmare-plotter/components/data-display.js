@@ -1,5 +1,6 @@
 import { Chart } from "react-google-charts";
 import Table from 'react-bootstrap/Table';
+import store from '../redux/store'
 
 export default function Statistics(props)
 {
@@ -23,6 +24,27 @@ export default function Statistics(props)
     selectedNms.forEach((nightmare, index, array) => {
         let nmPrepTime = nightmare['prep_time'];
         let nmActiveTime = nightmare['effective_time']
+
+        if (totalPrepTime + totalEffectiveTime + nmPrepTime > store.getState().nightmares.coloTime * 60)
+        {
+            //If adding this prep time will go over the time limit
+            let currentTotal = totalPrepTime + totalEffectiveTime + nmPrepTime;
+            let excess = currentTotal - store.getState().nightmares.coloTime * 60;
+
+            //Don't include prep time that goes over time limit.
+            nmPrepTime = nmPrepTime - excess;
+            //Prep time already over limit, so there is no effective active time
+            nmActiveTime = 0;
+        }
+        else if (totalPrepTime + totalEffectiveTime + nmPrepTime + nmActiveTime > store.getState().nightmares.coloTime * 60)
+        {
+            //If adding prep and active time onto total will go over time limit
+            let currentTotal = totalPrepTime + totalEffectiveTime + nmPrepTime + nmActiveTime;
+            let excess = currentTotal - store.getState().nightmares.coloTime * 60;
+
+            //Don't include the active time that goes over time limit
+            nmActiveTime = nmActiveTime - excess;
+        }
 
         if (index > 0 && array[index - 1]['jp_colo_skill_name'] == '紫煙ハ瞬刻ヲ告ゲル')
         {
