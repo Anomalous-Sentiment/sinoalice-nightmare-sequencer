@@ -136,26 +136,26 @@ export default function Statistics(props)
                 <thead>
                     <tr>
                     <th>Elemental Type</th>
-                    <th>Number Nightmares</th>
+                    <th>Number of Nightmares</th>
                     <th>Total Preparation Time (sec)</th>
                     <th>Total Effective Time (sec)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                    <td>Fire Elemental (Including bells)</td>
+                    <td>Fire Elementals (Including bells)</td>
                     <td>{fireNms.length}</td>
                     <td>{firePrep}</td>
                     <td>{fireTime}</td>
                     </tr>
                     <tr>
-                    <td>Water Elemental (Including bells)</td>
+                    <td>Water Elementals (Including bells)</td>
                     <td>{waterNms.length}</td>
                     <td>{waterPrep}</td>
                     <td>{waterTime}</td>
                     </tr>
                     <tr>
-                    <td>Wind Elemental (including bells)</td>
+                    <td>Wind Elementals (including bells)</td>
                     <td>{windNms.length}</td>
                     <td>{windPrep}</td>
                     <td>{windTime}</td>
