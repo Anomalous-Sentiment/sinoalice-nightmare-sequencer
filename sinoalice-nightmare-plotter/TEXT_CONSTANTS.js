@@ -6,9 +6,9 @@ So, continuing on, you can find the skill details of each nightmare by hovering 
 
 Another feature (or restriction, depending on how you see it) is that when you select a nightmare, all nightmares with the same skill are darkened and will not be able to be selected. This is because you cannot summon multiple nightmares with the same skill in colosseum. This is represents that in-game restriction. Of course, that restriction does not apply for certain special events, but we don't talk about that here ;)
 
-If you’ve made a mistake in nightmare selection, you can deselect it by either clicking it again, or clicking the clear all button. If you're having a hard time looking for a specific nightmare to deselect, you can find it in the "Selected Nightmares" tab.
+If you've made a mistake in nightmare selection, you can deselect it by either clicking it again, or clicking the clear all button. If you're having a hard time looking for a specific nightmare to deselect, you can find it in the "Selected Nightmares" tab.
 
-And if you didn’t notice, there’s a specific colour scheme I’m using for nightmares in the timeline:
+And if you didn't notice, there's a specific colour scheme I'm using for nightmares in the timeline:
 
 - Grey: Nightmare Preparation
 - Red: Fire elementals + fire bells
