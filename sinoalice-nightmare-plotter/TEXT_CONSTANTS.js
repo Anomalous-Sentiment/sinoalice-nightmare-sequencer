@@ -67,7 +67,7 @@ Anywho, from there, I ended up dong a bunch of optimisations to speed things up.
 
 Then after that, I thought, "Man, this feels a bit empty", so what did I do? I ended up sinking even more time by doing a little miscellaneous statistics feature, which uh, probably isn't all that useful, but seeing some tables and charts is quite nice... Right? Ahem, anyway. I've gone on for a bit too long, haha.
 
-Anyway, the current date at the time of writing this is 14 July 2022. This means that this simple looking tool was nearly a month long project...
+Anyway, the current date at the time of writing this is 14 July 2022. This means that this simple looking tool was nearly a month long project… Also, with the completion of this project, I can now confidently say that I absolutely hate CSS and any kind of UI design, ahaha.
 
 I'll wrap this up by saying thanks to Eucelia and the nightmare planner tool they created, as well as SINoALICE DB for the data they have available.
 
