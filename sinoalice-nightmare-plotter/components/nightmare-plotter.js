@@ -43,7 +43,7 @@ const JP_LANG = {
   dur_time: 'effective_time'
 };
 
-export default function NightmarePlotter() {
+export default function NightmarePlotter(props) {
   const [dimensions, setDimensions] = useState({
     height: 400
   });
@@ -61,7 +61,8 @@ export default function NightmarePlotter() {
     }
     setSuccessOpen(false);
   };
-  const [jsonData, setJsonData] = useState();
+
+  const jsonData = props.data;
   const selectedNightmares = useSelector(getSelectedNightmares);
   const coloTime = useSelector(getColoTime);
   const globalNightmares = useMemo(() => {
@@ -163,23 +164,9 @@ export default function NightmarePlotter() {
 
   //Run only once on first render
   useEffect(() => {
-
-    //Use the backend address here
-    fetch("http://localhost:3000/api/nightmares")
-    .then(response => response.json())
-    .then((json) => {
-      console.log(json)
-      //Initialise selected key field to false (for usage in image list)
-      const baseSkills = json['base_skills']
-      dispatch(initialiseSkillStates(baseSkills))
-
-      setGlobalServer(true)
-      setJsonData(json);
-
-
-
-    })
-    .catch(err => console.log(err));
+    const baseSkills = jsonData['base_skills']
+    dispatch(initialiseSkillStates(baseSkills))
+    setGlobalServer(true)
   }, [])
 
   function convertToImgHtmlTag(imageUrl)
