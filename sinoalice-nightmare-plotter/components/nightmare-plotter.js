@@ -77,7 +77,7 @@ export default function NightmarePlotter(props) {
       return jsonData['nightmares'];
     }
   }, [jsonData])
-  const [globalOnly, setGlobalServer] = useState()
+  const [globalOnly, setGlobalServer] = useState(true)
   const [displayOptions, setDisplay] = useState(EN_LANG);
   const serverNightmares = useMemo(() => {
     if (globalOnly)
@@ -166,7 +166,6 @@ export default function NightmarePlotter(props) {
   useEffect(() => {
     const baseSkills = jsonData['base_skills']
     dispatch(initialiseSkillStates(baseSkills))
-    setGlobalServer(true)
   }, [])
 
   function convertToImgHtmlTag(imageUrl)
@@ -241,7 +240,6 @@ export default function NightmarePlotter(props) {
       let nmPrepTime = nightmare['prep_time']
       let nmActiveTime = nightmare['effective_time']
 
-      console.log
       if (index == 0)
       {
         //First nightmare in list, start at time 0
