@@ -165,9 +165,10 @@ export default function NightmarePlotter() {
   useEffect(() => {
 
     //Use the backend address here
-    fetch("http://localhost:3001/")
+    fetch("http://localhost:3000/api/nightmares")
     .then(response => response.json())
     .then((json) => {
+      console.log(json)
       //Initialise selected key field to false (for usage in image list)
       const baseSkills = json['base_skills']
       dispatch(initialiseSkillStates(baseSkills))
