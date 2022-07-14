@@ -74,6 +74,9 @@ export default function Home({data}) {
               <div className='about'>
                 {developmentText}
                 <br/>
+                <br/>
+                Related:
+                <br/>
                 {plannerLinkElement}
                 <br/>
                 {dbLinkElement}

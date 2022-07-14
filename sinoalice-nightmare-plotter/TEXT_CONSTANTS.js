@@ -72,11 +72,13 @@ So, notifications when adding/removing nightmares from the list, darkening night
 
 But in adding all that, I realised that my app took a massive hit in performance. That is, it took about 1-2 seconds for nightmares with the same skill to darken when a nightmare was clicked. Obviously, that was utterly unacceptable. I mean, who wants to wait an entire second to see stuff happen?
 
-Anywho, from there, I ended up dong a bunch of optimisations to speed things up. Even ended up getting getting rid of some libraries since they were surprisingly resource intensive. After about 3 days of going at it, I ended up dropping the response time to about 100ms which was... Not the best, but it was usable (*cough* I think that's what it is right now *cough*).
+Anywho, from there, I ended up dong a bunch of optimisations to speed things up. Even ended up getting getting rid of some libraries since they were surprisingly resource intensive. After about 3 days of going at it, I ended up dropping the render time to about 100ms which was... Not the best, but it was usable (*cough* I think that's what it is right now *cough*).
 
-Then after that, I thought, "Man, this feels a bit empty", so what did I do? I ended up sinking even more time by doing a little miscellaneous statistics feature, which uh, probably isn't all that useful, but seeing some tables and charts is quite nice... Right? Ahem, anyway. I've probably gone on for a bit too long, haha.
+Although… Having said that, my initial load time for the page is still, uh, well, if you’re here, then you should know how it is. It’s not… The fastest… I’m not sure what to do about that to be honest, haha.
 
-Anyway, the current date at the time of writing this is 14 July 2022. This means that this simple looking tool was nearly a month long project… Also, with the completion of this project, I can now confidently say that I absolutely hate CSS and any kind of UI design, ahaha.
+Well, after reducing the render time, I thought, "Man, this feels a bit empty", so what did I do? I ended up sinking even more time by doing a little miscellaneous statistics feature, which uh, probably isn't all that useful, but seeing some tables and charts is quite nice... Right? Well, at least it doesn’t affect the performance all that much, so I guess it’s okay… Right? Ahem, anyway. I've probably gone on for a bit too long, haha.
+
+At any rate, the current date at the time of writing this is 14 July 2022. This means that this simple looking tool was nearly a month long project… Also, with the completion of this project, I can now confidently say that I absolutely hate CSS and any kind of UI design, ahaha.
 
 I'll wrap this up by saying thanks to Eucelia and the nightmare planner tool they created, as well as SINoALICE DB for the data they have available.
 
