@@ -1,6 +1,5 @@
 const express = require('express')
 const next = require('next')
-const cors = require('cors')
 require('dotenv').config()
 
 const port = parseInt(process.env.PORT, 10) || 3000

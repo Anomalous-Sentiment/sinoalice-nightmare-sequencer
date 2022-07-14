@@ -1,5 +1,6 @@
+import dynamic from 'next/dynamic'
 import { useMemo } from 'react';
-import Tabs from 'react-bootstrap/Tabs'
+const Tabs = dynamic(import('react-bootstrap').then(mod => mod.Tabs), { ssr: false })
 import Tab from 'react-bootstrap/Tab'
 import NightmareImageList from './nightmare-image-list'
 import 'bootstrap/dist/css/bootstrap.min.css';
