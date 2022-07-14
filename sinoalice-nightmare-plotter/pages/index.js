@@ -10,7 +10,30 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import NightmarePlotter from '../components/nightmare-plotter'
 import {usageText, developmentText} from '../TEXT_CONSTANTS'
 
-export default function Home() {
+
+export async function getServerSideProps()
+{
+      //Use the backend address here
+      const res = await fetch("http://localhost:3000/api/nightmares")
+      const data = await res.json();
+      /*
+      .then(response => response.json())
+      .then((json) => {
+        console.log(json)
+        //Initialise selected key field to false (for usage in image list)
+        const baseSkills = json['base_skills']
+        dispatch(initialiseSkillStates(baseSkills))
+  
+        setGlobalServer(true)
+        return json;
+      })
+      .catch(err => console.log(err));
+      */
+
+      return {props: {data}}
+}
+
+export default function Home({data}) {
   const sinoDbLink = 'https://sinoalice.game-db.tw/nightmares'
   const euceliaPlannerLink = 'https://sinoalicenightmare.herokuapp.com/'
   const dbLinkElement = (
@@ -35,7 +58,7 @@ export default function Home() {
       <div className={styles.maincontent}>
         <Tabs id='main-tabs' defaultActiveKey="plotter" className="mb-3">
           <Tab eventKey="plotter" title="Plotter">
-            <NightmarePlotter/>
+            <NightmarePlotter data={data}/>
           </Tab>
           <Tab eventKey="about" title="About">
             <Accordion defaultActiveKey="0">
