@@ -5,7 +5,6 @@ const nextConfig = {
 
 module.exports = {
   experimental: {
-    outputStandalone: true,
   },
   images: {
     domains: ['sinoalice.game-db.tw'],
