@@ -298,7 +298,7 @@ export default function NightmarePlotter() {
 
   return (
     <div>
-      <Resizable height={dimensions.height} width={0} onResize={onResize} axis='y' resizeHandles={['se', 's', 'sw']}>
+      <Resizable height={dimensions.height} onResize={onResize} axis='y' resizeHandles={['se', 's', 'sw']}>
         <div className="box" style={{height: dimensions.height + 'px'}}>
           <Chart chartType="Timeline" data={data} width="100%" height="100%" options={options} />
         </div>
