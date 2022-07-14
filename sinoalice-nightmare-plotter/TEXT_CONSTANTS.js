@@ -34,14 +34,15 @@ Other features of note:
 - Option to sort by rarity and element type
 - Meme 40 min colo option, in honour of our special 2nd anniversary treatment xD`
 
-export const developmentText = `The idea of creating this tool began with with finding Eucelia's Nightmare Planner. When I first saw it, I thought, that was a brilliant idea.
+export const developmentText = `The idea of creating this tool began with finding Eucelia's Nightmare Planner. When I first saw it, I thought, that was a brilliant idea. A tool that could bring the lofty title of strategist into the hands of mere mortals such as us.
 
-But after playing around with it, I thought that there could be improvements that could be made to make it nicer to use. And since it seemed the developer no longer played the game, and since I thought this would be an interesting way to test out my own skills as a developer, I thought I'd try my hand at it.
+Imagine, only needing to click a few buttons to devise a grand master plan that could bring enemy guilds to their knees… Such power…! Well, ahem, anyway it seemed like a nice tool to have for people just getting into things, so it was definitely an interesting idea.
+
+Anyway, so I played around with it, I thought that there could be improvements that could be made to make it nicer to use. And since it seemed the developer no longer played the game, and since I thought this would be an interesting way to test out my own skills as a developer, I thought I'd try my hand at it.
 
 The main goals in the development of my own app, put simply, was a nicer looking timeline chart, and an improved categorisation and filtering system. Obviously, if I wasn't certain that I could improve on those 2 aspects, then there would be no point in starting anything. So to begin, I searched for libraries that would allow me to draw a graph or chart that could represent the 20 minutes spent in colosseum. And, this was, surprisingly, quite a challenge.
 
-When I first set out with my minuscule amount of knowledge, I only had one type of chart in mind: A gantt chart. The main reason I thought of a gantt chart was because I thought it fit the way nightmares worked. You can only summon one after another. Kinda like how one task depends on another one being finished first. It’s like a very… linear version of one. So I began my search by looking for libraries that could plot gantt charts, and although they existed, they were only suitable for time ranges between days, weeks, months, and years.
-And that was not suitable for my use case. So after many hours, and days so searching, I foud something that could be adapted for my use case: Google Charts.
+When I first set out with my minuscule amount of knowledge, I only had one type of chart in mind: A gantt chart. The main reason I thought of a gantt chart was because I thought it fit the way nightmares worked. You can only summon one after another. Kinda like how one task depends on another one being finished first. It’s like a very… linear version of one. So I began my search by looking for libraries that could plot gantt charts, and although they existed, they were only suitable for time ranges between days, weeks, months, and years. And that was not suitable for my use case. So after many hours, and days so searching, I found something that could be adapted for my use case: Google Charts.
 
 Specifically, the Timeline chart of Google Charts. It was almost exactly what I had been searching for, with only one problem: It only plotted timelines in chronological order. That is, from 0:00 to 20:00. And well, yes, that is quite logical, it makes sense. But in the context of SINoALICE's colosseum mode, it doesn't quite fit, since in colosseum, it's actually a timer that counts down from 20:00, so you'd need to do some mental calculations to line things up in realtime. Now, you've probably realised at this point if you've used my tool, but I never did end up fixing that.
 
@@ -73,18 +74,20 @@ But in adding all that, I realised that my app took a massive hit in performance
 
 Anywho, from there, I ended up dong a bunch of optimisations to speed things up. Even ended up getting getting rid of some libraries since they were surprisingly resource intensive. After about 3 days of going at it, I ended up dropping the response time to about 100ms which was... Not the best, but it was usable (*cough* I think that's what it is right now *cough*).
 
-Then after that, I thought, "Man, this feels a bit empty", so what did I do? I ended up sinking even more time by doing a little miscellaneous statistics feature, which uh, probably isn't all that useful, but seeing some tables and charts is quite nice... Right? Ahem, anyway. I've gone on for a bit too long, haha.
+Then after that, I thought, "Man, this feels a bit empty", so what did I do? I ended up sinking even more time by doing a little miscellaneous statistics feature, which uh, probably isn't all that useful, but seeing some tables and charts is quite nice... Right? Ahem, anyway. I've probably gone on for a bit too long, haha.
 
 Anyway, the current date at the time of writing this is 14 July 2022. This means that this simple looking tool was nearly a month long project… Also, with the completion of this project, I can now confidently say that I absolutely hate CSS and any kind of UI design, ahaha.
 
 I'll wrap this up by saying thanks to Eucelia and the nightmare planner tool they created, as well as SINoALICE DB for the data they have available.
 
-Without the nightmare planner tool, I never would have thought of creating this app, and without SINoALICE DB, I wouldn't have had a way to get all this data.
+Without the nightmare planner tool, I never would have thought of creating this app, and without SINoALICE DB, I wouldn't have had a way to get all this data and present the web app that you see here today.
 
 Now, I don't like making guarantees, but I'll try (keyword: try) to keep this up for as long as I can, unless unexpected issues come up. I don't know if this tool will still be around or relevant by the time this game hits EoS, but at least I know I'll be playing the game till EoS, whether I maintain this thing or not, haha.
 
-I was considering whether to leave contacts detail here (*cough* would be interesting to have an unknown developer *cough*), but then if there were issues, I wouldn't have any idea, so I guess I probably should... Unfortunately xD
+I was considering whether to leave contact details here (*cough* would be interesting to have an unknown developer *cough*), but then if there were issues, I wouldn't have any idea, so I guess I probably should... Unfortunately xD
 
 If there's any issues, shoot me a message on Discord, I may... or may not try to resolve them. Feeling kinda burnt out to be honest, haha.
 
-And with this, I'll be returning to my life of having my job applications rejected. Hope you all have a good day, and if you read this wall of text to the end, thanks for hearing me out ^^`
+And with this, I'll be returning to my life of having my job applications rejected. Hope you all have a good day, or night, and if you read this wall of text to the end, thanks for hearing me out ^^
+
+Written by a tired and weary Sentiment#0790`
