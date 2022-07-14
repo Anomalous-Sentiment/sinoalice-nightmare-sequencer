@@ -106,7 +106,7 @@ export default function Statistics(props)
         title: 'Preparation Time vs Effective Time',
         backgroundColor: '#e8e8e8',
         chartArea: {
-            width: '50%',
+            width: '100%',
             height: '100%'
         }
     }
@@ -169,7 +169,7 @@ export default function Statistics(props)
                 chartType="PieChart"
                 data={prepVsEffectData}
                 options={timeOptions}
-                width={"50%"}
+                width={"100%"}
                 height={"300px"}
                 />
                 
@@ -177,7 +177,7 @@ export default function Statistics(props)
                 chartType="PieChart"
                 data={elementalData}
                 options={elementalOptions}
-                width={"50%"}
+                width={"100%"}
                 height={"300px"}
                 />
                 </div>
