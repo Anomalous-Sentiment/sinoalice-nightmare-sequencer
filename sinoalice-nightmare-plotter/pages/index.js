@@ -9,29 +9,58 @@ import { Provider } from 'react-redux'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NightmarePlotter from '../components/nightmare-plotter'
 import {usageText, developmentText} from '../TEXT_CONSTANTS'
+const supabaseJs = require('@supabase/supabase-js')
 
-const port = parseInt(process.env.PORT, 10) || 3000
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_CLIENT_KEY;
+const supabase = supabaseJs.createClient(supabaseUrl, supabaseKey)
 
 export async function getServerSideProps()
 {
-      //Use the backend address here
-      const res = await fetch(`http://localhost:${port}/api/nightmares`)
-      const data = await res.json();
-      /*
-      .then(response => response.json())
-      .then((json) => {
-        console.log(json)
-        //Initialise selected key field to false (for usage in image list)
-        const baseSkills = json['base_skills']
-        dispatch(initialiseSkillStates(baseSkills))
-  
-        setGlobalServer(true)
-        return json;
-      })
-      .catch(err => console.log(err));
-      */
+  //Array to hold db requests
+  const dbRequests = [];
+  //Get all nightmares
+  const nightmareRequest = supabase
+  .from('allnightmaredetails')
+  .select()
 
-      return {props: {data}}
+  //Get all element/attributes
+  const elementRequest = supabase
+  .from('element_attributes')
+  .select()
+
+  //Get the general categories
+  const generalTagRequest = supabase
+  .from('general_major_relationships')
+  .select()
+
+  //Get the major categories
+  const majorTagRequest = supabase
+  .from('major_sub_relationships')
+  .select()
+
+  //Get all rarities
+  const rarityRequest = supabase
+  .from('rarities')
+  .select()
+
+  //Get all rarities
+  const pureSkillsRequest = supabase
+  .from('pure_colo_skill_names')
+  .select()
+
+  dbRequests.push(nightmareRequest, elementRequest, generalTagRequest, majorTagRequest, rarityRequest, pureSkillsRequest);
+
+  console.time('DB Requests Timer')
+  //Wait or all concurrent requests to complete and get their returned values
+  let [{data: allNightmares}, {data: allAttributes}, {data: generalTags}, {data: majorTags}, {data: allRarities}, {data: pureSkills}] = await Promise.all(dbRequests);
+  console.timeEnd('DB Requests Timer')
+
+
+  //Combine all request data into single json
+  let data = {nightmares: allNightmares, attributes: allAttributes, general_tags: generalTags, major_tags: majorTags, rarities: allRarities, base_skills: pureSkills};
+
+  return {props: {data}}
 }
 
 
