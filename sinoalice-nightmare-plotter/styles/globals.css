@@ -6,6 +6,13 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
+div.header{
+  border: 1px solid #dee2e6;
+  text-align: left;
+  font-size: 30px;
+  background-color: rgb(255, 255, 255);
+}
+
 div.about {
   white-space: pre-line;
 }
