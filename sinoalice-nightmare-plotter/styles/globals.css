@@ -7,10 +7,10 @@ body {
 }
 
 div.header{
-  border: 1px solid #dee2e6;
-  text-align: left;
+  border: 1px solid #000000;
+  text-align: center;
   font-size: 30px;
-  background-color: rgb(255, 255, 255);
+  background-color: #cac7c7;
 }
 
 div.about {
