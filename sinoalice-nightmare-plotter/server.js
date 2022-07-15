@@ -1,8 +1,9 @@
 const express = require('express')
 const next = require('next')
-require('dotenv').config()
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
+
+require('dotenv').config()
 
 const app = next({ dev })
 const handle = app.getRequestHandler()
