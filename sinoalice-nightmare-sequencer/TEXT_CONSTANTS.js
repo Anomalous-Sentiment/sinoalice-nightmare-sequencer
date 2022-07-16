@@ -4,7 +4,7 @@ And I suspect that the high level guilds out there probably have their own dedic
 
 So, continuing on, you can find the skill details of each nightmare by hovering over the image of the nightmare. They'll show as a tooltip.
 
-Another feature (or restriction, depending on how you see it) is that when you select a nightmare, all nightmares with the same skill are darkened and will not be able to be selected. This is because you cannot summon multiple nightmares with the same skill in colosseum. This is represents that in-game restriction. Of course, that restriction does not apply for certain special events, but we don't talk about that here ;)
+Another feature (or restriction, depending on how you see it) is that when you select a nightmare, all nightmares with the same skill are darkened and will not be able to be selected. This is because you cannot summon multiple nightmares with the same skill in colosseum. This represents that in-game restriction. Of course, that restriction does not apply for certain special events, but we don't talk about that here ;)
 
 If you’ve made a mistake in nightmare selection, you can deselect it by either clicking it again, or clicking the clear all button. If you're having a hard time looking for a specific nightmare to deselect, you can find it in the "Selected Nightmares" tab.
 
@@ -22,8 +22,11 @@ And if you didn’t notice, there’s a specific colour scheme I’m using for n
 - Light Green: Wind Weapon SP Reduction
 - Light Pink: Other Effects
 
+The idea was to make it easy to recognise the nightmare composition at a glance, because uh, what was it, the UI design stuff, recognition over recall? Well, at this point, people might be better at recognising nightmare icons though anyway, haha.
 
 Another hmm... feature…? That was kinda added in was the miscellaneous statistics. Well, I won't say much about it, since I didn't know what would be useful as statistics, so I ended up throwing in whatever sounded useful. You can look at that if you're feeling bored I guess, haha.
+
+Apologies for the lack of nightmare icons on the chart. I wanted to add them, but it seems that the timeline chart doesn’t support embedding image links into rows, so it’s just a boring chart with bars and text. No pretty pictures unfortunately.
 
 And finally, the main feature is the filtering functionality. You can check each tab for different categories of nightmares, and these categories can be further divided into sub tabs and then you can apply filters using the toggle switches in those tabs. One thing to note here is that the filtering works by showing only nightmares which have all of the selected tags. So keep that in mind if things suddenly disappear when you flip too many switches ;) Hopefully, this will make it easier to search for nightmares by skill type (And maybe even find alternatives, haha).
 
@@ -34,7 +37,10 @@ Other features of note:
 - Option to sort by rarity and element type
 - Special consideration for Chimera’s skill “Haze Heralds the Moment”. Any nightmare added after a nightmare with the skill “Haze Heralds the Moment” will have their preparation time reduced.
 - Time calculations in the miscellaneous statistics section does not include time that exceeds the colosseum time limit. In other words, if a nightmare preparation time or effective time ends after the time limit, that extra time will not be counted. This is to give a more accurate representation of time spent. (Yes, I actually went out of my way to do that so that it was more accurate, lol)
-- Meme 40 min colo option, in honour of our special 2nd anniversary treatment xD`
+- Meme 40 min colo option, in honour of our special 2nd anniversary treatment xD
+
+Known bugs:
+- Pie charts under the miscellaneous tab sometimes display at smaller than expected. They’ll revert to normal if you add/remove a nightmare while leaving the charts open. But I don’t know why it happens, haha.`
 
 export const developmentText = `The idea of creating this tool began with finding Eucelia's Nightmare Planner. When I first saw it, I thought, that was a brilliant idea. A tool that could bring the lofty title of strategist into the hands of mere mortals such as us.
 
@@ -82,7 +88,7 @@ But in adding all that, I realised that my app took a massive hit in performance
 
 Anywho, from there, I ended up dong a bunch of optimisations to speed things up. Even ended up getting getting rid of some libraries since they were surprisingly resource intensive. After about 3 days of going at it, I ended up dropping the render time to about 100ms which was... Not the best, but it was usable (*cough* I think that's what it is right now *cough*).
 
-Although… Having said that, my initial load time for the page is still, uh, well, if you’re here, then you should know how it is. It’s not… The fastest… I’m not sure what to do about that to be honest, haha.
+Although… Having said that, my initial load time for the page is still, uh, well, if you’re here, then you should know how it is. You tell me, haha. It’s loads decently quickly for me, but it was actually quite slow when I was running it on my local machine, which was… certainly a surprise. Wasn’t expecting it to load faster after hosting it online, but hey, I’m not complaining, haha.
 
 Well, after reducing the render time, I thought, "Man, this feels a bit empty", so what did I do? I ended up sinking even more time by doing a little miscellaneous statistics feature, which uh, probably isn't all that useful, but seeing some tables and charts is quite nice... Right? Well, at least it doesn’t affect the performance all that much, so I guess it’s okay… Right? Ahem, anyway. I've probably gone on for a bit too long, haha.
 
