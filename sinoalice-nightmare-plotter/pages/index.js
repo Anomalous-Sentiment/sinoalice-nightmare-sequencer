@@ -86,13 +86,13 @@ export default function Home({data}) {
     </Head>
 
     <div className='header'>
-      SINoALICE Nightmare Plotter
+      SINoALICE Nightmare Sequencer
     </div>
 
     <Provider store={store}>
       <div className={styles.maincontent}>
         <Tabs id='main-tabs' defaultActiveKey="plotter" className="mb-3">
-          <Tab eventKey="plotter" title="Plotter">
+          <Tab eventKey="plotter" title="Sequencer">
             <NightmarePlotter data={data}/>
           </Tab>
           <Tab eventKey="about" title="About">
