@@ -312,7 +312,10 @@ export default function NightmarePlotter(props) {
       </div>
 
       <div>
-        <ToggleButtonGroup name="colo_type" size="lg" className="mb-2" type="radio" defaultValue={NORMAL_COLO_TIME_MINS} onChange={setColoLength}>
+        <ToggleButtonGroup name="colo_type" size="lg" className="mb-2" type="radio" defaultValue={NORMAL_COLO_TIME_MINS} onChange={(newVal) => {
+          setColoLength(newVal);
+          clearNightmares();
+        }}>
             <ToggleButton id="normal" value={NORMAL_COLO_TIME_MINS}>
               Normal Colosseum
             </ToggleButton>
