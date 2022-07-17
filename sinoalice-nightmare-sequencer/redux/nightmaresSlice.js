@@ -69,8 +69,77 @@ export const getColoTime = (state) => {
     return state.nightmares.coloTime;
 };
 
-export const getDelay = (state) => {
-    return state.nightmares.delay;
+export const checkSelectable = (state, nightmare) => {
+    let canAdd = false;
+    let message = '';
+    let timeLimit = state.nightmares.coloTime * 60;
+    let sum = 0;
+
+
+
+    // Check if this nightmare's skill has been chosen already
+    let skillUsed = state.nightmares.skillsUsed[nightmare['jp_colo_skill_name']];
+
+    const selected = state.nightmares.nightmaresSelected.some(element => {
+        return (element['jp_name'] == nightmare['jp_name'] && element['rarity_id'] == nightmare['rarity_id'])
+    })
+
+    // If undefined, it is because the base skills havven't been initialised yet. 
+    // As this only happens on the first render, this means that no skills must be selected yet so must be false
+    if (skillUsed == undefined)
+    {
+        skillUsed = false;
+    }
+    //Sum total nightmare time (prep + effective + delays)
+    state.nightmares.nightmaresSelected.forEach(element => {
+        sum = sum + element['prep_time'] + element['effective_time']
+    });
+
+    if (!selected && !skillUsed)
+    {
+        //Unselected and skill type not used
+
+        if (sum < timeLimit)
+        {
+            //If not selected nightmare and below time limit
+            message = 'Nightmare can be added.'
+            canAdd = true;
+        }
+        else
+        {
+            //Above time limit. Send error message
+            message = 'Unable to add. Exceeds colosseum time limit.'
+            canAdd = false;
+        }
+    }
+    else if (skillUsed && selected)
+    {
+        //Skill used and selected
+
+        //Unable to add. Already in selected nightmares list
+        message = 'Nightmare already added'
+        canAdd = false;
+    }
+    else if (skillUsed && !selected)
+    {
+        //Skill used but not selected
+
+        //Unable to add. Nightmare with same type of skill already in list
+        message = 'Nightmare with same skill already selected!'
+        canAdd = false;
+    }
+    
+
+    //Return results as an object
+    return {canAdd: canAdd, message: message}
+};
+
+export const checkRemovable = (state, nightmare) => {
+    const selected = state.nightmares.nightmaresSelected.some(element => {
+        return (element['jp_name'] == nightmare['jp_name'] && element['rarity_id'] == nightmare['rarity_id'])
+    })
+
+    return selected;
 };
 
 export default nightmareSlice.reducer;
