@@ -22,6 +22,8 @@ function ImageComponent(props)
         return selected;
     })
 
+    //Check if able to be added to selected list?? Return boolean + string?
+
     const tooltip = useMemo(() => {
         return (
             <Tooltip id={props.nightmare[props.displayOptions['name']]}>
