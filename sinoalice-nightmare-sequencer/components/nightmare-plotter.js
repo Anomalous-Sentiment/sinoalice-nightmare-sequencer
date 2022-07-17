@@ -11,7 +11,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Accordion from 'react-bootstrap/Accordion';
 import { useSelector, useDispatch } from 'react-redux'
-import { getSelectedNightmares, initialiseSkillStates, updateColoTime, getColoTime, clearSelected } from '../redux/nightmaresSlice'
+import { getSelectedNightmares, initialiseSkillStates, updateColoTime, getColoTime, clearSelected, updateDelay } from '../redux/nightmaresSlice'
 import { Resizable } from 'react-resizable';
 import PubSub from 'pubsub-js'
 import SubTabs from './sub-tabs'
@@ -44,6 +44,7 @@ const JP_LANG = {
 };
 
 export default function NightmarePlotter(props) {
+  const [delayValue, setDelayValue] = useState(2)
   const [dimensions, setDimensions] = useState({
     height: 400
   });
@@ -239,11 +240,12 @@ export default function NightmarePlotter(props) {
       let durRow = null;
       let nmPrepTime = nightmare['prep_time']
       let nmActiveTime = nightmare['effective_time']
+      let delay = nightmare['delay']
 
       if (index == 0)
       {
         //First nightmare in list, start at time 0
-        prepRow = [nightmare[displayOptions['name']], "Prep", 'color:  #bababa', now.toJSDate(), now.plus({ seconds: nmPrepTime }).toJSDate()]        
+        prepRow = [nightmare[displayOptions['name']], "Prep", 'color:  #bababa', now.plus({seconds: delay}).toJSDate(), now.plus({ seconds: nmPrepTime }).toJSDate()]        
       }
       else
       {
@@ -253,8 +255,12 @@ export default function NightmarePlotter(props) {
             nmPrepTime = 5;
         }
 
+        //Convert to luxon time object ot perform calculations
+        let prepStartTime = DateTime.fromJSDate(newRows[newRows.length - 1][4]).plus({seconds: delay});
+        let prepEndTime = prepStartTime.plus({seconds: nmPrepTime});
+
         //Not the first nightmare. calculate time using previous row
-        prepRow = [nightmare[displayOptions['name']], "Prep", 'color:  #bababa', newRows[newRows.length - 1][4], DateTime.fromJSDate(newRows[newRows.length - 1][4]).plus({ seconds: nmPrepTime }).toJSDate()]
+        prepRow = [nightmare[displayOptions['name']], "Prep", 'color:  #bababa', prepStartTime.toJSDate(), prepEndTime.toJSDate()]
       }
 
       //Add prep row to newrows array
@@ -277,6 +283,35 @@ export default function NightmarePlotter(props) {
   function clearNightmares()
   {
     dispatch(clearSelected())
+  }
+
+  function updateNightmareDelay(e)
+  {
+    //regex for checking if string contains only digits
+    const re = /^\d+$/;
+    
+    if (e.target.value != null && e.target.value != undefined)
+    {
+      // if value is not blank, then test the regex
+      if (re.test(e.target.value)) 
+      {
+        //Update store with new delay number
+        let newDelay = parseInt(e.target.value)
+        dispatch(updateDelay(newDelay))
+        setDelayValue(newDelay)
+      }
+      else
+      {
+        //If empty string, allow box to be empty, but set delay to 0
+        setDelayValue(e.target.value)
+        dispatch(updateDelay(0))
+
+      }
+    }
+
+    
+
+
   }
 
 
@@ -328,6 +363,17 @@ export default function NightmarePlotter(props) {
         <Button id='clearbtn' size='lg' onClick={() => clearNightmares()}>
           Clear Selected Nightmares
         </Button>
+      </div>
+      <div>
+      <input 
+      type="number" 
+      id="delaycounter" 
+      name="delaycounter"
+      min="0" 
+      max="100"
+      value={delayValue}
+      onChange={updateNightmareDelay}
+      />
       </div>
 
 
