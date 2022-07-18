@@ -79,52 +79,61 @@ export default function Home({data}) {
   )
   return (
     <div className={styles.container}>
-    <Head>
-      <title>SINoALICE Nightmare Sequencer</title>
-      <meta name="description" content="SINoALICE Nightmare Planning Tool" />
-      <link rel="icon" href="/alice.ico" />
-    </Head>
-
-    <div className='header'>
-      SINoALICE Nightmare Sequencer
-    </div>
-
-    <Provider store={store}>
-      <div className={styles.maincontent}>
-        <Tabs id='main-tabs' defaultActiveKey="plotter" className="mb-3">
-          <Tab eventKey="plotter" title="Sequencer">
-            <NightmarePlotter data={data}/>
-          </Tab>
-          <Tab eventKey="about" title="About">
-            <Accordion defaultActiveKey="0">
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>Usage and Features</Accordion.Header>
-              <Accordion.Body>
-                <div className='about'>{usageText}</div>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>Development Story</Accordion.Header>
-              <Accordion.Body>
-              <div className='about'>
-                {developmentText}
-                <br/>
-                <br/>
-                Related:
-                <br/>
-                {plannerLinkElement}
-                <br/>
-                {dbLinkElement}
-              </div>
-              </Accordion.Body>
-            </Accordion.Item>
-            </Accordion>
-          </Tab>
-        </Tabs>
+      <Head>
+        <title>SINoALICE Nightmare Sequencer</title>
+        <meta name="description" content="SINoALICE Nightmare Planning Tool" />
+        <link rel="icon" href="/alice.ico" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7393687437464759"
+      crossorigin="anonymous"></script>
+      </Head>
+      <div className={styles.topdiv}>
       </div>
-    </Provider>
 
+      <div className={styles.inline}>
+        <div className={styles.leftpane}>
 
+        </div>
+        <div className={styles.maincontent}>
+          <div className={styles.header}>
+          SINoALICE Nightmare Sequencer
+          </div>
+          <Provider store={store}>
+            <Tabs id='main-tabs' defaultActiveKey="plotter" className="mb-3">
+              <Tab eventKey="plotter" title="Sequencer">
+                <NightmarePlotter data={data}/>
+              </Tab>
+              <Tab eventKey="about" title="About">
+                <Accordion defaultActiveKey="0">
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>Usage and Features</Accordion.Header>
+                  <Accordion.Body>
+                    <div className='about'>{usageText}</div>
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="1">
+                  <Accordion.Header>Development Story</Accordion.Header>
+                  <Accordion.Body>
+                  <div className='about'>
+                    {developmentText}
+                    <br/>
+                    <br/>
+                    Related:
+                    <br/>
+                    {plannerLinkElement}
+                    <br/>
+                    {dbLinkElement}
+                  </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+                </Accordion>
+              </Tab>
+            </Tabs>
+          </Provider>
+        </div>
+        <div className={styles.rightpane}>
+        
+        </div>
+      </div>
     </div>
   )
 }

@@ -6,13 +6,6 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
-div.header{
-  border: 1px solid #000000;
-  text-align: center;
-  font-size: 30px;
-  background-color: #cac7c7;
-}
-
 div.about {
   white-space: pre-line;
 }
@@ -22,6 +15,7 @@ a {
   text-decoration: none;
 }
 .main-content{
+  flex-grow: 2;
   border: 1px solid #dee2e6;
 }
 
@@ -38,6 +32,8 @@ a {
 
 div.inline {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
 }
 
 #clearbtn{

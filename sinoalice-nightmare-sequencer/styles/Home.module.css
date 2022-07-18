@@ -1,13 +1,47 @@
 .container {
-  padding: 5% 10%;
   background-color: aliceblue;
 }
 
+.topdiv{
+  border: red solid;
+  height: 100px;
+}
+
+.header{
+  margin: 0 auto;
+  width: 100%;
+  border: 1px solid #000000;
+  text-align: center;
+  font-size: 30px;
+  background-color: #cac7c7;
+}
+
+.inline {
+  height: 80%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+}
+
 .maincontent{
+  flex: 6;
+  order: 2;
   background-color: #e8e8e8;
   border: 1px solid rgb(163, 163, 163);
 }
 
+.leftpane{
+  flex: 1;
+  border: red solid;
+  order: 1;
+}
+
+.rightpane{
+  flex: 1;
+  border: red solid;
+  order: 3;
+}
 
 .main {
   min-height: 100vh;
