@@ -45,10 +45,8 @@ function NightmareImageList(props) {
     const [imageList, setImages] = useState([]);
 
     useEffect(() => {
-      console.log('effect')
       if (props.list)
       {
-        console.log('test')
         setImages(mapNightmaresToComponents(props.list))
       }
       else
@@ -110,7 +108,8 @@ function NightmareImageList(props) {
       <FilterBar filterList={props.filterList}
       handleChange={setFilters}>
       </FilterBar>
-      <label htmlFor="searchbar">Search nightmare:</label>
+      <label htmlFor="searchbar">Search by name:</label>
+      <br/>
       <input 
       type="text" 
       id="searchbar" 

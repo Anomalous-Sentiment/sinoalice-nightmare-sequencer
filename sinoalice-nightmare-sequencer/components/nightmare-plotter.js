@@ -245,7 +245,12 @@ export default function NightmarePlotter(props) {
       if (index == 0)
       {
         //First nightmare in list, start at time 0
-        prepRow = [nightmare[displayOptions['name']], "Prep", 'color:  #bababa', now.plus({seconds: delay}).toJSDate(), now.plus({ seconds: nmPrepTime }).toJSDate()]        
+
+        //Convert to luxon time object ot perform calculations
+        let prepStartTime = now.plus({seconds: delay});
+        let prepEndTime = prepStartTime.plus({seconds: nmPrepTime});
+
+        prepRow = [nightmare[displayOptions['name']], "Prep", 'color:  #bababa', prepStartTime.toJSDate(), prepEndTime.toJSDate()]        
       }
       else
       {
@@ -285,11 +290,32 @@ export default function NightmarePlotter(props) {
     dispatch(clearSelected())
   }
 
-  function updateNightmareDelay(e)
+  function updateNightmareDelay(val)
   {
     //regex for checking if string contains only digits
     const re = /^\d+$/;
-    
+
+    console.log('nm delay')
+
+    if (val != null && val != undefined)
+    {
+      // if value is not blank, then test the regex
+      if (re.test(val)) 
+      {
+        console.log('passed test')
+        //Update store with new delay number
+        let newDelay = parseInt(val)
+        dispatch(updateDelay(newDelay))
+      }
+      else
+      {
+        console.log('failed')
+        //If empty string, allow box to be empty, but set delay to 0
+        dispatch(updateDelay(0))
+
+      }
+    }
+    /*
     if (e.target.value != null && e.target.value != undefined)
     {
       // if value is not blank, then test the regex
@@ -308,11 +334,37 @@ export default function NightmarePlotter(props) {
 
       }
     }
-
-    
-
-
+    */
   }
+
+  function delayHandler(e)
+  {
+    const re = /^\d+$/;
+
+    if (e.target.value != null && e.target.value != undefined)
+    {
+      // if value is not blank, then test the regex
+      if (re.test(e.target.value)) 
+      {
+        //Update store with new delay number
+        let newDelay = parseInt(e.target.value)
+        setDelayValue(newDelay)
+      }
+      else
+      {
+        //If empty string, allow box to be empty, but set delay to 0
+        setDelayValue('')
+
+      }
+    }
+  }
+  
+
+  useEffect(() => {
+    const timeOutId = setTimeout(() => updateNightmareDelay(delayValue), 200);
+
+    return () => clearTimeout(timeOutId);
+  }, [delayValue])
 
 
 
@@ -365,14 +417,20 @@ export default function NightmarePlotter(props) {
         </Button>
       </div>
       <div>
+      <label htmlFor="delaycounter">Seconds to delay next nightmare by:</label>
+      <br/>
       <input 
       type="number" 
       id="delaycounter" 
       name="delaycounter"
       min="0" 
-      max="100"
+      max="60"
       value={delayValue}
-      onChange={updateNightmareDelay}
+      onChange={(e) => {
+        console.log('changed')
+        setDelayValue(e.target.value)
+      }
+      }
       />
       </div>
 

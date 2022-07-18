@@ -69,8 +69,30 @@ export const getColoTime = (state) => {
     return state.nightmares.coloTime;
 };
 
+export const checkUnderLimit = (state) => {
+    let underLimit = false;
+    let sum = 0;
+    let timeLimit = state.nightmares.coloTime * 60;
+
+    //Sum total nightmare time (prep + effective + delays)
+    state.nightmares.nightmaresSelected.forEach(element => {
+        sum = sum + element['prep_time'] + element['effective_time'] + element['delay'];
+    });
+
+    sum = sum + state.nightmares.delay;
+
+    if (sum < timeLimit)
+    {
+        underLimit = true;
+    }
+
+
+    return underLimit;
+};
+
 
 export const checkSelectable = (state, nightmare) => {
+    console.log('called')
     let canAdd = false;
     let message = '';
     let timeLimit = state.nightmares.coloTime * 60;
@@ -92,15 +114,22 @@ export const checkSelectable = (state, nightmare) => {
     {
         skillUsed = false;
     }
+    /*
     //Sum total nightmare time (prep + effective + delays)
     state.nightmares.nightmaresSelected.forEach(element => {
-        sum = sum + element['prep_time'] + element['effective_time']
+        sum = sum + element['prep_time'] + element['effective_time'] + element['delay'];
     });
+
+    sum = sum + state.nightmares.delay;
+    */
 
     if (!selected && !skillUsed)
     {
         //Unselected and skill type not used
-
+        //If not selected nightmare and below time limit
+        message = 'Nightmare can be added.'
+        canAdd = true;
+            /*
         if (sum < timeLimit)
         {
             //If not selected nightmare and below time limit
@@ -113,6 +142,7 @@ export const checkSelectable = (state, nightmare) => {
             message = 'Unable to add. Exceeds colosseum time limit.'
             canAdd = false;
         }
+        */
     }
     else if (skillUsed && selected)
     {
