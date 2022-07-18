@@ -1,4 +1,4 @@
-import { useState, memo, useMemo } from 'react';
+import { useState, memo, useMemo, useEffect } from 'react';
 import ImageComponent from './image-component';
 import FilterBar from './filter-component';
 import DropdownButton from 'react-bootstrap/DropdownButton';
@@ -8,6 +8,7 @@ import styles from '../styles/ImageComponent.module.css'
 
 
 function NightmareImageList(props) {
+  const [searchVal, setSearchVal] = useState('');
     const [appliedFilterList, setFilters] = useState([]);
     const sortByList=[
         <Dropdown.Item key='0' eventKey="0">Rarity (Low to High)</Dropdown.Item>,
@@ -40,7 +41,21 @@ function NightmareImageList(props) {
     const [sorter, setSorter] = useState(sortingFunctions[3]);
 
 
-    const imageList = useMemo(() => props.list ? mapNightmaresToComponents(props.list) : [], [props.list, appliedFilterList, sorter])
+    //const imageList = useMemo(() => props.list ? mapNightmaresToComponents(props.list) : [], [props.list, appliedFilterList, sorter])
+    const [imageList, setImages] = useState([]);
+
+    useEffect(() => {
+      console.log('effect')
+      if (props.list)
+      {
+        console.log('test')
+        setImages(mapNightmaresToComponents(props.list))
+      }
+      else
+      {
+        setImages([])
+      }
+    }, [props.list, appliedFilterList, sorter])
 
     function mapNightmaresToComponents (list)
     {
@@ -49,6 +64,8 @@ function NightmareImageList(props) {
 
       //Apply sorting to filtereed list if selected
       newList = newList.sort(sorter[1])
+
+      newList = applySearchFilter(newList)
     
 
       //Map list elements to components
@@ -74,12 +91,32 @@ function NightmareImageList(props) {
       return filteredNms;
     }
 
+    function applySearchFilter(list)
+    {
+      let searchedList = list.filter(nightmare => nightmare[props.displayOptions['name']].toLowerCase().includes(searchVal.toLowerCase()))
+
+      return searchedList
+    }
+
+    useEffect(() => {
+      //Apply search filter only after 0.2 secs of no typing
+      const timeOutId = setTimeout(() => setImages(mapNightmaresToComponents(props.list)), 200);
+      return () => clearTimeout(timeOutId);
+    }, [searchVal])
+
 
   return (
     <div>
       <FilterBar filterList={props.filterList}
       handleChange={setFilters}>
       </FilterBar>
+      <label htmlFor="searchbar">Search nightmare:</label>
+      <input 
+      type="text" 
+      id="searchbar" 
+      name="searchbar"
+      onChange={(event) => setSearchVal(event.target.value)}
+      />
       <DropdownButton 
       id="dropdown-basic-button" 
       title={sorter[0]}
