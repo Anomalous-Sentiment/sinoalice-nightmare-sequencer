@@ -19,22 +19,22 @@ export const nightmareSlice = createSlice({
             //Add the new nightmare to the existing list (Similar to setState() functions. Need to copy and create new list?)
             state.nightmaresSelected.push(newNightmare)
 
-            state.skillsUsed[action.payload['jp_colo_skill_name']] = true;
-
+            //Set the used state to true
+            state.skillsUsed[getSkillIdentifier(newNightmare)] = true;
 
         },
         removeNightmare: (state = initialState, action) => {
             //Remove nightmare from list
             state.nightmaresSelected = state.nightmaresSelected.filter(nightmare => nightmare['jp_name'] != action.payload['jp_name'])
 
-            state.skillsUsed[action.payload['jp_colo_skill_name']] = false;
-
+            //Set the used state to false
+            state.skillsUsed[getSkillIdentifier(action.payload)] = false
 
         },
         initialiseSkillStates: (state = initialState, action) => {
             //Initialise every skill state to false
             action.payload.forEach(element => {
-                state.skillsUsed[element['jp_colo_skill_name']] = false
+                state.skillsUsed[getSkillIdentifier(element)] = false
             });
         },
         updateColoTime: (state = initialState, action) => {
@@ -69,16 +69,18 @@ export const getColoTime = (state) => {
     return state.nightmares.coloTime;
 };
 
+
 export const checkSelectable = (state, nightmare) => {
     let canAdd = false;
     let message = '';
     let timeLimit = state.nightmares.coloTime * 60;
     let sum = 0;
 
+    let skillIdentifier= getSkillIdentifier(nightmare)
 
 
     // Check if this nightmare's skill has been chosen already
-    let skillUsed = state.nightmares.skillsUsed[nightmare['jp_colo_skill_name']];
+    let skillUsed = state.nightmares.skillsUsed[skillIdentifier];
 
     const selected = state.nightmares.nightmaresSelected.some(element => {
         return (element['jp_name'] == nightmare['jp_name'] && element['rarity_id'] == nightmare['rarity_id'])
@@ -141,5 +143,19 @@ export const checkRemovable = (state, nightmare) => {
 
     return selected;
 };
+
+const getSkillIdentifier = (nightmare) => 
+{
+    if (nightmare['skill_type'] != 'unique')
+    {
+        //If skill is part of a catgegory
+        return nightmare['skill_type']
+    }
+    else
+    {
+        //If skill is unique
+        return nightmare['jp_colo_skill_name']
+    }
+}
 
 export default nightmareSlice.reducer;
