@@ -2,7 +2,6 @@ import { Fragment, memo, useMemo } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux'
 import { addNightmare, removeNightmare, checkSelectable, checkRemovable, checkUnderLimit} from '../redux/nightmaresSlice'
-import store from '../redux/store';
 import Figure from 'react-bootstrap/Figure';
 import styles from '../styles/ImageComponent.module.css'
 import PubSub from 'pubsub-js'
@@ -32,17 +31,6 @@ function ImageComponent(props)
     })
 
     const underLimit = useSelector(checkUnderLimit, (a, b) => a == b);
-    //Check if this nightmare is in the selected list
-    /*
-    const isSelectedNightmare = useSelector(state => {
-        const selected = state.nightmares.nightmaresSelected.some(element => {
-            return (element['jp_name'] == props.nightmare['jp_name'] && element['rarity_id'] == props.nightmare['rarity_id'])
-        })
-        return selected;
-    })
-    */
-
-    //Check if able to be added to selected list?? Return boolean + string?
 
     const tooltip = useMemo(() => {
         return (
