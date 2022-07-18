@@ -241,40 +241,66 @@ export default function NightmarePlotter(props) {
       let nmPrepTime = nightmare['prep_time']
       let nmActiveTime = nightmare['effective_time']
       let delay = nightmare['delay']
+      let prepStartTime = null;
+      let prepEndTime = null;
+      let activeStartTime = null;
+      let activeEndTime = null;
 
       if (index == 0)
       {
         //First nightmare in list, start at time 0
 
         //Convert to luxon time object ot perform calculations
-        let prepStartTime = now.plus({seconds: delay});
-        let prepEndTime = prepStartTime.plus({seconds: nmPrepTime});
+        prepStartTime = now.plus({seconds: delay});
+        prepEndTime = prepStartTime.plus({seconds: nmPrepTime});
 
-        prepRow = [nightmare[displayOptions['name']], "Prep", 'color:  #bababa', prepStartTime.toJSDate(), prepEndTime.toJSDate()]        
       }
       else
       {
         if (array[index - 1]['jp_colo_skill_name'] == '紫煙ハ瞬刻ヲ告ゲル')
         {
-            //If previous nm skill was "Haze heralds the moment", set this nm prep time to 5 secs
-            nmPrepTime = 5;
+          //If previous nm skill was "Haze heralds the moment", set this nm prep time to 5 secs
+          nmPrepTime = 5;
         }
 
         //Convert to luxon time object ot perform calculations
-        let prepStartTime = DateTime.fromJSDate(newRows[newRows.length - 1][4]).plus({seconds: delay});
-        let prepEndTime = prepStartTime.plus({seconds: nmPrepTime});
+        prepStartTime = DateTime.fromJSDate(newRows[newRows.length - 1][4]).plus({seconds: delay});
+        prepEndTime = prepStartTime.plus({seconds: nmPrepTime});
 
         //Not the first nightmare. calculate time using previous row
-        prepRow = [nightmare[displayOptions['name']], "Prep", 'color:  #bababa', prepStartTime.toJSDate(), prepEndTime.toJSDate()]
       }
+
+      //Check if prep time will exceed time limit
+      if (prepEndTime > now.plus({minutes: coloTime}))
+      {
+        //prep time exceeds colo time limit
+        //Set the end time to colo end time
+        prepEndTime = now.plus({minutes: coloTime});
+      }
+
+      prepRow = [nightmare[displayOptions['name']], "Prep", 'color:  #bababa', prepStartTime.toJSDate(), prepEndTime.toJSDate()]
+
 
       //Add prep row to newrows array
       newRows.push(prepRow);
 
       if (nightmare['effective_time'] != '0')
       {
+        activeStartTime = DateTime.fromJSDate(prepRow[4]);
+        activeEndTime = activeStartTime.plus({ seconds: nmActiveTime });
+
+        console.log(activeEndTime)
+        console.log(activeStartTime)
+        console.log(now.plus({minutes: coloTime}))
+        if (activeEndTime > now.plus({minutes: coloTime}))
+        {
+          console.log('end later then colo end')
+          //End time exceeds colo limit. Set end time to colo end time
+          activeEndTime = now.plus({minutes: coloTime});
+        }
+
         //Add dur row if there is a active duration
-        durRow = [nightmare[displayOptions['name']], "Active", 'color: ' + nightmare['active_colour'], prepRow[4], DateTime.fromJSDate(prepRow[4]).plus({ seconds: nmActiveTime }).toJSDate()]
+        durRow = [nightmare[displayOptions['name']], "Active", 'color: ' + nightmare['active_colour'], activeStartTime.toJSDate(), activeEndTime.toJSDate()]
         newRows.push(durRow)
       }
     })
@@ -295,21 +321,18 @@ export default function NightmarePlotter(props) {
     //regex for checking if string contains only digits
     const re = /^\d+$/;
 
-    console.log('nm delay')
 
     if (val != null && val != undefined)
     {
       // if value is not blank, then test the regex
       if (re.test(val)) 
       {
-        console.log('passed test')
         //Update store with new delay number
         let newDelay = parseInt(val)
         dispatch(updateDelay(newDelay))
       }
       else
       {
-        console.log('failed')
         //If empty string, allow box to be empty, but set delay to 0
         dispatch(updateDelay(0))
 
