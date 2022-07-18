@@ -92,7 +92,6 @@ export const checkUnderLimit = (state) => {
 
 
 export const checkSelectable = (state, nightmare) => {
-    console.log('called')
     let canAdd = false;
     let message = '';
 
