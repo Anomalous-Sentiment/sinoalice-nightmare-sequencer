@@ -1,7 +1,8 @@
 import { Fragment, memo, useMemo } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux'
-import { addNightmare, removeNightmare, checkSelectable, checkRemovable} from '../redux/nightmaresSlice'
+import { addNightmare, removeNightmare, checkSelectable, checkRemovable, checkUnderLimit} from '../redux/nightmaresSlice'
+import store from '../redux/store';
 import Figure from 'react-bootstrap/Figure';
 import styles from '../styles/ImageComponent.module.css'
 import PubSub from 'pubsub-js'
@@ -11,10 +12,26 @@ function ImageComponent(props)
 
     const dispatch = useDispatch()
     // Check if this nightmare's skill has been chosen already
-    //const skillUsed = useSelector(state => state.nightmares.skillsUsed[props.nightmare['jp_colo_skill_name']]);
-    const {canAdd: selectable, message: message} = useSelector((state) => checkSelectable(state, props.nightmare))
-    const removable = useSelector((state) => checkRemovable(state, props.nightmare))
+    const {canAdd: selectable, message: message} = useSelector((state) => checkSelectable(state, props.nightmare), (a, b) => {
+        let same = false;
 
+        if (a['canAdd'] === b['canAdd'] && a['message'] === b['message'])
+        {
+            same = true
+        }
+        return same;
+    })
+    const removable = useSelector((state) => checkRemovable(state, props.nightmare), (a, b) => {
+        let same = false;
+
+        if (a === b)
+        {
+            same = true
+        }
+        return same;
+    })
+
+    const underLimit = useSelector(checkUnderLimit, (a, b) => a == b);
     //Check if this nightmare is in the selected list
     /*
     const isSelectedNightmare = useSelector(state => {
@@ -59,7 +76,7 @@ function ImageComponent(props)
         </OverlayTrigger>
 
         )
-    }, [selectable, props.displayOptions])
+    }, [selectable, props.displayOptions, underLimit])
 
     //Function to update nightmare list depending on state
     function onClick()
@@ -67,8 +84,23 @@ function ImageComponent(props)
         if (selectable)
         {
             //Selectable. Add nightmare to selected list
-            dispatch(addNightmare(props.nightmare))
-            PubSub.publish(SUCCESS, 'Nightmare added!');
+            //dispatch(addNightmare(props.nightmare))
+            //PubSub.publish(SUCCESS, 'Nightmare added!');
+            console.log('under', underLimit)
+            if (underLimit == true)
+            {
+                console.log(underLimit)
+                //Selectable. Add nightmare to selected list
+                dispatch(addNightmare(props.nightmare))
+                PubSub.publish(SUCCESS, 'Nightmare added!');
+            }
+            else
+            {
+                //Over time limit
+                PubSub.publish(ERROR, 'Cannot add nightmare. Exceeds time limit.');
+            }
+            
+
         }
         else if (removable)
         {
