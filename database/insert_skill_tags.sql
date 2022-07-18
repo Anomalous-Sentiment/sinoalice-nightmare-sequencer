@@ -72,7 +72,7 @@ VALUES
     (37, '黒キ魔獣ハ憎悪ニ吼エル'), -- Roar of the black mabeat's hatred, reduce blade & hammer effect
 --    (0, '紫煙ハ瞬刻ヲ告ゲル'), -- Haze heralds the moment, other?
 --    (0, '黒煙ハ鈍重ナ呪縛トナル'); -- Smoke-dulled malediction, other?
-    (27, 'ハローキティのスキル'), -- Hello Kitty's skill, fire buff
+    (24, 'ハローキティのスキル'), -- Hello Kitty's skill, fire buff
     (2, 'ポチャッコのスキル'), -- Pochaco's skill, pdef buff
     (3, 'ポチャッコのスキル'), -- Pochaco's skill, mdef buff
     (33, 'ポムポムプリンのスキル'), -- Pompom Purin's skill, sp recover
