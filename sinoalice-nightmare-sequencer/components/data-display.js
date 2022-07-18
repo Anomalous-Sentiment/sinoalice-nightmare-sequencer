@@ -1,10 +1,12 @@
 import { Chart } from "react-google-charts";
 import Table from 'react-bootstrap/Table';
-import store from '../redux/store'
+import { getColoTime, getSelectedNightmares } from '../redux/nightmaresSlice';
+import { useSelector } from "react-redux";
 
 export default function Statistics(props)
 {
-    const selectedNms = props.nightmares;
+    const coloTime = useSelector(getColoTime)
+    const selectedNms = useSelector(getSelectedNightmares);
 
     const fireNms = selectedNms.filter(nightmare => nightmare['applied_tags'].includes('Fire Bell') || nightmare['applied_tags'].includes('Fire Buff'))
     const waterNms = selectedNms.filter(nightmare => nightmare['applied_tags'].includes('Water Bell') || nightmare['applied_tags'].includes('Water Buff'))
@@ -20,30 +22,25 @@ export default function Statistics(props)
     // Calculate prep vs effective time (Sum total prep times and effective times)
     let totalPrepTime = 0;
     let totalEffectiveTime = 0;
+    let currentTime = 0;
 
     selectedNms.forEach((nightmare, index, array) => {
         let nmPrepTime = nightmare['prep_time'];
         let nmActiveTime = nightmare['effective_time']
 
-        if (totalPrepTime + totalEffectiveTime + nmPrepTime > store.getState().nightmares.coloTime * 60)
+        if (currentTime + nmPrepTime + nightmare['delay'] > coloTime * 60)
         {
-            //If adding this prep time will go over the time limit
-            let currentTotal = totalPrepTime + totalEffectiveTime + nmPrepTime;
-            let excess = currentTotal - store.getState().nightmares.coloTime * 60;
+            let differenceFromLimit = currentTime + nightmare['delay']
+            nmPrepTime = (coloTime * 60) - differenceFromLimit;
 
-            //Don't include prep time that goes over time limit.
-            nmPrepTime = nmPrepTime - excess;
             //Prep time already over limit, so there is no effective active time
             nmActiveTime = 0;
         }
-        else if (totalPrepTime + totalEffectiveTime + nmPrepTime + nmActiveTime > store.getState().nightmares.coloTime * 60)
+        else if (currentTime + nmPrepTime + nmActiveTime + nightmare['delay'] > coloTime * 60)
         {
-            //If adding prep and active time onto total will go over time limit
-            let currentTotal = totalPrepTime + totalEffectiveTime + nmPrepTime + nmActiveTime;
-            let excess = currentTotal - store.getState().nightmares.coloTime * 60;
+            let differenceFromLimit = currentTime + nmPrepTime + nightmare['delay']
+            nmActiveTime = (coloTime * 60) - differenceFromLimit;
 
-            //Don't include the active time that goes over time limit
-            nmActiveTime = nmActiveTime - excess;
         }
 
         if (index > 0 && array[index - 1]['jp_colo_skill_name'] == '紫煙ハ瞬刻ヲ告ゲル')
@@ -74,8 +71,10 @@ export default function Statistics(props)
         //Sum total prep and effective times regardless of nm type
         totalPrepTime = totalPrepTime + nmPrepTime
         totalEffectiveTime = totalEffectiveTime + nmActiveTime
+        currentTime = currentTime + nmPrepTime + nmActiveTime + nightmare['delay']
     })
 
+    let totalDelayTime = (coloTime * 60) - (totalPrepTime + totalEffectiveTime);
 
 
 
@@ -89,7 +88,8 @@ export default function Statistics(props)
     const prepVsEffectData = [
         ['Preparation Time vs Effective Time', 'Time in seconds'],
         ['Total Nightmare Prep Time', totalPrepTime],
-        ['Total Nightmare Effective Time', totalEffectiveTime]
+        ['Total Nightmare Effective Time', totalEffectiveTime],
+        ['Total Delay/Unused Time', totalDelayTime]
     ]
 
     const elementalOptions = {
@@ -129,7 +129,10 @@ export default function Statistics(props)
                     <td>Total Effective Time</td>
                     <td>{totalEffectiveTime}</td>
                     </tr>
-
+                    <tr>
+                    <td>Total Delay/Unused Time</td>
+                    <td>{totalDelayTime}</td>
+                    </tr>
                 </tbody>
             </Table>
             <Table striped bordered hover>

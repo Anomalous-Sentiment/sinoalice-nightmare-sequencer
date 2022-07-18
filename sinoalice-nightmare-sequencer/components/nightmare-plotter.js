@@ -315,51 +315,13 @@ export default function NightmarePlotter(props) {
 
       }
     }
-    /*
-    if (e.target.value != null && e.target.value != undefined)
-    {
-      // if value is not blank, then test the regex
-      if (re.test(e.target.value)) 
-      {
-        //Update store with new delay number
-        let newDelay = parseInt(e.target.value)
-        dispatch(updateDelay(newDelay))
-        setDelayValue(newDelay)
-      }
-      else
-      {
-        //If empty string, allow box to be empty, but set delay to 0
-        setDelayValue(e.target.value)
-        dispatch(updateDelay(0))
-
-      }
-    }
-    */
   }
 
-  function delayHandler(e)
-  {
-    const re = /^\d+$/;
 
-    if (e.target.value != null && e.target.value != undefined)
-    {
-      // if value is not blank, then test the regex
-      if (re.test(e.target.value)) 
-      {
-        //Update store with new delay number
-        let newDelay = parseInt(e.target.value)
-        setDelayValue(newDelay)
-      }
-      else
-      {
-        //If empty string, allow box to be empty, but set delay to 0
-        setDelayValue('')
-
-      }
-    }
-  }
+  
   
 
+  //Only update time after a delay
   useEffect(() => {
     const timeOutId = setTimeout(() => updateNightmareDelay(delayValue), 200);
 

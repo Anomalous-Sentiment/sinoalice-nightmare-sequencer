@@ -95,8 +95,6 @@ export const checkSelectable = (state, nightmare) => {
     console.log('called')
     let canAdd = false;
     let message = '';
-    let timeLimit = state.nightmares.coloTime * 60;
-    let sum = 0;
 
     let skillIdentifier= getSkillIdentifier(nightmare)
 
@@ -114,14 +112,7 @@ export const checkSelectable = (state, nightmare) => {
     {
         skillUsed = false;
     }
-    /*
-    //Sum total nightmare time (prep + effective + delays)
-    state.nightmares.nightmaresSelected.forEach(element => {
-        sum = sum + element['prep_time'] + element['effective_time'] + element['delay'];
-    });
 
-    sum = sum + state.nightmares.delay;
-    */
 
     if (!selected && !skillUsed)
     {
