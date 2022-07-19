@@ -97,6 +97,8 @@ export default function Home({data}) {
             <GoogleAd
               client='ca-pub-7393687437464759'
               slot='7556877383'
+              display={{display: 'inline-block', width: '100%', height: '90px'}}
+              format={null}
               />
           </div>
           <div className={styles.inline}>
@@ -104,6 +106,8 @@ export default function Home({data}) {
               <GoogleAd
               client='ca-pub-7393687437464759'
               slot='4021204476'
+              display={{display: 'block'}}
+              format='auto'
               />
             </div>
             <div className={styles.maincontent}>
@@ -152,6 +156,8 @@ export default function Home({data}) {
               <GoogleAd
                 client='ca-pub-7393687437464759'
                 slot='7866764928'
+                display={{display: 'block'}}
+                format='auto'
                 />
             </div>
           </div>
