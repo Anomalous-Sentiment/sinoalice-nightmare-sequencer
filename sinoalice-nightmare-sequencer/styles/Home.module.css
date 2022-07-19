@@ -17,7 +17,7 @@
 }
 
 .inline {
-  height: 80%;
+  width: 100%;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -29,15 +29,18 @@
   order: 2;
   background-color: #e8e8e8;
   border: 1px solid rgb(163, 163, 163);
+  min-width: 0;
 }
 
 .leftpane{
   flex: 1;
   border: red solid;
   order: 1;
+  min-width: 0;
 }
 
 .rightpane{
+  min-width: 0;
   flex: 1;
   border: red solid;
   order: 3;

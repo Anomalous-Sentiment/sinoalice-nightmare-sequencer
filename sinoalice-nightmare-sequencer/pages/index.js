@@ -134,6 +134,9 @@ export default function Home({data}) {
         
         </div>
       </div>
+      <div className={styles.footer}>
+
+      </div>
     </div>
   )
 }
