@@ -9,6 +9,7 @@ import { Provider } from 'react-redux'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NightmarePlotter from '../components/nightmare-plotter'
 import {usageText, developmentText} from '../TEXT_CONSTANTS'
+import { Fragment } from 'react';
 const supabaseJs = require('@supabase/supabase-js')
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -78,7 +79,7 @@ export default function Home({data}) {
   </Link>
   )
   return (
-    <div className={styles.container}>
+    <Fragment>
       <Head>
         <title>SINoALICE Nightmare Sequencer</title>
         <meta name="description" content="SINoALICE Nightmare Planning Tool" />
@@ -86,57 +87,63 @@ export default function Home({data}) {
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7393687437464759"
       crossorigin="anonymous"></script>
       </Head>
-      <div className={styles.topdiv}>
-      </div>
 
-      <div className={styles.inline}>
-        <div className={styles.leftpane}>
+        <div className={styles.container}>
 
-        </div>
-        <div className={styles.maincontent}>
-          <div className={styles.header}>
-          SINoALICE Nightmare Sequencer
+          <div className={styles.topdiv}>
           </div>
-          <Provider store={store}>
-            <Tabs id='main-tabs' defaultActiveKey="plotter" className="mb-3">
-              <Tab eventKey="plotter" title="Sequencer">
-                <NightmarePlotter data={data}/>
-              </Tab>
-              <Tab eventKey="about" title="About">
-                <Accordion defaultActiveKey="0">
-                <Accordion.Item eventKey="0">
-                  <Accordion.Header>Usage and Features</Accordion.Header>
-                  <Accordion.Body>
-                    <div className='about'>{usageText}</div>
-                  </Accordion.Body>
-                </Accordion.Item>
-                <Accordion.Item eventKey="1">
-                  <Accordion.Header>Development Story</Accordion.Header>
-                  <Accordion.Body>
-                  <div className='about'>
-                    {developmentText}
-                    <br/>
-                    <br/>
-                    Related:
-                    <br/>
-                    {plannerLinkElement}
-                    <br/>
-                    {dbLinkElement}
-                  </div>
-                  </Accordion.Body>
-                </Accordion.Item>
-                </Accordion>
-              </Tab>
-            </Tabs>
-          </Provider>
-        </div>
-        <div className={styles.rightpane}>
-        
-        </div>
-      </div>
-      <div className={styles.footer}>
 
-      </div>
-    </div>
+          <div className={styles.inline}>
+            <div className={styles.leftpane}>
+
+            </div>
+            <div className={styles.maincontent}>
+              <div className={styles.header}>
+              SINoALICE Nightmare Sequencer
+              </div>
+              <Provider store={store}>
+                <Tabs id='main-tabs' defaultActiveKey="plotter" className="mb-3">
+                  <Tab eventKey="plotter" title="Sequencer">
+                    <NightmarePlotter data={data}/>
+                  </Tab>
+                  <Tab eventKey="about" title="About">
+                    <Accordion defaultActiveKey="0">
+                    <Accordion.Item eventKey="0">
+                      <Accordion.Header>Usage and Features</Accordion.Header>
+                      <Accordion.Body>
+                        <div className='about'>{usageText}</div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                    <Accordion.Item eventKey="1">
+                      <Accordion.Header>Development Story</Accordion.Header>
+                      <Accordion.Body>
+                      <div className='about'>
+                        {developmentText}
+                        <br/>
+                        <br/>
+                        Related:
+                        <br/>
+                        {plannerLinkElement}
+                        <br/>
+                        {dbLinkElement}
+                      </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                    </Accordion>
+                  </Tab>
+                </Tabs>
+              </Provider>
+            </div>
+            <div className={styles.rightpane}>
+            
+            </div>
+          </div>
+          <div className={styles.footer}>
+
+          </div>
+        </div>
+
+    </Fragment>
+
   )
 }

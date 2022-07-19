@@ -11,9 +11,18 @@ export const nightmareSlice = createSlice({
     reducers: {
         addNightmare: (state = initialState, action) => {
             //Add the current delay value to the nightmare object
-            
             let newNightmare = structuredClone(action.payload);
             newNightmare['delay'] = state.delay;
+
+            /*
+            //Not feasible because if chim is removed, prep time won't be able to update
+            //Check if not first nightmare, and if previous nightmare skill was haze heralds the moment
+            if (state.nightmaresSelected.length > 1 && state.nightmaresSelected[state.nightmaresSelected.length - 1]['jp_colo_skill_name'] == '紫煙ハ瞬刻ヲ告ゲル')
+            {
+                //If previous nm skill was "Haze heralds the moment", set this nm prep time to 5 secs
+                newNightmare['prep_time'] = 5;
+            }
+            */
             
 
             //Add the new nightmare to the existing list (Similar to setState() functions. Need to copy and create new list?)
@@ -75,8 +84,16 @@ export const checkUnderLimit = (state) => {
     let timeLimit = state.nightmares.coloTime * 60;
 
     //Sum total nightmare time (prep + effective + delays)
-    state.nightmares.nightmaresSelected.forEach(element => {
-        sum = sum + element['prep_time'] + element['effective_time'] + element['delay'];
+    state.nightmares.nightmaresSelected.forEach((element, index) => {
+        if (index > 0 && state.nightmares.nightmaresSelected[index - 1]['jp_colo_skill_name'] == '紫煙ハ瞬刻ヲ告ゲル')
+        {
+            //If previous nightmare skill was haze heralds the moment, set prep time to 5
+            sum = sum + 5 + element['effective_time'] + element['delay'];
+        }
+        else
+        {
+            sum = sum + element['prep_time'] + element['effective_time'] + element['delay'];
+        }
     });
 
     sum = sum + state.nightmares.delay;

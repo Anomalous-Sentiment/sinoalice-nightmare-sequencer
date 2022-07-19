@@ -289,12 +289,8 @@ export default function NightmarePlotter(props) {
         activeStartTime = DateTime.fromJSDate(prepRow[4]);
         activeEndTime = activeStartTime.plus({ seconds: nmActiveTime });
 
-        console.log(activeEndTime)
-        console.log(activeStartTime)
-        console.log(now.plus({minutes: coloTime}))
         if (activeEndTime > now.plus({minutes: coloTime}))
         {
-          console.log('end later then colo end')
           //End time exceeds colo limit. Set end time to colo end time
           activeEndTime = now.plus({minutes: coloTime});
         }
