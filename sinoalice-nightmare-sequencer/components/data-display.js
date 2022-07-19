@@ -28,6 +28,12 @@ export default function Statistics(props)
         let nmPrepTime = nightmare['prep_time'];
         let nmActiveTime = nightmare['effective_time']
 
+        if (index > 0 && array[index - 1]['jp_colo_skill_name'] == '紫煙ハ瞬刻ヲ告ゲル')
+        {
+            //If previous nm skill was "Haze heralds the moment", set this nm prep time to 5 secs
+            nmPrepTime = 5;
+        }
+        
         if (currentTime + nmPrepTime + nightmare['delay'] > coloTime * 60)
         {
             let differenceFromLimit = currentTime + nightmare['delay']
@@ -43,11 +49,6 @@ export default function Statistics(props)
 
         }
 
-        if (index > 0 && array[index - 1]['jp_colo_skill_name'] == '紫煙ハ瞬刻ヲ告ゲル')
-        {
-            //If previous nm skill was "Haze heralds the moment", set this nm prep time to 5 secs
-            nmPrepTime = 5;
-        }
 
         if (nightmare['applied_tags'].includes('Fire Bell') || nightmare['applied_tags'].includes('Fire Buff'))
         {
