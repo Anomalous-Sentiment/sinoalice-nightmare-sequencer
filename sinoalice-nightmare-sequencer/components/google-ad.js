@@ -9,10 +9,10 @@ export default function GoogleAd(props)
 
     return (
         <ins className="adsbygoogle"
-        style={{display: 'block'}}
+        style={props.display}
         data-ad-client={props.client}
         data-ad-slot={props.slot}
-        data-ad-format="auto"
+        data-ad-format={props.format}
         data-full-width-responsive="true"></ins>
     )
 }

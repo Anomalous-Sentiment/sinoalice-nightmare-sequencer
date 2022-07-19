@@ -74,10 +74,8 @@ function ImageComponent(props)
             //Selectable. Add nightmare to selected list
             //dispatch(addNightmare(props.nightmare))
             //PubSub.publish(SUCCESS, 'Nightmare added!');
-            console.log('under', underLimit)
             if (underLimit == true)
             {
-                console.log(underLimit)
                 //Selectable. Add nightmare to selected list
                 dispatch(addNightmare(props.nightmare))
                 PubSub.publish(SUCCESS, 'Nightmare added!');
