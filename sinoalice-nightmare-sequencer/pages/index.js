@@ -89,6 +89,8 @@ export default function Home({data}) {
         <title>SINoALICE Nightmare Sequencer</title>
         <meta name="description" content="SINoALICE Nightmare Planning Tool" />
         <link rel="icon" href="/alice.ico" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7393687437464759"
+        crossOrigin="anonymous"></script>
       </Head>
 
     
