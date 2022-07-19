@@ -11,6 +11,11 @@ import NightmarePlotter from '../components/nightmare-plotter'
 import {usageText, developmentText, changelog} from '../text_constants'
 import { Fragment } from 'react';
 const supabaseJs = require('@supabase/supabase-js')
+import dynamic from 'next/dynamic';
+
+const GoogleAd = dynamic(() => import('../components/google-ad'), {
+  ssr: false,
+})
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_CLIENT_KEY;
@@ -61,12 +66,6 @@ export async function getServerSideProps()
   //Combine all request data into single json
   let data = {nightmares: allNightmares, attributes: allAttributes, general_tags: generalTags, major_tags: majorTags, rarities: allRarities, base_skills: pureSkills};
 
-  fetch(raw)
-  .then(r => r.text())
-  .then(text => {
-    console.log('text decoded:', text);
-  });
-
   return {props: {data}}
 }
 
@@ -90,17 +89,22 @@ export default function Home({data}) {
         <title>SINoALICE Nightmare Sequencer</title>
         <meta name="description" content="SINoALICE Nightmare Planning Tool" />
         <link rel="icon" href="/alice.ico" />
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7393687437464759"
-      crossorigin="anonymous"></script>
       </Head>
 
+    
         <div className={styles.container}>
           <div className={styles.topdiv}>
-
+            <GoogleAd
+              client='ca-pub-7393687437464759'
+              slot='7556877383'
+              />
           </div>
           <div className={styles.inline}>
             <div className={styles.leftpane}>
-
+              <GoogleAd
+              client='ca-pub-7393687437464759'
+              slot='4021204476'
+              />
             </div>
             <div className={styles.maincontent}>
               <div className={styles.header}>
@@ -145,7 +149,10 @@ export default function Home({data}) {
               </Provider>
             </div>
             <div className={styles.rightpane}>
-            
+              <GoogleAd
+                client='ca-pub-7393687437464759'
+                slot='7866764928'
+                />
             </div>
           </div>
           <div className={styles.footer}>

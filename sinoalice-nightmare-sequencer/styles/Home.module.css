@@ -3,7 +3,6 @@
 }
 
 .topdiv{
-  border: red solid;
   height: 100px;
 }
 
@@ -34,16 +33,16 @@
 
 .leftpane{
   flex: 1;
-  border: red solid;
   order: 1;
   min-width: 0;
+  padding: 10px;
 }
 
 .rightpane{
   min-width: 0;
   flex: 1;
-  border: red solid;
   order: 3;
+  padding: 10px;
 }
 
 .main {
