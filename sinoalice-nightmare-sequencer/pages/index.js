@@ -8,7 +8,7 @@ import store from '../redux/store'
 import { Provider } from 'react-redux'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NightmarePlotter from '../components/nightmare-plotter'
-import {usageText, developmentText} from '../TEXT_CONSTANTS'
+import {usageText, developmentText, changelog} from '../text_constants'
 import { Fragment } from 'react';
 const supabaseJs = require('@supabase/supabase-js')
 
@@ -61,6 +61,12 @@ export async function getServerSideProps()
   //Combine all request data into single json
   let data = {nightmares: allNightmares, attributes: allAttributes, general_tags: generalTags, major_tags: majorTags, rarities: allRarities, base_skills: pureSkills};
 
+  fetch(raw)
+  .then(r => r.text())
+  .then(text => {
+    console.log('text decoded:', text);
+  });
+
   return {props: {data}}
 }
 
@@ -89,10 +95,9 @@ export default function Home({data}) {
       </Head>
 
         <div className={styles.container}>
-
           <div className={styles.topdiv}>
-          </div>
 
+          </div>
           <div className={styles.inline}>
             <div className={styles.leftpane}>
 
@@ -130,6 +135,11 @@ export default function Home({data}) {
                       </Accordion.Body>
                     </Accordion.Item>
                     </Accordion>
+                  </Tab>
+                  <Tab eventKey="changelog" title="Changelog">
+                    <div className='about'>
+                      {changelog}
+                    </div>
                   </Tab>
                 </Tabs>
               </Provider>
