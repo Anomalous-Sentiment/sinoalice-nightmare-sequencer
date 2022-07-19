@@ -106,12 +106,12 @@ And with this, I'll be returning to my life of having my job applications reject
 
 Written by a tired and weary Sentiment#0790`
 
-export const changelog = `19/07/2022
+export const changelog = `19/07/2022 v1.2
 - Corrected issue where multiple nightmares of the same skill type could be selected if they had different skill names. (Ongoing. New skills which belong in existing skill types will need to be handled manually)
 - Added search functionality.
 - Added ability to delay next nightmare by specified number of seconds.
 - Modified timeline display so that nightmare durations that exceed colosseum finish time will not be shown.
 - Miscellaneous stats modified to account for summon delays and unused time.
 
-16/07/2022
+16/07/2022 v1.1
 - Initial release`
