@@ -13,6 +13,6 @@ export default function GoogleAd(props)
         data-ad-client={props.client}
         data-ad-slot={props.slot}
         data-ad-format={props.format}
-        data-full-width-responsive="true"></ins>
+        data-full-width-responsive={props.responsiveWidth}></ins>
     )
 }

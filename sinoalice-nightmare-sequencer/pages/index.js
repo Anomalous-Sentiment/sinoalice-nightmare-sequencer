@@ -9,7 +9,6 @@ import { Provider } from 'react-redux'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NightmarePlotter from '../components/nightmare-plotter'
 import {usageText, developmentText, changelog} from '../text_constants'
-import { Fragment } from 'react';
 const supabaseJs = require('@supabase/supabase-js')
 import dynamic from 'next/dynamic';
 
@@ -84,13 +83,11 @@ export default function Home({data}) {
   </Link>
   )
   return (
-    <Fragment>
+    <div>
       <Head>
         <title>SINoALICE Nightmare Sequencer</title>
         <meta name="description" content="SINoALICE Nightmare Planning Tool" />
         <link rel="icon" href="/alice.ico" />
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7393687437464759"
-        crossOrigin="anonymous"></script>
       </Head>
 
     
@@ -100,7 +97,6 @@ export default function Home({data}) {
               client='ca-pub-7393687437464759'
               slot='7556877383'
               display={{display: 'inline-block', width: '100%', height: '90px'}}
-              format={null}
               />
           </div>
           <div className={styles.inline}>
@@ -109,6 +105,7 @@ export default function Home({data}) {
               client='ca-pub-7393687437464759'
               slot='4021204476'
               display={{display: 'block'}}
+              responsiveWidth='true'
               format='auto'
               />
             </div>
@@ -159,6 +156,7 @@ export default function Home({data}) {
                 client='ca-pub-7393687437464759'
                 slot='7866764928'
                 display={{display: 'block'}}
+                responsiveWidth='true'
                 format='auto'
                 />
             </div>
@@ -167,8 +165,6 @@ export default function Home({data}) {
 
           </div>
         </div>
-
-    </Fragment>
-
+    </div>
   )
 }
