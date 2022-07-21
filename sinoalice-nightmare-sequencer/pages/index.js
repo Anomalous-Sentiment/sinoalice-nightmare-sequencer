@@ -96,7 +96,7 @@ export default function Home({data}) {
             <GoogleAd
               client='ca-pub-7393687437464759'
               slot='7556877383'
-              display={{display: 'inline-block', width: '100%', height: '90px'}}
+              display={{display: 'block', width: '100%', height: '90px'}}
               />
           </div>
           <div className={styles.inline}>
