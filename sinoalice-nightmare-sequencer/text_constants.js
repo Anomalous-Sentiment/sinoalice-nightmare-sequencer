@@ -106,7 +106,10 @@ And with this, I'll be returning to my life of having my job applications reject
 
 Written by a tired and weary Sentiment#0790`
 
-export const changelog = `19/07/2022 v1.2
+export const changelog = `6/08/2022 v1.3
+- Fixed issue where tooltips appear at wrong position after mouseover/hover
+
+19/07/2022 v1.2
 - Corrected issue where multiple nightmares of the same skill type could be selected if they had different skill names. (Ongoing. New skills which belong in existing skill types will need to be handled manually)
 - Added search functionality.
 - Added ability to delay next nightmare by specified number of seconds.
