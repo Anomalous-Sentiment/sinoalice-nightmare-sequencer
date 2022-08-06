@@ -1,4 +1,34 @@
 
+-- Initialise skill_groups table
+INSERT INTO skill_groups (skill_type)
+VALUES
+  ('unique'),
+  ('double atk buff'),
+  ('patk only buff'),
+  ('matk only buff'),
+  ('double def buff'),
+  ('pdef only buff'),
+  ('mdef only buff'),
+  ('double def debuff'),
+  ('pdef only debuff'),
+  ('mdef only debuff'),
+  ('double atk debuff'),
+  ('patk only debuff'),
+  ('matk only debuff'),  
+  ('fire bell'),  
+  ('water bell'),  
+  ('wind bell'),  
+  ('heal to lf conversion'),
+  ('fire buff'),
+  ('water buff'),
+  ('wind buff'),
+  ('inc. blade effect'),
+  ('fire sp reduce'),
+  ('water sp reduce'),
+  ('wind sp reduce')
+ON CONFLICT (skill_type) DO NOTHING;
+
+
 -- Initialise element_attributes table
 INSERT INTO element_attributes (attribute_id, attribute)
 VALUES
