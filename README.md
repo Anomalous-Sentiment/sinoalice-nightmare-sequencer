@@ -12,8 +12,8 @@ https://sinoalicenightmare.herokuapp.com/
 2. Run the following command: `npm run dev`
 3. The web app will be accessible through a web browser at `http://localhost:3000/`
 
-### Running the production build with Docker
-1. Navigate to the folder `sinoalice-nightmare-plotter` in this repository
-2. Run the following command to build the docker image: `docker build -t nm-plotter .`
-3. Run the following command to start the docker container from the image: `docker run -p 3000:3000 nm-plotter`
-4. The web app will be accessible through a web browser at `http://localhost:3000/`
+### Running the production build
+1. Navigate to the folder `sinoalice-nightmare-sequencer` in this repository
+2. Run the following command to build the client side files: `npm run build`
+3. Run the following command to start the production server: `npm run start`
+4. The web app will be accessible at port 3000, or at the port specified when starting the server
