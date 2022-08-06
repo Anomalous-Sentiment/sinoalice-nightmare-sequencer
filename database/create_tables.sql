@@ -1,12 +1,22 @@
 SET TIMEZONE ='Etc/GMT+8';  
 
+DROP TABLE IF EXISTS skill_groups;
+CREATE TABLE skill_groups
+(
+  skill_type VARCHAR NOT NULL,
+  PRIMARY KEY (skill_type)
+);
+
 DROP TABLE IF EXISTS pure_colo_skill_names;
 CREATE TABLE pure_colo_skill_names
 (
     jp_colo_skill_name VARCHAR NOT NULL,
     en_colo_skill_name VARCHAR NOT NULL,
     active_colour VARCHAR DEFAULT '#f598f2' NOT NULL,
+    skill_type VARCHAR NOT NULL DEFAULT 'unique',
     updated_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() AT TIME ZONE 'Etc/GMT+8'),
+    CONSTRAINT fk_skill_type
+        FOREIGN KEY (skill_type) REFERENCES skill_groups (skill_type),
     PRIMARY KEY (jp_colo_skill_name)
 );
 
