@@ -6,6 +6,8 @@ const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_KEY
 const supabase = supabaseJs.createClient(supabaseUrl, supabaseKey)
 
+const JP_ICON_BASE = 'https://www.deachsword.com/db/sinoalice/en/images/ab'
+const EN_ICON_BASE = 'https://www.deachsword.com/db/sinoalice/jp/images/ab'
 
 module.exports = 
 {
@@ -41,6 +43,7 @@ async function updateDatabase()
       const uniqueEnSkillList = createUniqueSkillList(enArtList)
 
       // Format jp card list into a form suitable to insert into db
+      const formattedJpNms = createJpNightmareList(jpCardList, jpArtList)
 
       // Format en card list into a form suitable to insert into db (use the rank json obj to help)
 
@@ -122,8 +125,32 @@ function createUniqueSkillList(artList)
   return arrayUniqueByKey
 }
 
-function createNightmareList(cardList)
+function createJpNightmareList(cardList, jpArtList)
 {
+  const formattedList = []
 
+  // Filter out non-nightmare cards (nightmares have a cardType = 3)
+  const nightmareList = cardList.filter(card => card['cardType'] == 3)
+
+  nightmareList.forEach(element => {
+    // Format according to database
+    const paddedId = element['cardMstId'].toString().padStart(4, '0')
+    const assetBundle = element['assetBundleName']
+
+    icon_url = JP_ICON_BASE + `/${assetBundle}/${paddedId}.png`
+    const formattedObj = {
+      'card_mst_id': element['cardMstId'],
+      'rarity_id': element['rarity'],
+      'art_mst_id': element['artMstId'],
+      'attribute_id': element['attribute'],
+      'jp_name': element['name'],
+      'jp_icon_url': icon_url
+    }
+    // Add to list to insert
+    formattedList.push(formattedObj)
+  })
+
+  console.log(formattedList)
+  return formattedList
 }
 
