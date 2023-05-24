@@ -28,11 +28,10 @@ async function updateDatabase()
       const jpCardPromise = fetch('https://raw.githubusercontent.com/sinoalice-datamine/data/master/JP/card_mst_list.json').then(res => res.json())
 
       // get en card list json
-      const enCardPromise = fetch('https://raw.githubusercontent.com/sinoalice-datamine/data/master/EN/card_mst_list.json').then(res => res.json())
+      const enCardPromise = fetch('https://raw.githubusercontent.com/sinoalice-datamine/data/master/EN/card_mst_list_en.json').then(res => res.json())
 
       // Wait for all fetches to complete
-      const [jpArtList, jpCardList, enArtList, enCardList] = Promise.all([jpArtPromise, jpCardPromise, enArtPromise, enCardPromise])
-      
+      const [jpArtList, jpCardList, enArtList, enCardList] = await Promise.all([jpArtPromise, jpCardPromise, enArtPromise, enCardPromise])
       // Construct a json obj with en skill ranks as keys and jp skill ranks as values (To convert en skill ranks into their equivalent jp version)
 
       // Construct a pure colo skill list with en and jp art lists (using unique_art_id, en name, and jp name)
