@@ -32,9 +32,13 @@ async function updateDatabase()
 
       // Wait for all fetches to complete
       const [jpArtList, jpCardList, enArtList, enCardList] = await Promise.all([jpArtPromise, jpCardPromise, enArtPromise, enCardPromise])
+
       // Construct a json obj with en skill ranks as keys and jp skill ranks as values (To convert en skill ranks into their equivalent jp version)
+      const skillMap = createEnToJpRankMap(jpArtList, enArtList)
 
       // Construct a pure colo skill list with en and jp art lists (using unique_art_id, en name, and jp name)
+      const uniqueJpSkillList = createUniqueSkillList(jpArtList)
+      const uniqueEnSkillList = createUniqueSkillList(enArtList)
 
       // Format jp card list into a form suitable to insert into db
 
@@ -51,7 +55,54 @@ async function updateDatabase()
 
 function createEnToJpRankMap(jpArtList, enArtList)
 {
+  //Regex expression to detect jp characters
+  const regexExression = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/;
 
+  const translationMap = {}
+
+  // Convert en list into a art_mst_id:jp_rank key-value map
+  const enMap = {}
+  enArtList.forEach(element => {
+    const enRank = getSkillRank(element['name'])
+
+    enMap[element['artMstId']] = enRank
+  });
+
+  // Iterate through jp art list and check the corresponding en art mst id for a the en translation equivalent
+  jpArtList.forEach(element => {
+    // Check if the artMstId exists the en map, and if the end map value does not contain JP chars
+    if (element['artMstId'] in enMap && !enMap[element['artMstId']].match(regexExression))
+    {
+      const jpRank = getSkillRank(element['name'])
+      translationMap[jpRank] = enMap[element['artMstId']]
+    }
+  })
+
+  console.log(translationMap)
+
+  //Flip the key-value pairs to get an en to jp map
+  const flippedMap = Object.fromEntries(Object.entries(translationMap).map(a => a.reverse()))
+
+  // Add a jp to jp conversion in case jp value is passed in to map
+  for (const [key, value] of Object.entries(flippedMap))
+  {
+    flippedMap[value] = value
+  }
+
+  console.log(flippedMap)
+  return flippedMap
+}
+
+function getSkillRank(skillString)
+{
+  const rankBracket = skillString.lastIndexOf('(');
+  const rankEndBracket = skillString.lastIndexOf(')');
+
+  //const jpBaseSkill = element['name'].substring(0, jpRankBracket).trim();
+
+  const rank = skillString.substring(rankBracket + 1, rankEndBracket);
+
+  return rank
 }
 
 function mapEnRanksToJp(enCardList)
@@ -61,7 +112,14 @@ function mapEnRanksToJp(enCardList)
 
 function createUniqueSkillList(artList)
 {
+  // Iterate through all elements and find unique artUniqueId's
+  const arrayUniqueByKey = [...new Map(artList.map(item => [item['artUniqueId'], item])).values()];
 
+  // Remove unneeded keys from the objects
+  const validKeys = ['artUniqueId']
+  arrayUniqueByKey.forEach(element => Object.keys(element).forEach((key) => validKeys.includes(key) || delete element[key]))
+
+  return arrayUniqueByKey
 }
 
 function createNightmareList(cardList)
