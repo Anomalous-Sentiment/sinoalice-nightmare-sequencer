@@ -6,8 +6,8 @@ const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_KEY
 const supabase = supabaseJs.createClient(supabaseUrl, supabaseKey)
 
-const JP_ICON_BASE = 'https://www.deachsword.com/db/sinoalice/en/images/ab'
-const EN_ICON_BASE = 'https://www.deachsword.com/db/sinoalice/jp/images/ab'
+const JP_ICON_BASE = 'https://www.deachsword.com/db/sinoalice/jp/images/ab'
+const EN_ICON_BASE = 'https://www.deachsword.com/db/sinoalice/en/images/ab'
 
 module.exports = 
 {
@@ -237,7 +237,7 @@ function createJpNightmareList(cardList)
   const formattedList = []
 
   // Filter out non-nightmare cards (nightmares have a cardType = 3)
-  const nightmareList = cardList.filter(card => card['artMstId'] != 0 && card['attribute'] != 0)
+  const nightmareList = cardList.filter(card => card['artMstId'] != 0 && card['attribute'] != 0 && card['isRelease'] == true)
 
   nightmareList.forEach(element => {
     // Format according to database
@@ -265,7 +265,7 @@ function createEnNightmareList(cardList)
   const formattedList = []
 
   // Filter out non-nightmare cards (nightmares have a cardType = 3)
-  const nightmareList = cardList.filter(card => card['artMstId'] != 0 && card['attribute'] != 0)
+  const nightmareList = cardList.filter(card => card['artMstId'] != 0 && card['attribute'] != 0 && card['isRelease'] == true)
 
   nightmareList.forEach(element => {
     // Format according to database
