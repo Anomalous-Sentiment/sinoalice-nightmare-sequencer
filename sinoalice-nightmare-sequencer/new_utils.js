@@ -38,17 +38,58 @@ async function updateDatabase()
       // Construct a json obj with en skill ranks as keys and jp skill ranks as values (To convert en skill ranks into their equivalent jp version)
       const skillMap = createEnToJpRankMap(jpArtList, enArtList)
 
-      // Construct a pure colo skill list with en and jp art lists (using unique_art_id, en name, and jp name)
+      //Create list of formatted skill ranks
+      const skillRankList = createUniqueSkillRanks(jpArtList, enArtList)
+
+      // Format the art (colo skill) list into format to insert into DB
+      const formattedJpColoSkills = formatJpColoSkills(jpArtList)
+      const formattedEnColoSkills = formatEnColoSkills(enArtList, skillMap)
+
+
+      // Construct a pure colo skill list with en and jp art lists (using unique_art_id)
       const uniqueJpSkillList = createUniqueSkillList(jpArtList)
       const uniqueEnSkillList = createUniqueSkillList(enArtList)
 
       // Format jp card list into a form suitable to insert into db
-      const formattedJpNms = createJpNightmareList(jpCardList, jpArtList)
+      const formattedJpNms = createJpNightmareList(jpCardList)
 
-      // Format en card list into a form suitable to insert into db (use the rank json obj to help)
+      // Format en card list into a form suitable to insert into db
+      const formattedEnNms = createEnNightmareList(enCardList)
 
       // Insert all into database
-      
+      // Insert Colo skill ranks
+      console.log(skillRankList)
+      const {error: skillRankError} = await supabase.from('ranks').upsert(skillRankList, {returning: 'minimal'})
+      console.log(skillRankError)
+
+      // Insert jp pure colo skills
+      const {error: jpPureColoSkillError} = await supabase.from('pure_colo_skills').upsert(uniqueJpSkillList, {returning: 'minimal'})
+
+      // Insert en pure colo skills
+      const {error: enPureColoSkillError} = await supabase.from('pure_colo_skills').upsert(uniqueEnSkillList, {returning: 'minimal'})
+      console.log(enPureColoSkillError)
+      // Insert JP art list (colo skills)
+      formattedJpColoSkills.forEach(element => {
+        if (!element['jp_rank'])
+        {
+          console.log('Following lement has null value')
+          console.log(element)
+          element['jp_rank'] = null
+        }
+      })
+      const {error: jpColoSkillError} = await supabase.from('jp_colo_skills').upsert(formattedJpColoSkills, {returning: 'minimal'})
+      console.log(jpColoSkillError)
+      // Insert EN art list (colo skills)
+      const {error: enColoSkillError} = await supabase.from('en_colo_skills').upsert(formattedEnColoSkills, {returning: 'minimal'})
+      console.log(enColoSkillError)
+      // Insert JP nms
+      const {error: jpNmError} = await supabase.from('jp_nightmares').upsert(formattedJpNms, {returning: 'minimal'})
+      console.log(jpNmError)
+      // Insert EN nms
+      const {error: enNmError} = await supabase.from('en_nightmares').upsert(formattedEnNms, {returning: 'minimal'})
+      console.log(enNmError)
+
+        
       }
       catch(err)
       {
@@ -56,7 +97,7 @@ async function updateDatabase()
       }
 }
 
-function createEnToJpRankMap(jpArtList, enArtList)
+function createJpToEnRankMap(jpArtList, enArtList)
 {
   //Regex expression to detect jp characters
   const regexExression = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/;
@@ -81,7 +122,28 @@ function createEnToJpRankMap(jpArtList, enArtList)
     }
   })
 
-  console.log(translationMap)
+  return translationMap
+}
+
+function createUniqueSkillRanks(jpArtList, enArtList)
+{
+  const trans_map = createJpToEnRankMap(jpArtList, enArtList)
+  const formattedList = []
+  for (const [key, value] of Object.entries(trans_map))
+  {
+    const formattedObj = {}
+    formattedObj['jp_rank'] = key
+    formattedObj['en_rank'] = value
+    formattedList.push(formattedObj)
+  }
+
+  return formattedList
+
+}
+
+function createEnToJpRankMap(jpArtList, enArtList)
+{
+  const translationMap = createJpToEnRankMap(jpArtList, enArtList)
 
   //Flip the key-value pairs to get an en to jp map
   const flippedMap = Object.fromEntries(Object.entries(translationMap).map(a => a.reverse()))
@@ -92,7 +154,6 @@ function createEnToJpRankMap(jpArtList, enArtList)
     flippedMap[value] = value
   }
 
-  console.log(flippedMap)
   return flippedMap
 }
 
@@ -108,9 +169,45 @@ function getSkillRank(skillString)
   return rank
 }
 
-function mapEnRanksToJp(enCardList)
+function formatJpColoSkills(jpArtList)
 {
+  // Iterate through all skills and convert into format suitable for database
+  const formattedArtList = jpArtList.map(element => {
+    const skillRank = getSkillRank(element['name'])
+    const formattedArt = {
+      'art_mst_id': element['artMstId'],
+      'art_unique_id': element['artUniqueId'],
+      'jp_rank': skillRank,
+      'skill_name': element['name'],
+      'skill_desc': element['description'],
+      'prep_time': element['leadTime'],
+      'effective_time': element['duration'],
+      'colo_sp': element['sp']
+    }
+    return formattedArt
+  })
+  return formattedArtList
+}
 
+function formatEnColoSkills(enArtList, skillMap)
+{
+  // Iterate through all skills and convert into format suitable for database
+  const formattedArtList = enArtList.map(element => {
+    const skillRank = getSkillRank(element['name'])
+    const jpSkillRank = skillMap[skillRank]
+    const formattedArt = {
+      'art_mst_id': element['artMstId'],
+      'art_unique_id': element['artUniqueId'],
+      'jp_rank': jpSkillRank,
+      'skill_name': element['name'],
+      'skill_desc': element['description'],
+      'prep_time': element['leadTime'],
+      'effective_time': element['duration'],
+      'colo_sp': element['sp']
+    }
+    return formattedArt
+  })
+  return formattedArtList
 }
 
 function createUniqueSkillList(artList)
@@ -122,15 +219,22 @@ function createUniqueSkillList(artList)
   const validKeys = ['artUniqueId']
   arrayUniqueByKey.forEach(element => Object.keys(element).forEach((key) => validKeys.includes(key) || delete element[key]))
 
-  return arrayUniqueByKey
+  // Rename each key to be same as the database column name
+  const formattedArray = arrayUniqueByKey.map(element => {
+    const formattedObj = {}
+    formattedObj['art_unique_id'] = element['artUniqueId']
+    return formattedObj
+  })
+
+  return formattedArray
 }
 
-function createJpNightmareList(cardList, jpArtList)
+function createJpNightmareList(cardList)
 {
   const formattedList = []
 
   // Filter out non-nightmare cards (nightmares have a cardType = 3)
-  const nightmareList = cardList.filter(card => card['cardType'] == 3)
+  const nightmareList = cardList.filter(card => card['artMstId'] != 0 && card['attribute'] != 0)
 
   nightmareList.forEach(element => {
     // Format according to database
@@ -143,14 +247,40 @@ function createJpNightmareList(cardList, jpArtList)
       'rarity_id': element['rarity'],
       'art_mst_id': element['artMstId'],
       'attribute_id': element['attribute'],
-      'jp_name': element['name'],
-      'jp_icon_url': icon_url
+      'nm_name': element['name'],
+      'icon_url': icon_url
     }
     // Add to list to insert
     formattedList.push(formattedObj)
   })
 
-  console.log(formattedList)
   return formattedList
 }
 
+function createEnNightmareList(cardList)
+{
+  const formattedList = []
+
+  // Filter out non-nightmare cards (nightmares have a cardType = 3)
+  const nightmareList = cardList.filter(card => card['artMstId'] != 0 && card['attribute'] != 0)
+
+  nightmareList.forEach(element => {
+    // Format according to database
+    const paddedId = element['cardMstId'].toString().padStart(4, '0')
+    const assetBundle = element['assetBundleName']
+
+    icon_url = EN_ICON_BASE + `/${assetBundle}/${paddedId}.png`
+    const formattedObj = {
+      'card_mst_id': element['cardMstId'],
+      'rarity_id': element['rarity'],
+      'art_mst_id': element['artMstId'],
+      'attribute_id': element['attribute'],
+      'nm_name': element['name'],
+      'icon_url': icon_url
+    }
+    // Add to list to insert
+    formattedList.push(formattedObj)
+  })
+
+  return formattedList
+}
