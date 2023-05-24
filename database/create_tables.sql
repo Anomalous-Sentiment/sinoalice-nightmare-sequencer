@@ -11,8 +11,6 @@ DROP TABLE IF EXISTS pure_colo_skill_names;
 CREATE TABLE pure_colo_skill_names
 (
     art_unique_id INTEGER NOT NULL,
-    jp_colo_skill_name VARCHAR NOT NULL,
-    en_colo_skill_name VARCHAR NOT NULL,
     active_colour VARCHAR DEFAULT '#f598f2' NOT NULL,
     skill_type VARCHAR NOT NULL DEFAULT 'unique',
     updated_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() AT TIME ZONE 'Etc/GMT+8'),
@@ -84,6 +82,8 @@ CREATE TABLE colosseum_skills
 (
     art_mst_id INTEGER NOT NULL,
     art_unique_id INTEGER NOT NULL,
+    jp_colo_skill_name VARCHAR NOT NULL,
+    en_colo_skill_name VARCHAR NOT NULL,
     jp_colo_skill_desc TEXT NOT NULL,
     prep_time SMALLINT NOT NULL,
     effective_time SMALLINT NOT NULL,
