@@ -7,15 +7,15 @@ CREATE TABLE skill_groups
   PRIMARY KEY (skill_type)
 );
 
-DROP TABLE IF EXISTS pure_colo_skill_names;
-CREATE TABLE pure_colo_skill_names
+DROP TABLE IF EXISTS pure_colo_skills;
+CREATE TABLE pure_colo_skills
 (
     art_unique_id INTEGER NOT NULL,
     active_colour VARCHAR DEFAULT '#f598f2' NOT NULL,
     skill_type VARCHAR NOT NULL DEFAULT 'unique',
     updated_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() AT TIME ZONE 'Etc/GMT+8'),
-    CONSTRAINT fk_skill_type
-        FOREIGN KEY (skill_type) REFERENCES skill_groups (skill_type),
+    --CONSTRAINT fk_skill_type
+    --    FOREIGN KEY (skill_type) REFERENCES skill_groups (skill_type),
     PRIMARY KEY (art_unique_id)
 );
 
@@ -86,13 +86,13 @@ CREATE TABLE jp_colo_skills
     skill_desc TEXT NOT NULL,
     prep_time SMALLINT NOT NULL,
     effective_time SMALLINT NOT NULL,
-    jp_rank VARCHAR NOT NULL,
+    jp_rank VARCHAR,
     colo_sp SMALLINT NOT NULL,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() AT TIME ZONE 'Etc/GMT+8'),
     CONSTRAINT fk_jp_skill_name
-        FOREIGN KEY (art_unique_id) REFERENCES pure_colo_skill_names (art_unique_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_skill_rank
-        FOREIGN KEY (jp_rank) REFERENCES ranks (jp_rank) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (art_unique_id) REFERENCES pure_colo_skills (art_unique_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    --CONSTRAINT fk_skill_rank
+    --    FOREIGN KEY (jp_rank) REFERENCES ranks (jp_rank) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (art_mst_id)
 );
 
@@ -105,13 +105,13 @@ CREATE TABLE en_colo_skills
     skill_desc TEXT NOT NULL,
     prep_time SMALLINT NOT NULL,
     effective_time SMALLINT NOT NULL,
-    jp_rank VARCHAR NOT NULL,
+    jp_rank VARCHAR,
     colo_sp SMALLINT NOT NULL,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() AT TIME ZONE 'Etc/GMT+8'),
     CONSTRAINT fk_jp_skill_name
-        FOREIGN KEY (art_unique_id) REFERENCES pure_colo_skill_names (art_unique_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_skill_rank
-        FOREIGN KEY (jp_rank) REFERENCES ranks (jp_rank) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (art_unique_id) REFERENCES pure_colo_skills (art_unique_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    --CONSTRAINT fk_skill_rank
+    --    FOREIGN KEY (jp_rank) REFERENCES ranks (jp_rank) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (art_mst_id)
 );
 
@@ -162,6 +162,6 @@ CREATE TABLE skill_tag_relations
     CONSTRAINT fk_skill_relation_tag
         FOREIGN KEY (sub_tag_id) REFERENCES sub_categories (sub_tag_id),
     CONSTRAINT fk_skill_relation_skill  
-        FOREIGN KEY (art_unique_id) REFERENCES pure_colo_skill_names (art_unique_id),
+        FOREIGN KEY (art_unique_id) REFERENCES pure_colo_skills (art_unique_id),
     PRIMARY KEY (sub_tag_id, art_unique_id)
 );
