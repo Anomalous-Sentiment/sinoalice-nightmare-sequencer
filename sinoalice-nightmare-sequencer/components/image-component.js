@@ -35,7 +35,7 @@ function ImageComponent(props)
     const tooltip = useMemo(() => {
         return (
             <Tooltip id={props.nightmare[props.displayOptions['name']]}>
-            <b>{props.nightmare[props.displayOptions['skill_name']] + ' (' + props.nightmare[props.displayOptions['skill_rank']] + ')'}</b>
+            <b>{props.nightmare[props.displayOptions['skill_name']]}</b>
             <br/>
             {props.nightmare[props.displayOptions['skill_description']]}
         </Tooltip>
