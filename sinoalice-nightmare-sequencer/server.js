@@ -14,7 +14,7 @@ const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_KEY
 const supabase = supabaseJs.createClient(supabaseUrl, supabaseKey)
 
-const utility = require('./utilityFunctions')
+const utility = require('./new_utils')
 const timedFunctions = require('./timedFunctions')
 
 
