@@ -25,8 +25,12 @@ export async function getServerSideProps()
   //Array to hold db requests
   const dbRequests = [];
   //Get all nightmares
-  const nightmareRequest = supabase
-  .from('allnightmaredetails')
+  const enNightmareRequest = supabase
+  .from('allennightmaredetails')
+  .select()
+
+  const jpNightmareRequest = supabase
+  .from('alljpnightmaredetails')
   .select()
 
   //Get all element/attributes
@@ -51,19 +55,18 @@ export async function getServerSideProps()
 
   //Get all rarities
   const pureSkillsRequest = supabase
-  .from('pure_colo_skill_names')
+  .from('pure_colo_skills')
   .select()
 
-  dbRequests.push(nightmareRequest, elementRequest, generalTagRequest, majorTagRequest, rarityRequest, pureSkillsRequest);
+  dbRequests.push(enNightmareRequest, jpNightmareRequest, elementRequest, generalTagRequest, majorTagRequest, rarityRequest, pureSkillsRequest);
 
   console.time('DB Requests Timer')
   //Wait or all concurrent requests to complete and get their returned values
-  let [{data: allNightmares}, {data: allAttributes}, {data: generalTags}, {data: majorTags}, {data: allRarities}, {data: pureSkills}] = await Promise.all(dbRequests);
+  let [{data: enNightmares}, {data: jpNightmares},{data: allAttributes}, {data: generalTags}, {data: majorTags}, {data: allRarities}, {data: pureSkills}] = await Promise.all(dbRequests);
   console.timeEnd('DB Requests Timer')
-
-
+console.log(jpNightmares)
   //Combine all request data into single json
-  let data = {nightmares: allNightmares, attributes: allAttributes, general_tags: generalTags, major_tags: majorTags, rarities: allRarities, base_skills: pureSkills};
+  let data = {en_nightmares: enNightmares, jp_nightmares: jpNightmares, attributes: allAttributes, general_tags: generalTags, major_tags: majorTags, rarities: allRarities, base_skills: pureSkills};
 
   return {props: {data}}
 }
