@@ -77,18 +77,35 @@ CREATE TABLE rarities
     PRIMARY KEY (rarity_id)
 );
 
-DROP TABLE IF EXISTS colosseum_skills;
-CREATE TABLE colosseum_skills
+DROP TABLE IF EXISTS jp_colo_skills;
+CREATE TABLE jp_colo_skills
 (
     art_mst_id INTEGER NOT NULL,
     art_unique_id INTEGER NOT NULL,
-    jp_colo_skill_name VARCHAR NOT NULL,
-    en_colo_skill_name VARCHAR NOT NULL,
-    jp_colo_skill_desc TEXT NOT NULL,
+    skill_name VARCHAR NOT NULL,
+    skill_desc TEXT NOT NULL,
     prep_time SMALLINT NOT NULL,
     effective_time SMALLINT NOT NULL,
     jp_rank VARCHAR NOT NULL,
-    en_colo_skill_desc TEXT NOT NULL,
+    colo_sp SMALLINT NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() AT TIME ZONE 'Etc/GMT+8'),
+    CONSTRAINT fk_jp_skill_name
+        FOREIGN KEY (art_unique_id) REFERENCES pure_colo_skill_names (art_unique_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_skill_rank
+        FOREIGN KEY (jp_rank) REFERENCES ranks (jp_rank) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (art_mst_id)
+);
+
+DROP TABLE IF EXISTS en_colo_skills;
+CREATE TABLE en_colo_skills
+(
+    art_mst_id INTEGER NOT NULL,
+    art_unique_id INTEGER NOT NULL,
+    skill_name VARCHAR NOT NULL,
+    skill_desc TEXT NOT NULL,
+    prep_time SMALLINT NOT NULL,
+    effective_time SMALLINT NOT NULL,
+    jp_rank VARCHAR NOT NULL,
     colo_sp SMALLINT NOT NULL,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() AT TIME ZONE 'Etc/GMT+8'),
     CONSTRAINT fk_jp_skill_name
@@ -99,22 +116,37 @@ CREATE TABLE colosseum_skills
 );
 
 
-DROP TABLE IF EXISTS nightmares;
-CREATE TABLE nightmares
+DROP TABLE IF EXISTS jp_nightmares;
+CREATE TABLE jp_nightmares
 (
     card_mst_id INTEGER NOT NULL,
     art_mst_id INTEGER NOT NULL,
-    jp_name VARCHAR NOT NULL,
-    en_name VARCHAR NOT NULL,
-    jp_icon_url TEXT NOT NULL,
-    en_icon_url TEXT NOT NULL,
-    jp_rank varchar NOT NULL,
+    nm_name VARCHAR NOT NULL,
+    icon_url TEXT NOT NULL,
     attribute_id SMALLINT NOT NULL,
     rarity_id SMALLINT NOT NULL,
-    global BOOLEAN NOT NULL,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() AT TIME ZONE 'Etc/GMT+8'),
     CONSTRAINT fk_nightmare_skill
-        FOREIGN KEY (art_mst_id) REFERENCES colosseum_skills (art_mst_id) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (art_mst_id) REFERENCES jp_colo_skills (art_mst_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_nightmare_attribute
+        FOREIGN KEY (attribute_id) REFERENCES element_attributes (attribute_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_nightmare_rarity
+        FOREIGN KEY (rarity_id) REFERENCES rarities (rarity_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (card_mst_id)
+);
+
+DROP TABLE IF EXISTS en_nightmares;
+CREATE TABLE en_nightmares
+(
+    card_mst_id INTEGER NOT NULL,
+    art_mst_id INTEGER NOT NULL,
+    nm_name VARCHAR NOT NULL,
+    icon_url TEXT NOT NULL,
+    attribute_id SMALLINT NOT NULL,
+    rarity_id SMALLINT NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() AT TIME ZONE 'Etc/GMT+8'),
+    CONSTRAINT fk_nightmare_skill
+        FOREIGN KEY (art_mst_id) REFERENCES en_colo_skills (art_mst_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_nightmare_attribute
         FOREIGN KEY (attribute_id) REFERENCES element_attributes (attribute_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_nightmare_rarity
