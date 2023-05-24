@@ -212,8 +212,11 @@ function formatEnColoSkills(enArtList, skillMap)
 
 function createUniqueSkillList(artList)
 {
+    // Filter out non-gvg skills
+    const filteredSkills = artList.filter(element => element['isGvg'] == 1)
+
   // Iterate through all elements and find unique artUniqueId's
-  const arrayUniqueByKey = [...new Map(artList.map(item => [item['artUniqueId'], item])).values()];
+  const arrayUniqueByKey = [...new Map(filteredSkills.map(item => [item['artUniqueId'], item])).values()];
 
   // Remove unneeded keys from the objects
   const validKeys = ['artUniqueId']
