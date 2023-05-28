@@ -1,2 +1,2 @@
-#!/usr/bin/env bash
+#!/bin/bash
 sudo amazon-linux-extras install epel -y
