@@ -75,6 +75,7 @@ console.log(jpNightmares)
 export default function Home({data}) {
   const sinoDbLink = 'https://sinoalice.game-db.tw/nightmares'
   const euceliaPlannerLink = 'https://sinoalicenightmare.herokuapp.com/'
+  const deachswordLink = 'https://www.deachsword.com/db/sinoalice/en/carddetail.php'
   const dbLinkElement = (
   <Link href={sinoDbLink} passHref={true}>
     <a>SINoALICE DB</a>
@@ -83,6 +84,11 @@ export default function Home({data}) {
   const plannerLinkElement = (
     <Link href={euceliaPlannerLink} passHref={true}>
     <a>Nightmare Planner by Eucelia</a>
+  </Link>
+  )
+  const deachswordLinkElement = (
+    <Link href={deachswordLink} passHref={true}>
+    <a>Deachsword Cards</a>
   </Link>
   )
   return (
@@ -141,6 +147,8 @@ export default function Home({data}) {
                         {plannerLinkElement}
                         <br/>
                         {dbLinkElement}
+                        <br/>
+                        {deachswordLinkElement}
                       </div>
                       </Accordion.Body>
                     </Accordion.Item>
