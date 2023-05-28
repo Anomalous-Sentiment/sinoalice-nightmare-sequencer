@@ -8,7 +8,7 @@ https://sinoalicenightmare.herokuapp.com/
 ## Instructions
 
 ### Running the development server
-1. Navigate to the root of this repository
+1. Navigate to the folder `sinoalice-nightmare-sequencer` in this repository
 2. Run the following command: `npm run dev`
 3. The web app will be accessible through a web browser at `http://localhost:3000/`
 
