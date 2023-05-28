@@ -1,5 +1,5 @@
 const { ToadScheduler, SimpleIntervalJob, Task } = require('toad-scheduler')
-const utility = require('./utilityFunctions')
+const utility = require('./new_utils')
 
 
 module.exports = 
