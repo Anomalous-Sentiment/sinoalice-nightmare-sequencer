@@ -1,5 +1,3 @@
-//import {fetch} from 'node-fetch'
-const scraper = require('./scraper.js')
 const supabaseJs = require('@supabase/supabase-js')
 
 const supabaseUrl = process.env.SUPABASE_URL
