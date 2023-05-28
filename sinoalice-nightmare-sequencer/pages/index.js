@@ -64,7 +64,6 @@ export async function getServerSideProps()
   //Wait or all concurrent requests to complete and get their returned values
   let [{data: enNightmares}, {data: jpNightmares},{data: allAttributes}, {data: generalTags}, {data: majorTags}, {data: allRarities}, {data: pureSkills}] = await Promise.all(dbRequests);
   console.timeEnd('DB Requests Timer')
-console.log(jpNightmares)
   //Combine all request data into single json
   let data = {en_nightmares: enNightmares, jp_nightmares: jpNightmares, attributes: allAttributes, general_tags: generalTags, major_tags: majorTags, rarities: allRarities, base_skills: pureSkills};
 
