@@ -41,8 +41,7 @@ async function updateDatabase()
 
       // Format the art (colo skill) list into format to insert into DB
       const formattedJpColoSkills = formatJpColoSkills(jpArtList)
-      const formattedEnColoSkills = formatEnColoSkills(enArtList, skillMap)
-
+      var formattedEnColoSkills = formatEnColoSkills(enArtList, skillMap)
 
       // Construct a pure colo skill list with en and jp art lists (using unique_art_id)
       const uniqueJpSkillList = createUniqueSkillList(jpArtList)
@@ -70,8 +69,8 @@ async function updateDatabase()
       formattedJpColoSkills.forEach(element => {
         if (!element['jp_rank'])
         {
-          console.log('Following lement has null value')
-          console.log(element)
+          //console.log('Following lement has null value')
+          //console.log(element)
           element['jp_rank'] = null
         }
       })
@@ -87,7 +86,7 @@ async function updateDatabase()
       const {error: enNmError} = await supabase.from('en_nightmares').upsert(formattedEnNms, {returning: 'minimal'})
       console.log(enNmError)
 
-        
+      console.log('Successful NM DB Update')
       }
       catch(err)
       {
@@ -192,7 +191,18 @@ function formatEnColoSkills(enArtList, skillMap)
   // Iterate through all skills and convert into format suitable for database
   const formattedArtList = enArtList.map(element => {
     const skillRank = getSkillRank(element['name'])
-    const jpSkillRank = skillMap[skillRank]
+
+    // Get the JP rank value by matching EN to JP rank. If undefined, remove whitespace and check again.
+    var jpSkillRank = skillMap[skillRank] ? skillMap[skillRank] : skillMap[skillRank.replace(/ /g,'')]
+
+    if (!jpSkillRank)
+    {
+      // Undefined rank (Not in map)
+      // Set to null. Undefined value causes errors
+      jpSkillRank = null
+      
+    }
+
     const formattedArt = {
       'art_mst_id': element['artMstId'],
       'art_unique_id': element['artUniqueId'],
@@ -205,6 +215,7 @@ function formatEnColoSkills(enArtList, skillMap)
     }
     return formattedArt
   })
+
   return formattedArtList
 }
 
