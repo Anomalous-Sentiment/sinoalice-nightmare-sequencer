@@ -51,3 +51,10 @@ To setup the database, run the SQL scripts in the `database` directory in the fo
 2. Run the following command to build the client side files: `npm run build`
 3. Run the following command to start the production server: `npm run start`
 4. The web app will be accessible at port 3000, or at the port specified when starting the server
+
+## Screenshots
+Screenshots of the final product:
+![Initial Page](/screenshots/initial.png)
+![Plotted Nightmares](/screenshots/plotted_nms.png)
+![JP Nightmares](/screenshots/jp_names.png)
+![About Tab](/screenshots/about.png)
