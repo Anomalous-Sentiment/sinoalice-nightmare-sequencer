@@ -1,4 +1,6 @@
 # sinoalice-nightmare-sequencer
+**NOTE: This project will no longer be maintained due to SINoALICE Global ending service on 15 November 2023, and will likely serve little use going into the future. Feel free to take the code and adapt it for JP use if you wish.**
+
 A personal project to create a tool to plan nightmares in colosseum for the game SINoALICE.
 
 Heavy inspiration taken from SINoaLICE Nightmare Planner by Eucellia, which can be found at this link:
