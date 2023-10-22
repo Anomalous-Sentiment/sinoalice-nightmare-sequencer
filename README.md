@@ -15,20 +15,22 @@ The main goals of this project is to provide a simple auto-updating planning too
 
 ## Instructions
 
-### Database Setup
-
-Note: This database was designed with PostgreSQL in mind, and hosted on [Supabase](https://supabase.com/).
-
-A basic database diagram has also been provided in the `database` directory for a high level representation of the database structure.
-
-#### Environment Variables
-Refer to the `example.env` file for the required environment variables. There are currently 3 variables required:
+### Environment Variables
+Refer to the `example.env` file for the required environment variables. There are currently 4 variables required:
 - SUPABASE_URL
     - URL for connecting to the database
 - SUPABASE_KEY
     - Determines server side access level
 - SUPABASE_CLIENT_KEY
     - Determines client side access level
+- GOOGLE_ADS_ID
+    - For google ads
+
+### Database Setup
+
+Note: This database was designed with PostgreSQL in mind, and hosted on [Supabase](https://supabase.com/).
+
+A basic database diagram has also been provided in the `database` directory for a high level representation of the database structure.
 
 #### SQL Scripts
 To setup the database, run the SQL scripts in the `database` directory in the following order:
