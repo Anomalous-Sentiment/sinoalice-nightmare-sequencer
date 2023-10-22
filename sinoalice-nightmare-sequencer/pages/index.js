@@ -75,6 +75,7 @@ export default function Home({data}) {
   const sinoDbLink = 'https://sinoalice.game-db.tw/nightmares'
   const euceliaPlannerLink = 'https://sinoalicenightmare.herokuapp.com/'
   const deachswordLink = 'https://www.deachsword.com/db/sinoalice/en/carddetail.php'
+  const projectGitHubLink = 'https://github.com/Anomalous-Sentiment/sinoalice-nightmare-sequencer'
   const dbLinkElement = (
   <Link href={sinoDbLink} passHref={true}>
     <a>SINoALICE DB</a>
@@ -90,6 +91,13 @@ export default function Home({data}) {
     <a>Deachsword Cards</a>
   </Link>
   )
+
+  const projectGitHubLinkElement = (
+    <Link href={projectGitHubLink} passHref={true}>
+    <a>Project GitHub</a>
+  </Link>
+  )
+
   return (
     <div>
       <Head>
@@ -119,7 +127,7 @@ export default function Home({data}) {
             </div>
             <div className={styles.maincontent}>
               <div className={styles.header}>
-              SINoALICE Nightmare Sequencer
+              SINoALICE Nightmare Sequencer ({projectGitHubLinkElement})
               </div>
               <Provider store={store}>
                 <Tabs id='main-tabs' defaultActiveKey="plotter" className="mb-3">
