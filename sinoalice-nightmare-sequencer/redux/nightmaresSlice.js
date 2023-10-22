@@ -34,7 +34,7 @@ export const nightmareSlice = createSlice({
         },
         removeNightmare: (state = initialState, action) => {
             //Remove nightmare from list
-            state.nightmaresSelected = state.nightmaresSelected.filter(nightmare => nightmare['jp_name'] != action.payload['jp_name'])
+            state.nightmaresSelected = state.nightmaresSelected.filter(nightmare => nightmare['card_mst_id'] != action.payload['card_mst_id'])
 
             //Set the used state to false
             state.skillsUsed[getSkillIdentifier(action.payload)] = false
@@ -119,7 +119,7 @@ export const checkSelectable = (state, nightmare) => {
     let skillUsed = state.nightmares.skillsUsed[skillIdentifier];
 
     const selected = state.nightmares.nightmaresSelected.some(element => {
-        return (element['jp_name'] == nightmare['jp_name'] && element['rarity_id'] == nightmare['rarity_id'])
+        return (element['card_mst_id'] == nightmare['card_mst_id'])
     })
 
     // If undefined, it is because the base skills havven't been initialised yet. 
@@ -191,7 +191,7 @@ const getSkillIdentifier = (nightmare) =>
     else
     {
         //If skill is unique
-        return nightmare['jp_colo_skill_name']
+        return nightmare['art_unique_id']
     }
 }
 

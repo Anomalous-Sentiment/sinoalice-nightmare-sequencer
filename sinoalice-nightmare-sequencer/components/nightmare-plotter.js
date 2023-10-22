@@ -24,21 +24,22 @@ const Alert = forwardRef(function Alert(props, ref) {
 });
 
 const EN_LANG = {
-  icon: 'en_icon_url',
-  name: 'en_name',
-  skill_name: 'en_colo_skill_name',
-  skill_description: 'en_colo_skill_desc',
-  skill_rank: 'en_rank',
+  icon: 'icon_url',
+  name: 'nm_name',
+  skill_name: 'skill_name',
+  skill_description: 'skill_desc',
+  //skill_rank: 'en_rank',
   prep_time: 'prep_time',
   dur_time: 'effective_time'
 };
 
+// Same as EN_LANG as they are sompletely separate lists with same key names 
 const JP_LANG = {
-  icon: 'jp_icon_url',
-  name: 'jp_name',
-  skill_name: 'jp_colo_skill_name',
-  skill_description: 'jp_colo_skill_desc',
-  skill_rank: 'jp_rank',
+  icon: 'icon_url',
+  name: 'nm_name',
+  skill_name: 'skill_name',
+  skill_description: 'skill_desc',
+  //skill_rank: 'jp_rank',
   prep_time: 'prep_time',
   dur_time: 'effective_time'
 };
@@ -69,13 +70,13 @@ export default function NightmarePlotter(props) {
   const globalNightmares = useMemo(() => {
     if (jsonData)
     {
-      return jsonData['nightmares'].filter(nightmare => nightmare['global'] == true);
+      return jsonData['en_nightmares'];
     }
   }, [jsonData])
   const jpnightmares = useMemo(() => {
     if (jsonData)
     {
-      return jsonData['nightmares'];
+      return jsonData['jp_nightmares'];
     }
   }, [jsonData])
   const [globalOnly, setGlobalServer] = useState(true)
@@ -257,7 +258,7 @@ export default function NightmarePlotter(props) {
       }
       else
       {
-        if (array[index - 1]['jp_colo_skill_name'] == '紫煙ハ瞬刻ヲ告ゲル')
+        if (array[index - 1]['art_unique_id'] == 1134)
         {
           //If previous nm skill was "Haze heralds the moment", set this nm prep time to 5 secs
           nmPrepTime = 5;

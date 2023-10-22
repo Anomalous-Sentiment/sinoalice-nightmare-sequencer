@@ -106,7 +106,10 @@ And with this, I'll be returning to my life of having my job applications reject
 
 Written by a tired and weary Sentiment#0790`
 
-export const changelog = `6/08/2022 v1.3
+export const changelog = `25/5/2023 v1.4
+- Changed dependencies from SINoALICE DB to Deachsword & SINoALICE datamine as SINoALICE DB GL nightmares are o longer up to date.
+
+6/08/2022 v1.3
 - Fixed issue where tooltips appear at wrong position after mouseover/hover
 
 19/07/2022 v1.2

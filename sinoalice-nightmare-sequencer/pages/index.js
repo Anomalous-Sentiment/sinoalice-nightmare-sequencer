@@ -25,8 +25,12 @@ export async function getServerSideProps()
   //Array to hold db requests
   const dbRequests = [];
   //Get all nightmares
-  const nightmareRequest = supabase
-  .from('allnightmaredetails')
+  const enNightmareRequest = supabase
+  .from('allennightmaredetails')
+  .select()
+
+  const jpNightmareRequest = supabase
+  .from('alljpnightmaredetails')
   .select()
 
   //Get all element/attributes
@@ -51,19 +55,17 @@ export async function getServerSideProps()
 
   //Get all rarities
   const pureSkillsRequest = supabase
-  .from('pure_colo_skill_names')
+  .from('pure_colo_skills')
   .select()
 
-  dbRequests.push(nightmareRequest, elementRequest, generalTagRequest, majorTagRequest, rarityRequest, pureSkillsRequest);
+  dbRequests.push(enNightmareRequest, jpNightmareRequest, elementRequest, generalTagRequest, majorTagRequest, rarityRequest, pureSkillsRequest);
 
   console.time('DB Requests Timer')
   //Wait or all concurrent requests to complete and get their returned values
-  let [{data: allNightmares}, {data: allAttributes}, {data: generalTags}, {data: majorTags}, {data: allRarities}, {data: pureSkills}] = await Promise.all(dbRequests);
+  let [{data: enNightmares}, {data: jpNightmares},{data: allAttributes}, {data: generalTags}, {data: majorTags}, {data: allRarities}, {data: pureSkills}] = await Promise.all(dbRequests);
   console.timeEnd('DB Requests Timer')
-
-
   //Combine all request data into single json
-  let data = {nightmares: allNightmares, attributes: allAttributes, general_tags: generalTags, major_tags: majorTags, rarities: allRarities, base_skills: pureSkills};
+  let data = {en_nightmares: enNightmares, jp_nightmares: jpNightmares, attributes: allAttributes, general_tags: generalTags, major_tags: majorTags, rarities: allRarities, base_skills: pureSkills};
 
   return {props: {data}}
 }
@@ -72,6 +74,8 @@ export async function getServerSideProps()
 export default function Home({data}) {
   const sinoDbLink = 'https://sinoalice.game-db.tw/nightmares'
   const euceliaPlannerLink = 'https://sinoalicenightmare.herokuapp.com/'
+  const deachswordLink = 'https://www.deachsword.com/db/sinoalice/en/carddetail.php'
+  const projectGitHubLink = 'https://github.com/Anomalous-Sentiment/sinoalice-nightmare-sequencer'
   const dbLinkElement = (
   <Link href={sinoDbLink} passHref={true}>
     <a>SINoALICE DB</a>
@@ -82,6 +86,18 @@ export default function Home({data}) {
     <a>Nightmare Planner by Eucelia</a>
   </Link>
   )
+  const deachswordLinkElement = (
+    <Link href={deachswordLink} passHref={true}>
+    <a>Deachsword Cards</a>
+  </Link>
+  )
+
+  const projectGitHubLinkElement = (
+    <Link href={projectGitHubLink} passHref={true}>
+    <a>Project GitHub</a>
+  </Link>
+  )
+
   return (
     <div>
       <Head>
@@ -111,7 +127,7 @@ export default function Home({data}) {
             </div>
             <div className={styles.maincontent}>
               <div className={styles.header}>
-              SINoALICE Nightmare Sequencer
+              SINoALICE Nightmare Sequencer ({projectGitHubLinkElement})
               </div>
               <Provider store={store}>
                 <Tabs id='main-tabs' defaultActiveKey="plotter" className="mb-3">
@@ -138,6 +154,8 @@ export default function Home({data}) {
                         {plannerLinkElement}
                         <br/>
                         {dbLinkElement}
+                        <br/>
+                        {deachswordLinkElement}
                       </div>
                       </Accordion.Body>
                     </Accordion.Item>
