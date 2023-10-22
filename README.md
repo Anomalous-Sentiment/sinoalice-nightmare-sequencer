@@ -54,7 +54,7 @@ To setup the database, run the SQL scripts in the `database` directory in the fo
 
 ## Screenshots
 Screenshots of the final product:
-![Initial Page](/screenshots/initial.png)
-![Plotted Nightmares](/screenshots/plotted_nms.png)
-![JP Nightmares](/screenshots/jp_names.png)
-![About Tab](/screenshots/about.png)
+![Initial Page](/screenshots/initial.PNG)
+![Plotted Nightmares](/screenshots/plotted_nms.PNG)
+![JP Nightmares](/screenshots/jp_names.PNG)
+![About Tab](/screenshots/about.PNG)
