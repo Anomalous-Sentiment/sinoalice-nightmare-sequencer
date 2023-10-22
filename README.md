@@ -2,7 +2,7 @@
 A personal project to create a tool to plan nightmares in colosseum for the game SINoALICE.
 
 Heavy inspiration taken from SINoaLICE Nightmare Planner by Eucellia, which can be found at this link:
-https://sinoalicenightmare.herokuapp.com/
+~~https://sinoalicenightmare.herokuapp.com/~~ (No longer available due to heroku's removal of free tier plans)
 
 ## Overview
 This is a web application which uses the SINoALICE datamines on GitHub to obtain nightmare data, and processes them before inserting it into the database.
