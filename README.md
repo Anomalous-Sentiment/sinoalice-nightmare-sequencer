@@ -25,6 +25,8 @@ Refer to the `example.env` file for the required environment variables. There ar
     - Determines client side access level
 - GOOGLE_ADS_ID
     - For google ads
+- DAILY_UPDATE
+    - Controls whether to schedule a daily update of nightmares or not. Can be "true" or "false"
 
 ### Database Setup
 
