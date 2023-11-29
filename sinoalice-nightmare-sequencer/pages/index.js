@@ -68,12 +68,14 @@ export async function getServerSideProps()
   console.timeEnd('DB Requests Timer')
   //Combine all request data into single json
   let data = {en_nightmares: enNightmares, jp_nightmares: jpNightmares, attributes: allAttributes, general_tags: generalTags, major_tags: majorTags, rarities: allRarities, base_skills: pureSkills};
+
   return {props: {data}}
 }
 
 
 export default function Home({data}) {
   const [dataAvailable, setAvailable] = useState(false)
+  const [displayErr, setErr] = useState(false)
   const sinoDbLink = 'https://sinoalice.game-db.tw/nightmares'
   const euceliaPlannerLink = 'https://sinoalicenightmare.herokuapp.com/'
   const deachswordLink = 'https://www.deachsword.com/db/sinoalice/en/carddetail.php'
@@ -121,9 +123,19 @@ export default function Home({data}) {
       if (availableList.every(value => value === true))
       {
         setAvailable(true)
+        setErr(false)
+      }
+      else
+      {
+        setErr(true)
       }
     }
+    else
+    {
+      setErr(true)
+    }
   }, [data])
+  
 
   return (
     <div>
@@ -151,13 +163,15 @@ export default function Home({data}) {
               />
             </div>
             <div className={styles.maincontent}>
-              {dataAvailable ? '' : 
+              {displayErr ? 
               <Alert variant="danger" onClose={() => setShow(false)} dismissible>
                 <Alert.Heading>Error</Alert.Heading>
                 <p>
                   Failed to get nightmare data. This is likely a database issue. Please let me know if you are seeing this error.
                 </p>
-              </Alert>}
+              </Alert>
+              : ''
+              }
               <div className={styles.header}>
               SINoALICE Nightmare Sequencer ({projectGitHubLinkElement})
               </div>
