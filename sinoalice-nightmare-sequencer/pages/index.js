@@ -11,6 +11,8 @@ import NightmarePlotter from '../components/nightmare-plotter'
 import {usageText, developmentText, changelog} from '../text_constants'
 const supabaseJs = require('@supabase/supabase-js')
 import dynamic from 'next/dynamic';
+import Alert from 'react-bootstrap/Alert';
+import { useEffect, useState } from 'react';
 
 const GoogleAd = dynamic(() => import('../components/google-ad'), {
   ssr: false,
@@ -66,12 +68,12 @@ export async function getServerSideProps()
   console.timeEnd('DB Requests Timer')
   //Combine all request data into single json
   let data = {en_nightmares: enNightmares, jp_nightmares: jpNightmares, attributes: allAttributes, general_tags: generalTags, major_tags: majorTags, rarities: allRarities, base_skills: pureSkills};
-
   return {props: {data}}
 }
 
 
 export default function Home({data}) {
+  const [dataAvailable, setAvailable] = useState(false)
   const sinoDbLink = 'https://sinoalice.game-db.tw/nightmares'
   const euceliaPlannerLink = 'https://sinoalicenightmare.herokuapp.com/'
   const deachswordLink = 'https://www.deachsword.com/db/sinoalice/en/carddetail.php'
@@ -98,6 +100,31 @@ export default function Home({data}) {
   </Link>
   )
 
+  useEffect(() => {
+    const availableList = []
+    if (data)
+    {
+      for (const [key, value] of Object.entries(data)) {
+        if (!value)
+        {
+          availableList.push(false)
+          // This key-value is missing from the data
+          // Set the error alert to show
+          setAvailable(false)
+        }
+        else
+        {
+          availableList.push(true)
+        }
+      }
+
+      if (availableList.every(value => value === true))
+      {
+        setAvailable(true)
+      }
+    }
+  }, [data])
+
   return (
     <div>
       <Head>
@@ -105,8 +132,6 @@ export default function Home({data}) {
         <meta name="description" content="SINoALICE Nightmare Planning Tool" />
         <link rel="icon" href="/alice.ico" />
       </Head>
-
-    
         <div className={styles.container}>
           <div className={styles.topdiv}>
             <GoogleAd
@@ -126,13 +151,21 @@ export default function Home({data}) {
               />
             </div>
             <div className={styles.maincontent}>
+              {dataAvailable ? '' : 
+              <Alert variant="danger" onClose={() => setShow(false)} dismissible>
+                <Alert.Heading>Error</Alert.Heading>
+                <p>
+                  Failed to get nightmare data. This is likely a database issue. Please let me know if you are seeing this error.
+                </p>
+              </Alert>}
               <div className={styles.header}>
               SINoALICE Nightmare Sequencer ({projectGitHubLinkElement})
               </div>
               <Provider store={store}>
                 <Tabs id='main-tabs' defaultActiveKey="plotter" className="mb-3">
                   <Tab eventKey="plotter" title="Sequencer">
-                    <NightmarePlotter data={data}/>
+                    {dataAvailable ? <NightmarePlotter data={data}/> : ''}
+                    
                   </Tab>
                   <Tab eventKey="about" title="About">
                     <Accordion defaultActiveKey="0">
