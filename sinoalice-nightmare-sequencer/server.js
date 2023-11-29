@@ -89,6 +89,9 @@ app.prepare().then(() => {
       }
       else {
         console.log('Did not schedule update')
+        utility.pingDatabase()
+        timedFunctions.schedulePing()
+        console.log('Scheduled daily ping')
       }
     }
     catch(error)

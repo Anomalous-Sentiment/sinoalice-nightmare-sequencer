@@ -4,7 +4,8 @@ const utility = require('./new_utils')
 
 module.exports = 
 {
-    scheduleUpdates
+    scheduleUpdates,
+    schedulePing
 }
 
 function scheduleUpdates()
@@ -19,4 +20,16 @@ function scheduleUpdates()
     console.log('Updating job scheduled daily successfully')
     // when stopping your app
     //scheduler.stop()
+}
+
+function schedulePing()
+{
+    const scheduler = new ToadScheduler()
+
+    const task = new Task('Ping Database', () => { utility.pingDatabase() })
+    const job = new SimpleIntervalJob({ days: 1, }, task)
+
+    scheduler.addSimpleIntervalJob(job)
+
+    console.log('Daily ping scheduled daily successfully')
 }

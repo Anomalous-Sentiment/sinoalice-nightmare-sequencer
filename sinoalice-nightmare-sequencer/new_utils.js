@@ -9,7 +9,8 @@ const EN_ICON_BASE = 'https://www.deachsword.com/db/sinoalice/en/images/ab'
 
 module.exports = 
 {
-    updateDatabase
+    updateDatabase,
+    pingDatabase
 }
 
 // The main overarching function that usees all other functions to process the data
@@ -295,4 +296,16 @@ function createEnNightmareList(cardList)
   })
 
   return formattedList
+}
+
+async function pingDatabase()
+{
+  const rarityRequest = supabase
+  .from('rarities')
+  .select()
+
+  const rarityData = await rarityRequest
+
+  console.log('Retrieved rarity data from database')
+  console.log(rarityData)
 }
