@@ -78,10 +78,18 @@ app.prepare().then(() => {
     try {
       //Update Database
       utility.updateDatabase()
-  
-      //Set timer for calling function daily
-      timedFunctions.scheduleUpdates()
-  
+      console.log(process.env.DAILY_UPDATE)
+
+      // Schedule updates if env variable is true
+      if (process.env.DAILY_UPDATE == 'true')
+      {
+        //Set timer for calling function daily
+        timedFunctions.scheduleUpdates()
+        console.log('Scheduled daily update')
+      }
+      else {
+        console.log('Did not schedule update')
+      }
     }
     catch(error)
     {
