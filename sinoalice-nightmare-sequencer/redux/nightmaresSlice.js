@@ -174,11 +174,25 @@ export const checkSelectable = (state, nightmare) => {
 };
 
 export const checkRemovable = (state, nightmare) => {
+    const skillIdentifier= getSkillIdentifier(nightmare)
+    const skillUsed = state.nightmares.skillsUsed[skillIdentifier];
     const selected = state.nightmares.nightmaresSelected.some(element => {
-        return (element['jp_name'] == nightmare['jp_name'] && element['rarity_id'] == nightmare['rarity_id'])
+        return (element['card_mst_id'] == nightmare['card_mst_id'])
     })
+    let removable = false;
 
-    return selected;
+    if (selected)
+    {
+        // Can remove
+        removable = true
+    }
+    else
+    {
+        // Cannot remove
+        removable = false
+    }
+
+    return removable;
 };
 
 const getSkillIdentifier = (nightmare) => 
