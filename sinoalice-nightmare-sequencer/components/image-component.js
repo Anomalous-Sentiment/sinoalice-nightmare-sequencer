@@ -1,3 +1,4 @@
+'use client';
 import { Fragment, memo, useMemo } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux'
@@ -50,6 +51,7 @@ function ImageComponent(props)
              <div className={styles.item}>
                 <Figure>
                 <Figure.Image
+                loading='lazy'
                 src={props.nightmare[props.displayOptions['icon']]}
                 alt={props.nightmare[props.displayOptions['icon']]}
                 width='90'

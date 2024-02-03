@@ -106,7 +106,11 @@ And with this, I'll be returning to my life of having my job applications reject
 
 Written by a tired and weary Sentiment#0790`
 
-export const changelog = `25/5/2023 v1.4
+export const changelog = `3/03/2024 v1.5
+- Set images to lazy load
+- Broken images are a known issue - Deachsword appears to have removed their nightmare images from their website. This issue will not be fixed as the tool has reached end of life with the game no longer being available, unless someone is willing to provide all the images/icons for each nightmare.
+
+25/5/2023 v1.4
 - Changed dependencies from SINoALICE DB to Deachsword & SINoALICE datamine as SINoALICE DB GL nightmares are o longer up to date.
 
 6/08/2022 v1.3
